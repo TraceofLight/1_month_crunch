@@ -1,11 +1,11 @@
 ### 1. Project Abstract
 
-이번 과제는 CLI 기반으로 개발 워크스테이션을 구성하고, Docker와 Git의 기본 동작을 직접 검증한 결과를 정리한 문서다.
+개발 워크스테이션을 구성하고, Docker와 Git의 기본 동작을 직접 검증한 결과를 정리한 문서
 
-- 터미널 조작 로그를 남기고 파일/디렉터리 권한 의미를 확인했다.
-- Docker 설치 상태, 이미지/컨테이너 운영 명령, `hello-world`, `ubuntu`, 커스텀 Nginx 이미지를 검증했다.
-- 포트 매핑, 바인드 마운트, 볼륨 영속성을 각각 실행 결과로 확인했다.
-- Git은 로컬 설정 확인까지만 수행했고, 외부 Git 통신과 commit, GitHub 로그인/연동은 사용자 요청에 따라 이번 작업에서 제외했다.
+- 터미널 조작 로그를 남기고 파일/디렉터리 권한 의미를 확인
+- Docker 설치 상태, 이미지/컨테이너 운영 명령, `hello-world`, `ubuntu`, 커스텀 Nginx 이미지를 검증
+- 포트 매핑, 바인드 마운트, 볼륨 영속성을 각각 실행 결과로 확인
+- 외부 Git 통신과 commit, GitHub 로그인/연동
 
 ### 2. Runtime Environment
 
@@ -257,7 +257,7 @@ hello, world!
 
 ### 5. 권한 실습
 
-Windows NTFS 환경에서는 Git Bash의 `chmod` 결과가 POSIX 퍼미션 비트와 완전히 동일하게 보이지 않아, Ubuntu 컨테이너 내부에서 파일 1개와 디렉토리 1개를 대상으로 권한 변경을 검증했다.
+Git Bash의 `chmod` 결과가 POSIX 퍼미션 비트와 완전히 동일하게 보이지 않아, Ubuntu 컨테이너 내부에서 파일 1개와 디렉토리 1개를 대상으로 권한 변경을 검증
 
 > 파일/디렉토리 권한 변경 전후 비교
 
@@ -546,8 +546,7 @@ file:.git/config init.defaultbranch=main
 
 > Github 로그인 / VSCode 연동
 
-- 미실행
-- 사용자가 이미 확보한 스크린샷을 이 섹션 아래에 추가하면 된다.
+![html_load](./github_login.png)
 
 ### 13. Docker Compose 기초
 
