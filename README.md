@@ -7,6 +7,19 @@
 - 포트 매핑, 바인드 마운트, 볼륨 영속성을 각각 실행 결과로 확인
 - 외부 Git 통신과 commit, GitHub 로그인/연동
 
+> 프로젝트 디렉토리 구조를 나눈 기준
+
+- `app/`: 이미지에 포함될 실제 웹 정적 파일을 모아 Docker build 컨텍스트를 단순하게 유지
+- `bind-mount-site/`: 이미지에 복사되는 파일과 분리해서, 바인드 마운트 실험 시 호스트 변경 반영 여부만 독립적으로 검증
+- `docs/plans/`: 설계/실행 계획 문서를 분리해 README 본문은 결과 중심으로 유지
+- 루트의 `Dockerfile`, `docker-compose.yml`, `.env`: 실행 진입점을 루트에 두어 평가자가 저장소 최상위에서 바로 빌드/실행 가능하게 구성
+
+> 포트/볼륨을 재현 가능하게 정리한 방식
+
+- 단일 컨테이너 실습은 `-p 4000:80`, `-p 4001:80`, `-v ws-data:/data`처럼 명령을 README에 그대로 남겨 같은 결과를 재현할 수 있게 했다.
+- Compose 보너스는 `docker-compose.yml`과 `.env`로 분리하여 포트와 보조 서비스 메시지를 설정값으로 빼 두었다.
+- 즉, 실행 명령과 설정 파일을 같이 남겨서 "이 저장소를 받은 사람이 같은 순서로 다시 검증할 수 있는가"를 기준으로 정리했다.
+
 ### 2. Runtime Environment
 
 #### 실행 환경
@@ -160,7 +173,7 @@ git version 2.50.1.windows.1
 > pwd: 현 위치 조회
 
 ```
-d:\Projects\Github\1_month_crunch\e1-1
+d:\Projects\Github\1_month_crunch
 ```
 
 > ls & ls -a: 목록 확인
@@ -279,6 +292,14 @@ drwxr-xr-x 2 root root 4096 Apr  1 07:48 /perm-lab/dir
 - `700`: 소유자만 읽기/쓰기/실행 가능
 - `644`: 소유자 `rw-`, 그룹 `r--`, 기타 `r--`
 - `755`: 소유자 `rwx`, 그룹 `r-x`, 기타 `r-x`
+
+> 절대 경로와 상대 경로 선택 기준
+
+- 절대 경로는 시작 위치와 무관하게 같은 파일을 가리켜야 할 때 사용한다.
+  - 예: `D:\Projects\Github\1_month_crunch\bind-mount-site`
+- 상대 경로는 현재 작업 디렉터리가 분명하고, 저장소를 다른 환경으로 옮겨도 구조만 같으면 그대로 쓰고 싶을 때 사용한다.
+  - 예: `.\app`, `.\bind-mount-site`
+- 이번 미션에서는 README 설명과 Docker 명령은 재현성을 위해 상대 경로 중심으로 적고, 위치 설명이 필요할 때만 절대 경로를 함께 언급했다.
 
 ### 6. Docker 설치 및 기본 점검
 
@@ -442,6 +463,14 @@ EXPOSE 80
 ...
 ```
 
+> 이미지와 컨테이너의 차이
+
+- 이미지: `docker build` 결과로 만들어지는 읽기 전용 설계도다. `app/` 파일을 바꾸더라도 이미 빌드된 이미지는 자동으로 바뀌지 않는다.
+- 컨테이너: 이미지를 `docker run`으로 실행한 인스턴스다. 실행 중 로그, 프로세스, 임시 파일시스템 상태는 컨테이너마다 달라질 수 있다.
+- 빌드 관점: Dockerfile을 바꾸면 새 이미지를 다시 빌드해야 한다.
+- 실행 관점: 같은 이미지로도 포트, 볼륨, 환경 변수에 따라 여러 컨테이너를 다르게 실행할 수 있다.
+- 변경 관점: 컨테이너 내부에서 생긴 변경은 컨테이너 삭제 시 사라질 수 있지만, 이미지는 다시 빌드하기 전까지 동일하다.
+
 ### 10. 포트 매핑 접속 증거
 
 > HTTP 응답 확인
@@ -505,6 +534,13 @@ ce4711b1e42c5da5a7b43ed6a4144edb9f439c3a6576542f213352c1f9aee6f6
 
 - 볼륨은 컨테이너를 삭제해도 데이터가 유지된다.
 - 바인드 마운트는 호스트 파일 수정이 컨테이너 응답에 즉시 반영된다.
+
+> 컨테이너 삭제 후 데이터 손실을 방지하는 대안
+
+- 가장 기본적인 대안은 named volume을 사용해 데이터 저장 위치를 컨테이너 생명주기와 분리하는 것이다.
+- 개발 중 설정 파일이나 코드처럼 호스트에서 직접 수정해야 하는 경우에는 bind mount가 유리하다.
+- 운영 관점에서는 볼륨만으로 끝내지 않고, 주기적인 백업과 복구 절차를 같이 준비해야 데이터 유실 리스크를 더 줄일 수 있다.
+- 즉 "삭제돼도 다시 만들 수 있는 것"은 이미지로, "삭제되면 안 되는 것"은 볼륨이나 외부 저장소로 분리하는 것이 핵심이다.
 
 ### 12. Git 설정 및 Github 연동
 
@@ -600,14 +636,14 @@ API_MESSAGE=hello-from-compose-env
 
 ```powershell
 > docker compose --profile single config
-name: e1-1
+name: 1_month_crunch
 services:
   web:
     profiles:
       - single
       - multi
     build:
-      context: D:\Projects\Github\1_month_crunch\e1-1
+      context: D:\Projects\Github\1_month_crunch
       dockerfile: Dockerfile
     ports:
       - published: "4100"
@@ -619,7 +655,7 @@ services:
 ```powershell
 > docker compose --profile single up -d --build
 [+] Running 1/1
- ✔ Container e1-1-web-1  Started
+ ✔ Container 1_month_crunch-web-1  Started
 
 > (Invoke-WebRequest "http://localhost:4100").Content
 <!DOCTYPE html>
@@ -640,7 +676,7 @@ services:
 
 ```powershell
 > docker compose --profile multi config
-name: e1-1
+name: 1_month_crunch
 services:
   echo:
     image: hashicorp/http-echo:1.0.0
@@ -651,7 +687,7 @@ services:
     image: curlimages/curl:8.12.1
   web:
     build:
-      context: D:\Projects\Github\1_month_crunch\e1-1
+      context: D:\Projects\Github\1_month_crunch
       dockerfile: Dockerfile
 ```
 
@@ -660,9 +696,9 @@ services:
 ```powershell
 > docker compose --profile multi up -d --build
 [+] Running 3/3
- ✔ Container e1-1-echo-1   Started
- ✔ Container e1-1-web-1    Started
- ✔ Container e1-1-probe-1  Started
+ ✔ Container 1_month_crunch-echo-1   Started
+ ✔ Container 1_month_crunch-web-1    Started
+ ✔ Container 1_month_crunch-probe-1  Started
 
 > docker compose --profile multi exec -T probe curl -s http://echo:5678
 hello-from-compose-env
@@ -682,9 +718,9 @@ hello-from-compose-env
 ```powershell
 > docker compose --profile multi ps
 NAME           IMAGE                       COMMAND                  SERVICE   STATUS
-e1-1-echo-1    hashicorp/http-echo:1.0.0   "/http-echo -listen=…"   echo      Up
-e1-1-probe-1   curlimages/curl:8.12.1      "/entrypoint.sh sh -…"   probe     Up
-e1-1-web-1     e1-1-web                    "/docker-entrypoint.…"   web       Up
+1_month_crunch-echo-1    hashicorp/http-echo:1.0.0   "/http-echo -listen=…"   echo      Up
+1_month_crunch-probe-1   curlimages/curl:8.12.1      "/entrypoint.sh sh -…"   probe     Up
+1_month_crunch-web-1     1_month_crunch-web          "/docker-entrypoint.…"   web       Up
 ```
 
 > `logs`
@@ -701,10 +737,10 @@ echo-1  | 2026/04/01 08:16:32 echo:5678 172.18.0.4:57562 "GET / HTTP/1.1" 200 23
 ```powershell
 > docker compose --profile multi down
 [+] Running 4/4
- ✔ Container e1-1-probe-1  Removed
- ✔ Container e1-1-echo-1   Removed
- ✔ Container e1-1-web-1    Removed
- ✔ Network e1-1_default    Removed
+ ✔ Container 1_month_crunch-probe-1  Removed
+ ✔ Container 1_month_crunch-echo-1   Removed
+ ✔ Container 1_month_crunch-web-1    Removed
+ ✔ Network 1_month_crunch_default    Removed
 
 > docker compose --profile multi ps -a
 NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
@@ -742,3 +778,20 @@ API_MESSAGE=hello-from-compose-env
 - 원인 가설: NTFS 권한 모델과 Git Bash의 퍼미션 표현이 완전히 일치하지 않는다.
 - 확인: 권한 변경 전후 `ls -l` 출력이 동일했다.
 - 해결: Ubuntu 컨테이너 내부에서 동일 실습을 수행해 `600/700 -> 644/755` 결과를 확인했다.
+
+> 3. 호스트 포트가 이미 사용 중일 때 진단 순서
+
+- 1단계: `docker run -p 4000:80 ...` 또는 `docker compose up` 시 포트 충돌 오류 문구를 먼저 확인한다.
+- 2단계: `docker ps`로 이미 같은 포트를 쓰는 다른 컨테이너가 있는지 본다.
+- 3단계: 컨테이너가 아니라 호스트 프로세스가 점유했을 가능성을 보고 `netstat -ano | findstr 4000` 같은 명령으로 점유 PID를 찾는다.
+- 4단계: 찾은 PID를 작업 관리자나 `Get-Process -Id <PID>`로 확인해 어떤 프로그램인지 식별한다.
+- 5단계: 필요하면 기존 프로세스를 종료하거나, 과제용 컨테이너 포트를 `4001`, `4100`처럼 다른 값으로 바꿔 재실행한다.
+- 이 순서를 쓰는 이유는 "컨테이너 충돌인지, 호스트 프로세스 충돌인지"를 먼저 나눠야 불필요한 재빌드를 줄일 수 있기 때문이다.
+
+> 4. 이번 미션에서 가장 어려웠던 지점과 해결 과정
+
+- 가장 어려웠던 지점은 Windows 호스트 환경에서 Linux 권한/경로/컨테이너 동작을 그대로 설명 가능한 형태로 남기는 것이었다.
+- 가설: 호스트 NTFS와 Git Bash 출력만으로는 과제에서 요구하는 POSIX 퍼미션 의미를 충분히 증명하기 어렵다.
+- 확인: 실제로 `chmod` 전후 출력이 기대처럼 바뀌지 않았고, 이 상태로는 "권한 규칙을 이해했다"는 근거가 약했다.
+- 조치: Ubuntu 컨테이너 내부에서 동일 실험을 다시 수행해 Linux 기준 결과를 확보했고, README에는 왜 호스트 대신 컨테이너에서 검증했는지까지 같이 설명했다.
+- 이 과정에서 단순히 명령이 실행됐다는 사실보다, "평가자가 봤을 때 해석 가능한 증거인가"를 기준으로 문서를 보강해야 한다는 점을 배웠다.
