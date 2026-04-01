@@ -134,7 +134,7 @@ git version 2.50.1.windows.1
 #### Git 설정 및 Github 연동
 
 - Git 사용자 정보 / 기본 브랜치 설정 완료하고 git config --list 결과를 기록 (V)
-- Github 로그인 및 저장소 연동을 완료하고, 연동 증거를 기술 문서에 첨부할 것 (미실행: 사용자 증거 필요)
+- Github 로그인 및 저장소 연동을 완료하고, 연동 증거를 기술 문서에 첨부할 것 (V)
 
 #### 보안 및 개인정보 보호
 
@@ -142,16 +142,16 @@ git version 2.50.1.windows.1
 
 #### Bonus
 
-- docker-compose.yml의 기본 구조를 학습 후 단일 서비스를 Compose로 실행 (미실행)
-- Compose 멀티 컨테이너를 활용하여 컨테이너 간의 네트워크 통신이 가능한지 확인 (미실행)
-- Compose 운영 명령어 사용하고 관련 내용 기록 (미실행)
-  - up (미실행)
-  - down (미실행)
-  - ps (미실행)
-  - logs (미실행)
-- 환경 변수 활용 (미실행)
-- Github SSH 키 설정 (미실행)
-  - SSH Push 처리를 위한 Key 등록 후 동작 확인 (미실행)
+- docker-compose.yml의 기본 구조를 학습 후 단일 서비스를 Compose로 실행 (V)
+- Compose 멀티 컨테이너를 활용하여 컨테이너 간의 네트워크 통신이 가능한지 확인 (V)
+- Compose 운영 명령어 사용하고 관련 내용 기록 (V)
+  - up (V)
+  - down (V)
+  - ps (V)
+  - logs (V)
+- 환경 변수 활용 (V)
+- Github SSH 키 설정 ()
+  - SSH Push 처리를 위한 Key 등록 후 동작 확인 ()
 
 ### 4. 터미널 조작 로그
 
@@ -550,19 +550,145 @@ file:.git/config init.defaultbranch=main
 
 ### 13. Docker Compose 기초
 
-이번 작업 범위에서는 미실행.
+`docker-compose.yml` 하나에 `profiles`를 두고 단일 서비스와 멀티 컨테이너 구성을 같이 관리했다.
+
+> 환경 변수
+
+```dotenv
+WEB_PORT=4100
+API_MESSAGE=hello-from-compose-env
+```
+
+> 단일 서비스용 Compose 설정 확인
+
+```powershell
+> docker compose --profile single config
+name: e1-1
+services:
+  web:
+    profiles:
+      - single
+      - multi
+    build:
+      context: D:\Projects\Github\1_month_crunch\e1-1
+      dockerfile: Dockerfile
+    ports:
+      - published: "4100"
+        target: 80
+```
+
+> 단일 서비스 실행
+
+```powershell
+> docker compose --profile single up -d --build
+[+] Running 1/1
+ ✔ Container e1-1-web-1  Started
+
+> (Invoke-WebRequest "http://localhost:4100").Content
+<!DOCTYPE html>
+...
+<h1>Nginx is running</h1>
+...
+```
 
 ### 14. Docker Compose 멀티 컨테이너
 
-이번 작업 범위에서는 미실행.
+`multi` 프로필에서는 `web`, `echo`, `probe` 3개 서비스를 함께 실행했다.
+
+- `web`: 기존 Nginx 웹 서버
+- `echo`: `hashicorp/http-echo` 기반 보조 서비스
+- `probe`: 내부 네트워크에서 다른 서비스로 `curl`을 보내는 검증용 컨테이너
+
+> 멀티 컨테이너 설정 확인
+
+```powershell
+> docker compose --profile multi config
+name: e1-1
+services:
+  echo:
+    image: hashicorp/http-echo:1.0.0
+    command:
+      - -listen=:5678
+      - -text=hello-from-compose-env
+  probe:
+    image: curlimages/curl:8.12.1
+  web:
+    build:
+      context: D:\Projects\Github\1_month_crunch\e1-1
+      dockerfile: Dockerfile
+```
+
+> 멀티 컨테이너 실행 및 서비스 디스커버리 확인
+
+```powershell
+> docker compose --profile multi up -d --build
+[+] Running 3/3
+ ✔ Container e1-1-echo-1   Started
+ ✔ Container e1-1-web-1    Started
+ ✔ Container e1-1-probe-1  Started
+
+> docker compose --profile multi exec -T probe curl -s http://echo:5678
+hello-from-compose-env
+
+> docker compose --profile multi exec -T probe curl -s http://web
+<!DOCTYPE html>
+<html lang="ko">
+...
+<h1>Nginx is running</h1>
+...
+```
 
 ### 15. Compose 운영 명령어
 
-이번 작업 범위에서는 미실행.
+> `ps`
+
+```powershell
+> docker compose --profile multi ps
+NAME           IMAGE                       COMMAND                  SERVICE   STATUS
+e1-1-echo-1    hashicorp/http-echo:1.0.0   "/http-echo -listen=…"   echo      Up
+e1-1-probe-1   curlimages/curl:8.12.1      "/entrypoint.sh sh -…"   probe     Up
+e1-1-web-1     e1-1-web                    "/docker-entrypoint.…"   web       Up
+```
+
+> `logs`
+
+```powershell
+> docker compose --profile multi logs web echo --tail=20
+web-1   | 172.18.0.4 - - [01/Apr/2026:08:16:32 +0000] "GET / HTTP/1.1" 200 1277 "-" "curl/8.12.1" "-"
+echo-1  | 2026/04/01 08:16:28 [INFO] server is listening on :5678
+echo-1  | 2026/04/01 08:16:32 echo:5678 172.18.0.4:57562 "GET / HTTP/1.1" 200 23 "curl/8.12.1"
+```
+
+> `down`
+
+```powershell
+> docker compose --profile multi down
+[+] Running 4/4
+ ✔ Container e1-1-probe-1  Removed
+ ✔ Container e1-1-echo-1   Removed
+ ✔ Container e1-1-web-1    Removed
+ ✔ Network e1-1_default    Removed
+
+> docker compose --profile multi ps -a
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+```
 
 ### 16. 환경 변수 활용
 
-이번 작업 범위에서는 미실행.
+Compose에서 `.env`를 읽어 포트와 보조 서비스 응답 문구를 바꿨다.
+
+> `.env`
+
+```dotenv
+WEB_PORT=4100
+API_MESSAGE=hello-from-compose-env
+```
+
+> 적용 결과
+
+- `WEB_PORT=4100` 이므로 단일/멀티 Compose 실행 시 웹 서버가 `http://localhost:4100` 으로 열렸다.
+- `API_MESSAGE=hello-from-compose-env` 이므로 `probe` 컨테이너에서 `http://echo:5678`로 요청했을 때 동일한 문자열이 반환됐다.
+- 즉, 설정값을 이미지 수정 없이 Compose 환경 변수로 분리할 수 있음을 확인했다.
 
 ### 17. 트러블슈팅
 

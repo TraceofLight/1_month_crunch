@@ -1,0 +1,30 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${WEB_PORT:-4100}:80"
+    profiles:
+      - single
+      - multi
+
+  echo:
+    image: hashicorp/http-echo:1.0.0
+    command:
+      - "-listen=:5678"
+      - "-text=${API_MESSAGE:-hello-from-compose}"
+    profiles:
+      - multi
+
+  probe:
+    image: curlimages/curl:8.12.1
+    command:
+      - "sh"
+      - "-c"
+      - "sleep infinity"
+    depends_on:
+      - web
+      - echo
+    profiles:
+      - multi
