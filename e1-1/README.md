@@ -150,8 +150,8 @@ git version 2.50.1.windows.1
   - ps (V)
   - logs (V)
 - 환경 변수 활용 (V)
-- Github SSH 키 설정 ()
-  - SSH Push 처리를 위한 Key 등록 후 동작 확인 ()
+- Github SSH 키 설정 (V)
+  - SSH Push 처리를 위한 Key 등록 후 동작 확인 (V)
 
 ### 4. 터미널 조작 로그
 
@@ -506,8 +506,6 @@ ce4711b1e42c5da5a7b43ed6a4144edb9f439c3a6576542f213352c1f9aee6f6
 
 ### 12. Git 설정 및 Github 연동
 
-외부 Git 통신, commit, GitHub 로그인/연동은 이번 작업에서 수행하지 않았다. 대신 로컬 설정 확인 결과만 기록했다.
-
 > git config --local --list
 
 ```powershell
@@ -547,6 +545,43 @@ file:.git/config init.defaultbranch=main
 > Github 로그인 / VSCode 연동
 
 ![html_load](./github_login.png)
+
+> Github SSH Key 등록
+
+![html_load](./add_key_github.png)
+
+> HTTPS 원격을 SSH 원격으로 변경
+
+```powershell
+> git remote -v
+origin  https://github.com/TraceofLight/1_month_crunch.git (fetch)
+origin  https://github.com/TraceofLight/1_month_crunch.git (push)
+
+> git remote set-url origin git@github.com:TraceofLight/1_month_crunch.git
+
+> git remote -v
+origin  git@github.com:TraceofLight/1_month_crunch.git (fetch)
+origin  git@github.com:TraceofLight/1_month_crunch.git (push)
+```
+
+> 프로젝트 로컬 키 사용 설정 및 검증
+
+```powershell
+> git config core.sshCommand "ssh -i ./e1-1/github_ed25519.key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+
+> git config --local --get core.sshCommand
+ssh -i ./e1-1/github_ed25519.key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new
+
+> git ls-remote origin
+e4370764935ea09b2d82764ad9fde89f75818337    HEAD
+e4370764935ea09b2d82764ad9fde89f75818337    refs/heads/e1-1
+```
+
+> 정리
+
+- 공개키를 GitHub에 등록한 뒤 원격 저장소 URL을 HTTPS에서 SSH로 변경했다.
+- 이 저장소는 저장소 루트 기준 상대 경로 `./e1-1/github_ed25519.key`를 사용하도록 `core.sshCommand`를 설정했다.
+- `git ls-remote origin`이 성공했으므로 SSH 인증으로 원격 저장소를 읽을 수 있음을 확인했다.
 
 ### 13. Docker Compose 기초
 
