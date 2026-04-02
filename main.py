@@ -107,10 +107,36 @@ class QuizGame:
         print("\n퀴즈 추가 기능은 준비 중입니다.")
 
     def show_quiz_list(self):
-        print("\n퀴즈 목록 기능은 준비 중입니다.")
+        if not self.quizzes:
+            print("\n등록된 퀴즈가 없습니다.")
+            return
+
+        print(f"\n등록된 퀴즈 목록 (총 {len(self.quizzes)}개)")
+        print("----------------------------------------")
+        for index, quiz in enumerate(self.quizzes, start=1):
+            print(f"[{index}] {quiz.question}")
+        print("----------------------------------------")
 
     def show_best_score(self):
-        print("\n점수 확인 기능은 준비 중입니다.")
+        if self.best_score is None:
+            print("\n아직 퀴즈를 풀지 않아 최고 점수가 없습니다.")
+            return
+
+        print(
+            f"\n최고 점수: {self.best_score['score']}점 "
+            f"({self.best_score['total']}문제 중 {self.best_score['correct']}문제 정답)"
+        )
+
+    def update_best_score(self, correct_answers, total_questions, score):
+        current_best = self.best_score
+        if current_best is None or score > current_best["score"]:
+            self.best_score = {
+                "correct": correct_answers,
+                "total": total_questions,
+                "score": score,
+            }
+            return True
+        return False
 
     def exit_game(self):
         print("\n프로그램을 종료합니다.")
