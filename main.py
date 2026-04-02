@@ -267,3 +267,116 @@ def analyze_data_file(path: str | Path) -> dict:
         "summary": summary,
         "performance": build_performance_report(),
     }
+
+
+def parse_matrix_row(raw_text: str, expected_size: int) -> list[float]:
+    parts = raw_text.strip().split()
+    if len(parts) != expected_size:
+        raise ValueError(f"각 줄에 {expected_size}개의 숫자를 공백으로 구분해 입력하세요.")
+
+    try:
+        return [float(part) for part in parts]
+    except ValueError as error:
+        raise ValueError(f"각 줄에 {expected_size}개의 숫자를 공백으로 구분해 입력하세요.") from error
+
+
+def read_matrix_from_input(title: str, size: int, input_func=input, output_func=print) -> Matrix:
+    output_func(title)
+    rows: list[list[float]] = []
+
+    while len(rows) < size:
+        try:
+            row = parse_matrix_row(input_func("").strip(), size)
+            rows.append(row)
+        except ValueError:
+            output_func(f"입력 형식 오류: 각 줄에 {size}개의 숫자를 공백으로 구분해 입력하세요.")
+            rows = []
+            output_func(title)
+
+    return Matrix(rows)
+
+
+def render_performance_lines(performance_rows: list[dict]) -> list[str]:
+    lines = ["크기 | 2D 평균(ms) | 1D 평균(ms) | 연산 횟수", "---- | ------------ | ------------ | --------"]
+    for row in performance_rows:
+        lines.append(
+            f"{row['size']}x{row['size']} | {row['two_d_ms']:.6f} | {row['one_d_ms']:.6f} | {row['operations']}"
+        )
+    return lines
+
+
+def run_manual_mode(input_func=input, output_func=print) -> dict:
+    output_func("=== Mini NPU Simulator ===")
+    filter_a = read_matrix_from_input("필터 A (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
+    filter_b = read_matrix_from_input("필터 B (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
+    pattern = read_matrix_from_input("패턴 (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
+
+    score_a = mac_2d(pattern, filter_a)
+    score_b = mac_2d(pattern, filter_b)
+    decision = "판정 불가" if abs(score_a - score_b) < EPSILON else ("A" if score_a > score_b else "B")
+    average_ms = benchmark_mac(pattern, filter_a, runs=10, use_flatten=False)
+    optimized_ms = benchmark_mac(pattern, filter_a, runs=10, use_flatten=True)
+
+    output_func(f"A 점수: {score_a}")
+    output_func(f"B 점수: {score_b}")
+    output_func(f"연산 시간(평균/10회, 2D): {average_ms:.6f} ms")
+    output_func(f"연산 시간(평균/10회, 1D): {optimized_ms:.6f} ms")
+    output_func(f"판정: {decision}")
+
+    return {
+        "score_a": score_a,
+        "score_b": score_b,
+        "decision": decision,
+        "two_d_ms": average_ms,
+        "one_d_ms": optimized_ms,
+    }
+
+
+def run_json_mode(data_path: str | Path = "data.json", output_func=print) -> dict:
+    target_path = Path(data_path)
+    if not target_path.exists():
+        save_default_data(target_path)
+        output_func(f"기본 data.json을 생성했습니다: {target_path}")
+
+    report = analyze_data_file(target_path)
+
+    output_func("=== data.json 분석 결과 ===")
+    for result in report["results"]:
+        if result["cross_score"] is None:
+            output_func(f"{result['case_id']}: FAIL | reason: {result['reason']}")
+        else:
+            output_func(
+                f"{result['case_id']}: Cross={result['cross_score']}, X={result['x_score']}, "
+                f"판정={result['predicted']}, expected={result['expected']}, {result['status']}"
+            )
+
+    output_func("=== 성능 분석 ===")
+    for line in render_performance_lines(report["performance"]):
+        output_func(line)
+
+    output_func("=== 결과 요약 ===")
+    output_func(f"총 테스트: {report['summary']['total']}")
+    output_func(f"통과: {report['summary']['passed']}")
+    output_func(f"실패: {report['summary']['failed']}")
+    for failure in report["failures"]:
+        output_func(f"- {failure['case_id']}: {failure['reason']}")
+
+    return report
+
+
+def main(input_func=input, output_func=print) -> None:
+    output_func("=== Mini NPU Simulator ===")
+    output_func("1. 사용자 입력 (3x3)")
+    output_func("2. data.json 분석")
+    choice = input_func("선택: ").strip()
+
+    if choice == "1":
+        run_manual_mode(input_func=input_func, output_func=output_func)
+    elif choice == "2":
+        run_json_mode(output_func=output_func)
+    else:
+        output_func("잘못된 선택입니다. 1 또는 2를 입력하세요.")
+
+
+if __name__ == "__main__":
+    main()

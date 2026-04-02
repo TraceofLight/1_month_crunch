@@ -72,6 +72,41 @@ class JsonAnalysisTests(unittest.TestCase):
         self.assertIn("size_13_3", {item["case_id"] for item in report["results"]})
         self.assertIn("size_25_3", {item["case_id"] for item in report["failures"]})
 
+from main import parse_matrix_row, run_manual_mode
+
+
+class ConsoleFlowTests(unittest.TestCase):
+    def test_parse_matrix_row_validates_column_count_and_numbers(self) -> None:
+        self.assertEqual(parse_matrix_row("1 0 1", 3), [1.0, 0.0, 1.0])
+
+        with self.assertRaises(ValueError):
+            parse_matrix_row("1 0", 3)
+
+        with self.assertRaises(ValueError):
+            parse_matrix_row("1 a 0", 3)
+
+    def test_run_manual_mode_retries_invalid_input_and_returns_decision(self) -> None:
+        answers = iter(
+            [
+                "1 0",
+                "0 1 0",
+                "1 1 1",
+                "0 1 0",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+            ]
+        )
+        output: list[str] = []
+
+        result = run_manual_mode(input_func=lambda _: next(answers), output_func=output.append)
+
+        self.assertEqual(result["decision"], "B")
+        self.assertTrue(any("입력 형식 오류" in line for line in output))
+
 
 if __name__ == "__main__":
     unittest.main()
