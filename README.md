@@ -192,49 +192,47 @@ python main.py
 - 이번 프로젝트에서는 저장/불러오기 관련 작업을 별도 브랜치로 나누고, 이후 메인 흐름에 병합하는 방식으로 기록을 남겼습니다.
 
 ### Git 증빙 자료
-#### 현재 `git log --graph --oneline --decorate` 결과
-```bash
-* a57bcf5 (HEAD -> e1-2, origin/e1-2, origin/HEAD) feat: add quiz play flow quiz creation and safe exit handling
-*   343a2bc merge: integrate persistence branch into rewrite history
-|\  
-| * b75c61a feat: add state loading and recovery handling
-| * 3bbf170 feat: add state serialization and save logic
-|/  
-* 5f18bc5 feat: add quiz list and score display
-* d78fefd feat: add menu flow and validated input handling
-* f1d4b1d feat: add quiz model and default question data
-* c05337a docs: add quiz game overview and run guide
-* d07d185 chore: ignore local worktrees and Python artifacts
-* f3aed5b feat: gitignore
-* f1259c2 (origin/main, main) Initial commit
-```
-
-- ![git log 결과](pics/git_log.png)
-- ![브랜치 및 병합 확인](pics/git_log.png)
-- (여기 GitHub 저장소 업로드 완료 화면 사진 남길 것)
+![git log 결과](pics/git_log.png)
 
 ## 13. clone / pull 실습 증빙
 
 ### 수행 목적
 - 원격 저장소를 복제(clone)하고, 다른 로컬 복제본의 변경을 기존 작업 디렉터리에서 pull로 가져오는 흐름을 직접 경험하기 위함입니다.
 
-### 남겨야 할 증빙
-- (여기 clone 수행 터미널 화면 사진 남길 것)
-- (여기 복제본에서 README 수정 후 commit/push 한 화면 사진 남길 것)
-- (여기 기존 작업 디렉터리에서 pull 수행 화면 사진 남길 것)
-- (여기 pull 결과가 반영된 README 또는 git log 화면 사진 남길 것)
+![git_1](D:\Projects\Github\1_month_crunch\pics\git_1.png)
+
+![git_2](D:\Projects\Github\1_month_crunch\pics\git_2.png)
+
+![git_3](D:\Projects\Github\1_month_crunch\pics\git_3.png)
 
 ## 14. 실행 결과 및 검증 체크리스트
 
 ### 실행 화면 증빙
-- ![프로그램 첫 메뉴 화면](pics/menu.png)
-- ![퀴즈 풀이 진행 화면](pics/play.png)
-- (여기 정답/오답 및 최종 점수 화면 사진 남길 것)
-- ![새 퀴즈 추가 화면](pics/add_quiz.png)
-- (여기 퀴즈 목록 확인 화면 사진 남길 것)
-- ![최고 점수 확인 화면](pics/score.png)
-- (여기 빈 입력 또는 범위 밖 숫자 처리 화면 사진 남길 것)
-- (여기 state.json 손상 복구 안내 화면 사진 남길 것)
+- 메뉴 화면
+  ![프로그램 첫 메뉴 화면](pics/menu.png)
+
+- 퀴즈 풀이 진행
+  ![퀴즈 풀이 진행 화면](pics/play.png)
+
+- 정답 및 오답 처리
+
+  ![answers](pics\answers.png)
+
+- 새 퀴즈 추가 및 퀴즈 목록
+  ![새 퀴즈 추가 화면](pics/add_quiz.png)
+
+- 최고 점수 확인
+  ![최고 점수 확인 화면](pics/score.png)
+
+- 입력 처리
+
+  ![wrong_answer](pics\wrong_answer.png)
+
+  ![EOF_control](pics\EOF_control.png)
+
+- 손상 복구
+
+  ![recovery](pics\recovery.png)
 
 ### 직접 확인한 검증 포인트
 - `state.json`이 있으면 저장된 퀴즈/점수를 불러옵니다.
@@ -275,12 +273,3 @@ python main.py
 - 데이터와 상태가 여러 함수에 흩어져 관리되기 쉬워집니다.
 - 퀴즈 1개와 게임 전체 흐름의 책임이 섞이면서 수정 범위가 커집니다.
 - 저장/불러오기나 정답 판정처럼 한 객체에 묶어두면 자연스러운 동작을 함수 간 인자 전달로 계속 풀어야 해서 구조가 복잡해질 수 있습니다.
-
-## 17. 제출 전 체크리스트
-
-- [ ] GitHub 저장소 URL 정리
-- [ ] 개발 환경 설정 화면 캡처
-- [ ] 프로그램 실행 결과 화면 캡처
-- [ ] `git log --oneline --graph` 캡처
-- [ ] clone / pull 실습 캡처
-- [ ] README의 사진 자리표시를 실제 사진으로 교체
