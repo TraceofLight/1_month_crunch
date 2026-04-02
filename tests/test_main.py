@@ -1,7 +1,11 @@
+import json
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from main import Matrix, generate_cross_pattern, generate_x_pattern, normalize_label
 from main import EPSILON, benchmark_mac, judge_scores, mac_1d, mac_2d
+from main import analyze_data_file, save_default_data
 
 
 class FoundationTests(unittest.TestCase):
@@ -43,6 +47,30 @@ class MacTests(unittest.TestCase):
         cross = generate_cross_pattern(5)
         average_ms = benchmark_mac(cross, cross, runs=10, use_flatten=False)
         self.assertGreaterEqual(average_ms, 0.0)
+
+
+class JsonAnalysisTests(unittest.TestCase):
+    def test_save_default_data_writes_required_sections(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.json"
+            save_default_data(data_path)
+            payload = json.loads(data_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(sorted(payload["filters"].keys()), ["size_13", "size_25", "size_5"])
+        self.assertIn("size_5_1", payload["patterns"])
+        self.assertIn("size_25_3", payload["patterns"])
+
+    def test_analyze_data_file_returns_summary_and_fail_reasons(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.json"
+            save_default_data(data_path)
+            report = analyze_data_file(data_path)
+
+        self.assertEqual(report["summary"]["total"], 8)
+        self.assertEqual(report["summary"]["passed"], 6)
+        self.assertEqual(report["summary"]["failed"], 2)
+        self.assertIn("size_13_3", {item["case_id"] for item in report["results"]})
+        self.assertIn("size_25_3", {item["case_id"] for item in report["failures"]})
 
 
 if __name__ == "__main__":
