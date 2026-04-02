@@ -1,4 +1,9 @@
+import json
 import sys
+from pathlib import Path
+
+
+STATE_PATH = Path(__file__).with_name("state.json")
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -26,9 +31,24 @@ class Quiz:
     def is_correct(self, selected_answer):
         return selected_answer == self.answer
 
+    def to_dict(self):
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        question = data["question"]
+        choices = data["choices"]
+        answer = data["answer"]
+        return cls(question, choices, answer)
+
 
 class QuizGame:
     def __init__(self):
+        self.state_path = STATE_PATH
         self.quizzes = self.build_default_quizzes()
         self.best_score = None
         self.is_running = True
@@ -139,7 +159,8 @@ class QuizGame:
         return False
 
     def exit_game(self):
-        print("\n프로그램을 종료합니다.")
+        self.save_state()
+        print("\n데이터를 저장하고 종료합니다.")
         self.is_running = False
 
     def ask_text(self, prompt):
@@ -173,6 +194,18 @@ class QuizGame:
             return input(prompt)
         except (KeyboardInterrupt, EOFError):
             raise SafeExit
+
+    def save_state(self):
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+        }
+
+        try:
+            with self.state_path.open("w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=2)
+        except OSError:
+            print(f"{self.state_path.name} 파일을 저장하지 못했습니다.")
 
 
 if __name__ == "__main__":
