@@ -108,8 +108,7 @@ class QuizGame:
                 selected_menu = self.ask_number("선택: ", 1, 5)
                 self.handle_menu(selected_menu)
             except SafeExit:
-                print("\n입력이 중단되어 종료합니다.")
-                self.is_running = False
+                self.handle_safe_exit()
 
     def show_menu(self):
         print("\n========================================")
@@ -135,10 +134,42 @@ class QuizGame:
             self.exit_game()
 
     def play_quiz(self):
-        print("\n퀴즈 풀기 기능은 준비 중입니다.")
+        if not self.quizzes:
+            print("\n등록된 퀴즈가 없습니다.")
+            return
+
+        print(f"\n퀴즈를 시작합니다! (총 {len(self.quizzes)}문제)")
+        correct_answers = 0
+
+        for number, quiz in enumerate(self.quizzes, start=1):
+            quiz.display(number)
+            selected_answer = self.ask_number("정답 입력 (1-4): ", 1, 4)
+            if quiz.is_correct(selected_answer):
+                correct_answers += 1
+                print("정답입니다!")
+            else:
+                print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
+
+        total_questions = len(self.quizzes)
+        score = int(correct_answers / total_questions * 100)
+        print("\n========================================")
+        print(f"결과: {total_questions}문제 중 {correct_answers}문제 정답! ({score}점)")
+        if self.update_best_score(correct_answers, total_questions, score):
+            print("새로운 최고 점수입니다!")
+        else:
+            print("현재 최고 점수는 유지됩니다.")
+        print("========================================")
+        self.save_state()
 
     def add_quiz(self):
-        print("\n퀴즈 추가 기능은 준비 중입니다.")
+        print("\n새로운 퀴즈를 추가합니다.")
+        question = self.ask_text("문제를 입력하세요: ")
+        choices = [self.ask_text(f"선택지 {number}: ") for number in range(1, 5)]
+        answer = self.ask_number("정답 번호 (1-4): ", 1, 4)
+
+        self.quizzes.append(Quiz(question, choices, answer))
+        self.save_state()
+        print("퀴즈가 추가되었습니다!")
 
     def show_quiz_list(self):
         if not self.quizzes:
@@ -161,20 +192,14 @@ class QuizGame:
             f"({self.best_score['total']}문제 중 {self.best_score['correct']}문제 정답)"
         )
 
-    def update_best_score(self, correct_answers, total_questions, score):
-        current_best = self.best_score
-        if current_best is None or score > current_best["score"]:
-            self.best_score = {
-                "correct": correct_answers,
-                "total": total_questions,
-                "score": score,
-            }
-            return True
-        return False
-
     def exit_game(self):
         self.save_state()
         print("\n데이터를 저장하고 종료합니다.")
+        self.is_running = False
+
+    def handle_safe_exit(self):
+        print("\n입력이 중단되어 데이터를 저장한 뒤 안전하게 종료합니다.")
+        self.save_state()
         self.is_running = False
 
     def ask_text(self, prompt):
@@ -208,6 +233,17 @@ class QuizGame:
             return input(prompt)
         except (KeyboardInterrupt, EOFError):
             raise SafeExit
+
+    def update_best_score(self, correct_answers, total_questions, score):
+        current_best = self.best_score
+        if current_best is None or score > current_best["score"]:
+            self.best_score = {
+                "correct": correct_answers,
+                "total": total_questions,
+                "score": score,
+            }
+            return True
+        return False
 
     def load_state(self):
         if not self.state_path.exists():
