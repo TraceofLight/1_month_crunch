@@ -1,3 +1,16 @@
+import sys
+
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
+
+class SafeExit(Exception):
+    pass
+
+
 class Quiz:
     def __init__(self, question, choices, answer):
         self.question = question
@@ -17,6 +30,8 @@ class Quiz:
 class QuizGame:
     def __init__(self):
         self.quizzes = self.build_default_quizzes()
+        self.best_score = None
+        self.is_running = True
 
     def build_default_quizzes(self):
         return [
@@ -52,6 +67,87 @@ class QuizGame:
             ),
         ]
 
+    def run(self):
+        while self.is_running:
+            try:
+                self.show_menu()
+                selected_menu = self.ask_number("선택: ", 1, 5)
+                self.handle_menu(selected_menu)
+            except SafeExit:
+                print("\n입력이 중단되어 종료합니다.")
+                self.is_running = False
+
+    def show_menu(self):
+        print("\n========================================")
+        print("        나만의 퀴즈 게임")
+        print("========================================")
+        print("1. 퀴즈 풀기")
+        print("2. 퀴즈 추가")
+        print("3. 퀴즈 목록")
+        print("4. 점수 확인")
+        print("5. 종료")
+        print("========================================")
+
+    def handle_menu(self, selected_menu):
+        if selected_menu == 1:
+            self.play_quiz()
+        elif selected_menu == 2:
+            self.add_quiz()
+        elif selected_menu == 3:
+            self.show_quiz_list()
+        elif selected_menu == 4:
+            self.show_best_score()
+        else:
+            self.exit_game()
+
+    def play_quiz(self):
+        print("\n퀴즈 풀기 기능은 준비 중입니다.")
+
+    def add_quiz(self):
+        print("\n퀴즈 추가 기능은 준비 중입니다.")
+
+    def show_quiz_list(self):
+        print("\n퀴즈 목록 기능은 준비 중입니다.")
+
+    def show_best_score(self):
+        print("\n점수 확인 기능은 준비 중입니다.")
+
+    def exit_game(self):
+        print("\n프로그램을 종료합니다.")
+        self.is_running = False
+
+    def ask_text(self, prompt):
+        while True:
+            value = self.read_input(prompt).strip()
+            if value:
+                return value
+            print("빈 입력입니다. 내용을 다시 입력하세요.")
+
+    def ask_number(self, prompt, min_value, max_value):
+        while True:
+            raw_value = self.read_input(prompt).strip()
+            if not raw_value:
+                print(f"빈 입력입니다. {min_value}-{max_value} 사이의 숫자를 입력하세요.")
+                continue
+
+            try:
+                value = int(raw_value)
+            except ValueError:
+                print(f"잘못된 입력입니다. {min_value}-{max_value} 사이의 숫자를 입력하세요.")
+                continue
+
+            if not min_value <= value <= max_value:
+                print(f"잘못된 입력입니다. {min_value}-{max_value} 사이의 숫자를 입력하세요.")
+                continue
+
+            return value
+
+    def read_input(self, prompt):
+        try:
+            return input(prompt)
+        except (KeyboardInterrupt, EOFError):
+            raise SafeExit
+
 
 if __name__ == "__main__":
-    QuizGame()
+    QuizGame().run()
