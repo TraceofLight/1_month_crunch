@@ -59,7 +59,21 @@
         "while"
       ],
       "answer": 2
+    },
+    {
+      "question": "이 퀴즈의 정답은 무엇일까요? 답은 1",
+      "choices": [
+        "이건가",
+        "저건가",
+        "그건가",
+        "다른건가"
+      ],
+      "answer": 1
     }
   ],
-  "best_score": null
+  "best_score": {
+    "correct": 7,
+    "total": 7,
+    "score": 100
+  }
 }

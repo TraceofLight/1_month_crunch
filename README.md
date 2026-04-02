@@ -209,8 +209,8 @@ python main.py
 * f1259c2 (origin/main, main) Initial commit
 ```
 
-- (여기 git log --oneline --graph 결과 사진 남길 것)
-- (여기 브랜치 생성 및 병합 확인 사진 남길 것)
+- ![git log 결과](pics/git_log.png)
+- ![브랜치 및 병합 확인](pics/git_log.png)
 - (여기 GitHub 저장소 업로드 완료 화면 사진 남길 것)
 
 ## 13. clone / pull 실습 증빙
@@ -227,12 +227,12 @@ python main.py
 ## 14. 실행 결과 및 검증 체크리스트
 
 ### 실행 화면 증빙
-- (여기 프로그램 첫 메뉴 화면 사진 남길 것)
-- (여기 퀴즈 풀이 진행 화면 사진 남길 것)
+- ![프로그램 첫 메뉴 화면](pics/menu.png)
+- ![퀴즈 풀이 진행 화면](pics/play.png)
 - (여기 정답/오답 및 최종 점수 화면 사진 남길 것)
-- (여기 새 퀴즈 추가 화면 사진 남길 것)
+- ![새 퀴즈 추가 화면](pics/add_quiz.png)
 - (여기 퀴즈 목록 확인 화면 사진 남길 것)
-- (여기 최고 점수 확인 화면 사진 남길 것)
+- ![최고 점수 확인 화면](pics/score.png)
 - (여기 빈 입력 또는 범위 밖 숫자 처리 화면 사진 남길 것)
 - (여기 state.json 손상 복구 안내 화면 사진 남길 것)
 
