@@ -1,0 +1,65 @@
+{
+  "quizzes": [
+    {
+      "question": "Python의 창시자는 누구인가요?",
+      "choices": [
+        "Guido van Rossum",
+        "Linus Torvalds",
+        "James Gosling",
+        "Bjarne Stroustrup"
+      ],
+      "answer": 1
+    },
+    {
+      "question": "키와 값을 함께 저장하는 Python 자료형은 무엇인가요?",
+      "choices": [
+        "list",
+        "tuple",
+        "set",
+        "dict"
+      ],
+      "answer": 4
+    },
+    {
+      "question": "함수를 정의할 때 사용하는 키워드는 무엇인가요?",
+      "choices": [
+        "func",
+        "def",
+        "lambda",
+        "return"
+      ],
+      "answer": 2
+    },
+    {
+      "question": "len([1, 2, 3, 4])의 결과는 무엇인가요?",
+      "choices": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "answer": 3
+    },
+    {
+      "question": "예외 처리를 시작할 때 가장 먼저 쓰는 키워드는 무엇인가요?",
+      "choices": [
+        "catch",
+        "except",
+        "try",
+        "finally"
+      ],
+      "answer": 3
+    },
+    {
+      "question": "조건이 거짓일 때 다른 분기를 실행하는 키워드는 무엇인가요?",
+      "choices": [
+        "elif",
+        "else",
+        "for",
+        "while"
+      ],
+      "answer": 2
+    }
+  ],
+  "best_score": null
+}
