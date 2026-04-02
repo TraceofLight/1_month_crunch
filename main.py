@@ -23,10 +23,13 @@ class Quiz:
         self.answer = answer
 
     def display(self, number):
+        print("\n----------------------------------------")
         print(f"[문제 {number}]")
         print(self.question)
+        print()
         for index, choice in enumerate(self.choices, start=1):
             print(f"{index}. {choice}")
+        print()
 
     def is_correct(self, selected_answer):
         return selected_answer == self.answer
@@ -43,15 +46,26 @@ class Quiz:
         question = data["question"]
         choices = data["choices"]
         answer = data["answer"]
-        return cls(question, choices, answer)
+
+        if not isinstance(question, str) or not question.strip():
+            raise ValueError("question")
+        if not isinstance(choices, list) or len(choices) != 4:
+            raise ValueError("choices")
+        if any(not isinstance(choice, str) or not choice.strip() for choice in choices):
+            raise ValueError("choices")
+        if not isinstance(answer, int) or not 1 <= answer <= 4:
+            raise ValueError("answer")
+
+        return cls(question.strip(), [choice.strip() for choice in choices], answer)
 
 
 class QuizGame:
     def __init__(self):
         self.state_path = STATE_PATH
-        self.quizzes = self.build_default_quizzes()
+        self.quizzes = []
         self.best_score = None
         self.is_running = True
+        self.load_state()
 
     def build_default_quizzes(self):
         return [
@@ -194,6 +208,54 @@ class QuizGame:
             return input(prompt)
         except (KeyboardInterrupt, EOFError):
             raise SafeExit
+
+    def load_state(self):
+        if not self.state_path.exists():
+            self.quizzes = self.build_default_quizzes()
+            self.best_score = None
+            print(f"{self.state_path.name} 파일이 없어 기본 퀴즈로 시작합니다.")
+            return
+
+        try:
+            with self.state_path.open("r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            self.quizzes = [Quiz.from_dict(item) for item in data.get("quizzes", [])]
+            self.best_score = self.normalize_best_score(data.get("best_score"))
+            print(self.build_load_message())
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+            print(f"{self.state_path.name} 파일이 없거나 손상되어 기본 퀴즈 데이터로 복구합니다.")
+            self.quizzes = self.build_default_quizzes()
+            self.best_score = None
+            self.save_state()
+
+    def normalize_best_score(self, best_score):
+        if best_score is None:
+            return None
+        if not isinstance(best_score, dict):
+            raise ValueError("best_score")
+
+        correct = best_score["correct"]
+        total = best_score["total"]
+        score = best_score["score"]
+
+        if not all(isinstance(value, int) for value in [correct, total, score]):
+            raise ValueError("best_score")
+        if correct < 0 or total < 0 or score < 0:
+            raise ValueError("best_score")
+
+        return {
+            "correct": correct,
+            "total": total,
+            "score": score,
+        }
+
+    def build_load_message(self):
+        if self.best_score is None:
+            best_score_text = "없음"
+        else:
+            best_score_text = f"{self.best_score['score']}점"
+        return f"저장된 데이터를 불러왔습니다. (퀴즈 {len(self.quizzes)}개, 최고점수 {best_score_text})"
 
     def save_state(self):
         data = {
