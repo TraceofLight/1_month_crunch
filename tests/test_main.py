@@ -568,6 +568,135 @@ def test_show_best_score_displays_bounded_recent_history_most_recent_first(
 
 
 
+def test_delete_quiz_removes_selected_quiz_after_confirmation(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.quizzes = [
+        main.Quiz("첫 번째 문제", ["1", "2", "3", "4"], 1),
+        main.Quiz("두 번째 문제", ["1", "2", "3", "4"], 2),
+    ]
+
+    answers = iter([2, 1])
+    prompts = []
+
+    def fake_ask_number(prompt, min_value, max_value):
+        prompts.append((prompt, min_value, max_value))
+        return next(answers)
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+
+    game.delete_quiz()
+
+    output = capsys.readouterr().out
+    assert prompts == [
+        ("삭제할 퀴즈 번호를 선택하세요: ", 1, 2),
+        ("정말 삭제하시겠습니까? (1. 예 / 2. 아니오): ", 1, 2),
+    ]
+    assert [quiz.question for quiz in game.quizzes] == ["첫 번째 문제"]
+    assert "[1] 첫 번째 문제" in output
+    assert "[2] 두 번째 문제" in output
+    assert "퀴즈가 삭제되었습니다!" in output
+
+    data = json.loads(state_path.read_text(encoding="utf-8"))
+    assert [quiz["question"] for quiz in data["quizzes"]] == ["첫 번째 문제"]
+
+
+
+def test_delete_quiz_cancels_when_confirmation_is_declined(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.quizzes = [
+        main.Quiz("첫 번째 문제", ["1", "2", "3", "4"], 1),
+        main.Quiz("두 번째 문제", ["1", "2", "3", "4"], 2),
+    ]
+
+    answers = iter([1, 2])
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: next(answers))
+
+    game.delete_quiz()
+
+    output = capsys.readouterr().out
+    assert [quiz.question for quiz in game.quizzes] == ["첫 번째 문제", "두 번째 문제"]
+    assert "퀴즈 삭제가 취소되었습니다." in output
+
+
+
+def test_delete_quiz_shows_message_when_no_quizzes_exist(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.quizzes = []
+    asked = {"called": False}
+
+    def fake_ask_number(prompt, min_value, max_value):
+        asked["called"] = True
+        return 1
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+
+    game.delete_quiz()
+
+    output = capsys.readouterr().out
+    assert "등록된 퀴즈가 없습니다." in output
+    assert asked["called"] is False
+
+
+
+def test_handle_menu_routes_delete_and_exit_in_expanded_menu(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    called = []
+
+    monkeypatch.setattr(game, "delete_quiz", lambda: called.append("delete"))
+    monkeypatch.setattr(game, "exit_game", lambda: called.append("exit"))
+
+    game.handle_menu(4)
+    game.handle_menu(6)
+
+    assert called == ["delete", "exit"]
+
+
+
+def test_run_accepts_expanded_menu_range_and_handles_delete_then_exit(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    selections = iter([4, 6])
+    ask_calls = []
+    handled = []
+
+    monkeypatch.setattr(game, "show_menu", lambda: None)
+
+    def fake_ask_number(prompt, min_value, max_value):
+        ask_calls.append((prompt, min_value, max_value))
+        return next(selections)
+
+    def fake_handle_menu(selected_menu):
+        handled.append(selected_menu)
+        if selected_menu == 6:
+            game.is_running = False
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+    monkeypatch.setattr(game, "handle_menu", fake_handle_menu)
+
+    game.run()
+
+    assert ask_calls == [
+        ("선택: ", 1, 6),
+        ("선택: ", 1, 6),
+    ]
+    assert handled == [4, 6]
+
+
+
 def test_repository_state_sample_matches_default_quizzes():
     data = json.loads(main.STATE_PATH.read_text(encoding="utf-8"))
     default_quizzes = [

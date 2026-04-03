@@ -115,7 +115,7 @@ class QuizGame:
         while self.is_running:
             try:
                 self.show_menu()
-                selected_menu = self.ask_number("선택: ", 1, 5)
+                selected_menu = self.ask_number("선택: ", 1, 6)
                 self.handle_menu(selected_menu)
             except SafeExit:
                 self.handle_safe_exit()
@@ -127,8 +127,9 @@ class QuizGame:
         print("1. 퀴즈 풀기")
         print("2. 퀴즈 추가")
         print("3. 퀴즈 목록")
-        print("4. 점수 확인")
-        print("5. 종료")
+        print("4. 퀴즈 삭제")
+        print("5. 점수 확인")
+        print("6. 종료")
         print("========================================")
 
     def handle_menu(self, selected_menu):
@@ -139,6 +140,8 @@ class QuizGame:
         elif selected_menu == 3:
             self.show_quiz_list()
         elif selected_menu == 4:
+            self.delete_quiz()
+        elif selected_menu == 5:
             self.show_best_score()
         else:
             self.exit_game()
@@ -227,6 +230,22 @@ class QuizGame:
         for index, quiz in enumerate(self.quizzes, start=1):
             print(f"[{index}] {quiz.question}")
         print("----------------------------------------")
+
+    def delete_quiz(self):
+        if not self.quizzes:
+            print("\n등록된 퀴즈가 없습니다.")
+            return
+
+        self.show_quiz_list()
+        selected_index = self.ask_number("삭제할 퀴즈 번호를 선택하세요: ", 1, len(self.quizzes)) - 1
+        confirmed = self.ask_number("정말 삭제하시겠습니까? (1. 예 / 2. 아니오): ", 1, 2)
+        if confirmed == 2:
+            print("퀴즈 삭제가 취소되었습니다.")
+            return
+
+        del self.quizzes[selected_index]
+        self.save_state()
+        print("퀴즈가 삭제되었습니다!")
 
     def show_best_score(self):
         if self.best_score is None:
