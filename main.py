@@ -155,9 +155,12 @@ class QuizGame:
         round_quizzes = self.prepare_quiz_round()
         print(f"\n퀴즈를 시작합니다! (총 {len(round_quizzes)}문제)")
         correct_answers = 0
+        hint_used_count = 0
 
         for number, quiz in enumerate(round_quizzes, start=1):
             quiz.display(number)
+            if self.prompt_hint(quiz):
+                hint_used_count += 1
             selected_answer = self.ask_number("정답 입력 (1-4): ", 1, 4)
             if quiz.is_correct(selected_answer):
                 correct_answers += 1
@@ -166,7 +169,7 @@ class QuizGame:
                 print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
 
         total_questions = len(round_quizzes)
-        score = int(correct_answers / total_questions * 100)
+        score = self.calculate_score(correct_answers, total_questions, hint_used_count)
         print("\n========================================")
         print(f"결과: {total_questions}문제 중 {correct_answers}문제 정답! ({score}점)")
         if self.update_best_score(correct_answers, total_questions, score):
@@ -175,6 +178,17 @@ class QuizGame:
             print("현재 최고 점수는 유지됩니다.")
         print("========================================")
         self.save_state()
+
+    def prompt_hint(self, quiz):
+        selected_menu = self.ask_number("힌트를 보시겠습니까? (1. 예 / 2. 아니오): ", 1, 2)
+        if selected_menu == 1:
+            print(f"힌트: {quiz.hint}")
+            return True
+        return False
+
+    def calculate_score(self, correct_answers, total_questions, hint_used_count):
+        base_score = int(correct_answers / total_questions * 100)
+        return max(0, base_score - hint_used_count * 10)
 
     def add_quiz(self):
         print("\n새로운 퀴즈를 추가합니다.")
