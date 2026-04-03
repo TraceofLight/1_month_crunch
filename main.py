@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 STATE_PATH = Path(__file__).with_name("state.json")
+DEFAULT_HINT = "힌트가 없습니다."
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -17,10 +18,11 @@ class SafeExit(Exception):
 
 
 class Quiz:
-    def __init__(self, question, choices, answer):
+    def __init__(self, question, choices, answer, hint=DEFAULT_HINT):
         self.question = question
         self.choices = choices
         self.answer = answer
+        self.hint = hint
 
     def display(self, number):
         print("\n----------------------------------------")
@@ -39,6 +41,7 @@ class Quiz:
             "question": self.question,
             "choices": self.choices,
             "answer": self.answer,
+            "hint": self.hint,
         }
 
     @classmethod
@@ -46,6 +49,7 @@ class Quiz:
         question = data["question"]
         choices = data["choices"]
         answer = data["answer"]
+        hint = data.get("hint", DEFAULT_HINT)
 
         if not isinstance(question, str) or not question.strip():
             raise ValueError("question")
@@ -55,8 +59,10 @@ class Quiz:
             raise ValueError("choices")
         if not isinstance(answer, int) or not 1 <= answer <= 4:
             raise ValueError("answer")
+        if not isinstance(hint, str) or not hint.strip():
+            raise ValueError("hint")
 
-        return cls(question.strip(), [choice.strip() for choice in choices], answer)
+        return cls(question.strip(), [choice.strip() for choice in choices], answer, hint.strip())
 
 
 class QuizGame:
@@ -64,6 +70,7 @@ class QuizGame:
         self.state_path = STATE_PATH
         self.quizzes = []
         self.best_score = None
+        self.history = []
         self.is_running = True
         self.load_state()
 
@@ -245,10 +252,22 @@ class QuizGame:
             return True
         return False
 
+    def normalize_history(self, history):
+        if history is None:
+            return []
+        if not isinstance(history, list):
+            raise ValueError("history")
+
+        normalized_history = []
+        for item in history:
+            normalized_history.append(self.normalize_best_score(item))
+        return normalized_history
+
     def load_state(self):
         if not self.state_path.exists():
             self.quizzes = self.build_default_quizzes()
             self.best_score = None
+            self.history = []
             print(f"{self.state_path.name} 파일이 없어 기본 퀴즈로 시작합니다.")
             return
 
@@ -258,11 +277,13 @@ class QuizGame:
 
             self.quizzes = [Quiz.from_dict(item) for item in data.get("quizzes", [])]
             self.best_score = self.normalize_best_score(data.get("best_score"))
+            self.history = self.normalize_history(data.get("history"))
             print(self.build_load_message())
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
             print(f"{self.state_path.name} 파일이 없거나 손상되어 기본 퀴즈 데이터로 복구합니다.")
             self.quizzes = self.build_default_quizzes()
             self.best_score = None
+            self.history = []
             self.save_state()
 
     def normalize_best_score(self, best_score):
@@ -297,6 +318,7 @@ class QuizGame:
         data = {
             "quizzes": [quiz.to_dict() for quiz in self.quizzes],
             "best_score": self.best_score,
+            "history": self.history,
         }
 
         try:
