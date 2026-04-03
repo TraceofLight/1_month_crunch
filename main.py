@@ -260,7 +260,7 @@ class QuizGame:
 
         normalized_history = []
         for item in history:
-            normalized_history.append(self.normalize_best_score(item))
+            normalized_history.append(self.normalize_history_entry(item))
         return normalized_history
 
     def load_state(self):
@@ -305,6 +305,31 @@ class QuizGame:
             "correct": correct,
             "total": total,
             "score": score,
+        }
+
+    def normalize_history_entry(self, entry):
+        if not isinstance(entry, dict):
+            raise ValueError("history")
+
+        played_at = entry["played_at"]
+        total = entry["total"]
+        correct = entry["correct"]
+        score = entry["score"]
+        hint_used = entry["hint_used"]
+
+        if not isinstance(played_at, str) or not played_at.strip():
+            raise ValueError("history")
+        if not all(isinstance(value, int) for value in [total, correct, score, hint_used]):
+            raise ValueError("history")
+        if total < 0 or correct < 0 or score < 0 or hint_used < 0:
+            raise ValueError("history")
+
+        return {
+            "played_at": played_at.strip(),
+            "total": total,
+            "correct": correct,
+            "score": score,
+            "hint_used": hint_used,
         }
 
     def build_load_message(self):
