@@ -310,27 +310,88 @@ def test_prepare_quiz_round_asks_for_single_question_when_only_one_quiz_exists(
 
 
 
-def test_play_quiz_uses_prepared_round_count_for_score_and_best_score(tmp_path, monkeypatch, capsys):
+def test_calculate_score_applies_hint_penalty_and_never_goes_below_zero(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+
+    assert game.calculate_score(2, 3, 1) == 56
+    assert game.calculate_score(0, 3, 1) == 0
+
+
+
+def test_prompt_hint_returns_true_and_shows_hint_when_selected(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    quiz = main.Quiz("문제", ["1", "2", "3", "4"], 2, "도움말")
+    asked = {}
+
+    def fake_ask_number(prompt, min_value, max_value):
+        asked["prompt"] = prompt
+        asked["min"] = min_value
+        asked["max"] = max_value
+        return 1
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+
+    hint_used = game.prompt_hint(quiz)
+
+    output = capsys.readouterr().out
+    assert hint_used is True
+    assert asked == {
+        "prompt": "힌트를 보시겠습니까? (1. 예 / 2. 아니오): ",
+        "min": 1,
+        "max": 2,
+    }
+    assert "힌트: 도움말" in output
+
+
+
+def test_prompt_hint_returns_false_without_showing_hint_when_skipped(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    quiz = main.Quiz("문제", ["1", "2", "3", "4"], 2, "도움말")
+
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: 2)
+
+    hint_used = game.prompt_hint(quiz)
+
+    output = capsys.readouterr().out
+    assert hint_used is False
+    assert "힌트: 도움말" not in output
+
+
+
+def test_play_quiz_uses_prepared_round_count_and_hint_penalty_for_score_and_best_score(
+    tmp_path, monkeypatch, capsys
+):
     state_path = tmp_path / "state.json"
     monkeypatch.setattr(main, "STATE_PATH", state_path)
 
     game = main.QuizGame()
     round_quizzes = [
-        main.Quiz("문제 1", ["1", "2", "3", "4"], 2),
-        main.Quiz("문제 2", ["1", "2", "3", "4"], 4),
-        main.Quiz("문제 3", ["1", "2", "3", "4"], 1),
+        main.Quiz("문제 1", ["1", "2", "3", "4"], 2, "첫 번째 힌트"),
+        main.Quiz("문제 2", ["1", "2", "3", "4"], 4, "두 번째 힌트"),
+        main.Quiz("문제 3", ["1", "2", "3", "4"], 1, "세 번째 힌트"),
     ]
     answers = iter([2, 1, 1])
+    hint_usage = iter([True, False, False])
 
     monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "prompt_hint", lambda quiz: next(hint_usage))
     monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: next(answers))
 
     game.play_quiz()
 
     output = capsys.readouterr().out
     assert "퀴즈를 시작합니다! (총 3문제)" in output
-    assert "결과: 3문제 중 2문제 정답! (66점)" in output
-    assert game.best_score == {"correct": 2, "total": 3, "score": 66}
+    assert "결과: 3문제 중 2문제 정답! (56점)" in output
+    assert game.best_score == {"correct": 2, "total": 3, "score": 56}
 
 
 
@@ -344,6 +405,7 @@ def test_play_quiz_keeps_stored_quiz_order_after_round(tmp_path, monkeypatch):
     answers = iter([quiz.answer for quiz in round_quizzes])
 
     monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "prompt_hint", lambda quiz: False)
     monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: next(answers))
 
     game.play_quiz()
