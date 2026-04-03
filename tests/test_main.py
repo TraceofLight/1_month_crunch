@@ -248,3 +248,20 @@ def test_save_state_writes_hint_and_history(tmp_path, monkeypatch):
             "hint_used": 0,
         }
     ]
+
+
+
+def test_repository_state_sample_matches_default_quizzes():
+    data = json.loads(main.STATE_PATH.read_text(encoding="utf-8"))
+    default_quizzes = [
+        quiz.to_dict()
+        for quiz in main.QuizGame.build_default_quizzes(object.__new__(main.QuizGame))
+    ]
+
+    assert data["quizzes"] == default_quizzes
+    assert data["best_score"] == {
+        "correct": len(default_quizzes),
+        "total": len(default_quizzes),
+        "score": 100,
+    }
+    assert data["history"] == []
