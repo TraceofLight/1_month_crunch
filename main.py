@@ -83,31 +83,37 @@ class QuizGame:
                 "Python의 창시자는 누구인가요?",
                 ["Guido van Rossum", "Linus Torvalds", "James Gosling", "Bjarne Stroustrup"],
                 1,
+                "파이썬 이름의 유래인 코미디 그룹과 같은 나라 출신 개발자입니다.",
             ),
             Quiz(
                 "키와 값을 함께 저장하는 Python 자료형은 무엇인가요?",
                 ["list", "tuple", "set", "dict"],
                 4,
+                "중괄호와 key: value 형태를 떠올려 보세요.",
             ),
             Quiz(
                 "함수를 정의할 때 사용하는 키워드는 무엇인가요?",
                 ["func", "def", "lambda", "return"],
                 2,
+                "define의 앞 세 글자를 줄여 쓴 예약어입니다.",
             ),
             Quiz(
                 "len([1, 2, 3, 4])의 결과는 무엇인가요?",
                 ["2", "3", "4", "5"],
                 3,
+                "리스트 안에 들어 있는 원소 개수를 세어 보세요.",
             ),
             Quiz(
                 "예외 처리를 시작할 때 가장 먼저 쓰는 키워드는 무엇인가요?",
                 ["catch", "except", "try", "finally"],
                 3,
+                "실패할 수 있는 코드를 먼저 감싸고, 그다음 except를 작성합니다.",
             ),
             Quiz(
                 "조건이 거짓일 때 다른 분기를 실행하는 키워드는 무엇인가요?",
                 ["elif", "else", "for", "while"],
                 2,
+                "if와 짝을 이루며 마지막 기본 분기를 담당합니다.",
             ),
         ]
 
@@ -215,8 +221,9 @@ class QuizGame:
         question = self.ask_text("문제를 입력하세요: ")
         choices = [self.ask_text(f"선택지 {number}: ") for number in range(1, 5)]
         answer = self.ask_number("정답 번호 (1-4): ", 1, 4)
+        hint = self.ask_text("힌트를 입력하세요: ")
 
-        self.quizzes.append(Quiz(question, choices, answer))
+        self.quizzes.append(Quiz(question, choices, answer, hint))
         self.save_state()
         print("퀴즈가 추가되었습니다!")
 

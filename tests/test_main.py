@@ -6,6 +6,17 @@ import main
 DEFAULT_HINT = "힌트가 없습니다."
 
 
+def test_default_quizzes_include_meaningful_hints(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+
+    assert all(quiz.hint != DEFAULT_HINT for quiz in game.quizzes)
+    assert all(quiz.hint.strip() for quiz in game.quizzes)
+
+
+
 def test_load_state_uses_defaults_when_file_missing(tmp_path, monkeypatch):
     missing_state_path = tmp_path / "missing_state.json"
     monkeypatch.setattr(main, "STATE_PATH", missing_state_path)
@@ -248,6 +259,48 @@ def test_save_state_writes_hint_and_history(tmp_path, monkeypatch):
             "hint_used": 0,
         }
     ]
+
+
+
+def test_add_quiz_collects_and_saves_hint_text(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.quizzes = []
+    text_answers = iter(
+        [
+            "새 문제",
+            "선택지 1",
+            "선택지 2",
+            "선택지 3",
+            "선택지 4",
+            "이 힌트는 정답 범주를 좁혀 줍니다.",
+        ]
+    )
+    number_prompts = []
+
+    monkeypatch.setattr(game, "ask_text", lambda prompt: next(text_answers))
+
+    def fake_ask_number(prompt, min_value, max_value):
+        number_prompts.append((prompt, min_value, max_value))
+        return 3
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+
+    game.add_quiz()
+
+    assert len(game.quizzes) == 1
+    assert game.quizzes[0].to_dict() == {
+        "question": "새 문제",
+        "choices": ["선택지 1", "선택지 2", "선택지 3", "선택지 4"],
+        "answer": 3,
+        "hint": "이 힌트는 정답 범주를 좁혀 줍니다.",
+    }
+    assert number_prompts == [("정답 번호 (1-4): ", 1, 4)]
+
+    data = json.loads(state_path.read_text(encoding="utf-8"))
+    assert data["quizzes"] == [game.quizzes[0].to_dict()]
 
 
 
