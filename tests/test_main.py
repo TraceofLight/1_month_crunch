@@ -97,7 +97,9 @@ def test_load_state_preserves_history_schema(tmp_path, monkeypatch):
 
 
 
-def test_load_state_recovers_from_invalid_history_schema(tmp_path, monkeypatch):
+def test_load_state_preserves_quizzes_and_best_score_when_history_schema_is_invalid(
+    tmp_path, monkeypatch
+):
     state_path = tmp_path / "state.json"
     state_path.write_text(
         json.dumps(
@@ -109,6 +111,7 @@ def test_load_state_recovers_from_invalid_history_schema(tmp_path, monkeypatch):
                         "answer": 2,
                     }
                 ],
+                "best_score": {"correct": 1, "total": 1, "score": 100},
                 "history": [
                     {
                         "played_at": "2026-04-03T12:34:56",
@@ -127,9 +130,88 @@ def test_load_state_recovers_from_invalid_history_schema(tmp_path, monkeypatch):
     game = main.QuizGame()
 
     assert [quiz.to_dict() for quiz in game.quizzes] == [
-        quiz.to_dict() for quiz in game.build_default_quizzes()
+        {
+            "question": "문제",
+            "choices": ["하나", "둘", "셋", "넷"],
+            "answer": 2,
+            "hint": DEFAULT_HINT,
+        }
     ]
-    assert game.best_score is None
+    assert game.best_score == {"correct": 1, "total": 1, "score": 100}
+    assert game.history == []
+
+
+
+def test_load_state_rejects_history_when_correct_exceeds_total(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    state_path.write_text(
+        json.dumps(
+            {
+                "quizzes": [
+                    {
+                        "question": "문제",
+                        "choices": ["하나", "둘", "셋", "넷"],
+                        "answer": 2,
+                    }
+                ],
+                "best_score": {"correct": 1, "total": 1, "score": 100},
+                "history": [
+                    {
+                        "played_at": "2026-04-03T12:34:56",
+                        "total": 1,
+                        "correct": 2,
+                        "score": 100,
+                        "hint_used": 0,
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+
+    assert len(game.quizzes) == 1
+    assert game.best_score == {"correct": 1, "total": 1, "score": 100}
+    assert game.history == []
+
+
+
+def test_load_state_rejects_history_when_hint_used_exceeds_total(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    state_path.write_text(
+        json.dumps(
+            {
+                "quizzes": [
+                    {
+                        "question": "문제",
+                        "choices": ["하나", "둘", "셋", "넷"],
+                        "answer": 2,
+                    }
+                ],
+                "best_score": {"correct": 1, "total": 1, "score": 100},
+                "history": [
+                    {
+                        "played_at": "2026-04-03T12:34:56",
+                        "total": 1,
+                        "correct": 1,
+                        "score": 100,
+                        "hint_used": 2,
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+
+    assert len(game.quizzes) == 1
+    assert game.best_score == {"correct": 1, "total": 1, "score": 100}
     assert game.history == []
 
 

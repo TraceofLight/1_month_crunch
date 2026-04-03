@@ -277,7 +277,10 @@ class QuizGame:
 
             self.quizzes = [Quiz.from_dict(item) for item in data.get("quizzes", [])]
             self.best_score = self.normalize_best_score(data.get("best_score"))
-            self.history = self.normalize_history(data.get("history"))
+            try:
+                self.history = self.normalize_history(data.get("history"))
+            except (KeyError, TypeError, ValueError):
+                self.history = []
             print(self.build_load_message())
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
             print(f"{self.state_path.name} 파일이 없거나 손상되어 기본 퀴즈 데이터로 복구합니다.")
@@ -322,6 +325,8 @@ class QuizGame:
         if not all(isinstance(value, int) for value in [total, correct, score, hint_used]):
             raise ValueError("history")
         if total < 0 or correct < 0 or score < 0 or hint_used < 0:
+            raise ValueError("history")
+        if correct > total or hint_used > total:
             raise ValueError("history")
 
         return {
