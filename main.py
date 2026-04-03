@@ -7,6 +7,7 @@ from pathlib import Path
 
 STATE_PATH = Path(__file__).with_name("state.json")
 DEFAULT_HINT = "힌트가 없습니다."
+RECENT_HISTORY_LIMIT = 5
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -239,7 +240,8 @@ class QuizGame:
         if self.history:
             print("\n최근 플레이 기록")
             print("----------------------------------------")
-            for entry in self.history:
+            recent_history = self.history[-RECENT_HISTORY_LIMIT:]
+            for entry in reversed(recent_history):
                 print(
                     f"{entry['played_at']} - {entry['total']}문제 중 {entry['correct']}문제 정답 "
                     f"({entry['score']}점, 힌트 {entry['hint_used']}회 사용)"
