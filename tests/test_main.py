@@ -415,6 +415,159 @@ def test_play_quiz_keeps_stored_quiz_order_after_round(tmp_path, monkeypatch):
 
 
 
+def test_record_history_appends_recent_result_with_timestamp(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    monkeypatch.setattr(game, "get_current_timestamp", lambda: "2026-04-03T21:22:23")
+
+    game.record_history(3, 5, 60, 1)
+
+    assert game.history == [
+        {
+            "played_at": "2026-04-03T21:22:23",
+            "total": 5,
+            "correct": 3,
+            "score": 60,
+            "hint_used": 1,
+        }
+    ]
+
+
+
+def test_play_quiz_records_history_after_score_calculation(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    round_quizzes = [main.Quiz("문제", ["1", "2", "3", "4"], 2, "힌트")]
+    call_order = []
+
+    monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "prompt_hint", lambda quiz: True)
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: 2)
+
+    def fake_calculate_score(correct_answers, total_questions, hint_used_count):
+        call_order.append(("calculate_score", correct_answers, total_questions, hint_used_count))
+        return 90
+
+    def fake_record_history(correct_answers, total_questions, score, hint_used_count):
+        call_order.append(("record_history", correct_answers, total_questions, score, hint_used_count))
+
+    monkeypatch.setattr(game, "calculate_score", fake_calculate_score)
+    monkeypatch.setattr(game, "record_history", fake_record_history)
+
+    game.play_quiz()
+
+    assert call_order == [
+        ("calculate_score", 1, 1, 1),
+        ("record_history", 1, 1, 90, 1),
+    ]
+
+
+
+def test_play_quiz_persists_recorded_history_to_written_state(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    round_quizzes = [main.Quiz("문제", ["1", "2", "3", "4"], 2, "힌트")]
+
+    monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "prompt_hint", lambda quiz: True)
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: 2)
+    monkeypatch.setattr(game, "get_current_timestamp", lambda: "2026-04-03T21:22:23")
+
+    game.play_quiz()
+
+    data = json.loads(state_path.read_text(encoding="utf-8"))
+    assert data["history"] == [
+        {
+            "played_at": "2026-04-03T21:22:23",
+            "total": 1,
+            "correct": 1,
+            "score": 90,
+            "hint_used": 1,
+        }
+    ]
+
+
+
+def test_show_best_score_displays_bounded_recent_history_most_recent_first(
+    tmp_path, monkeypatch, capsys
+):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.best_score = {"correct": 4, "total": 5, "score": 80}
+    game.history = [
+        {
+            "played_at": "2026-04-03T10:00:00",
+            "total": 1,
+            "correct": 1,
+            "score": 100,
+            "hint_used": 0,
+        },
+        {
+            "played_at": "2026-04-03T11:00:00",
+            "total": 2,
+            "correct": 1,
+            "score": 50,
+            "hint_used": 1,
+        },
+        {
+            "played_at": "2026-04-03T12:00:00",
+            "total": 3,
+            "correct": 2,
+            "score": 66,
+            "hint_used": 1,
+        },
+        {
+            "played_at": "2026-04-03T13:00:00",
+            "total": 4,
+            "correct": 3,
+            "score": 75,
+            "hint_used": 0,
+        },
+        {
+            "played_at": "2026-04-03T14:00:00",
+            "total": 5,
+            "correct": 4,
+            "score": 80,
+            "hint_used": 1,
+        },
+        {
+            "played_at": "2026-04-03T15:00:00",
+            "total": 6,
+            "correct": 5,
+            "score": 83,
+            "hint_used": 0,
+        },
+    ]
+
+    game.show_best_score()
+
+    output = capsys.readouterr().out
+    assert "최고 점수: 80점 (5문제 중 4문제 정답)" in output
+    assert "최근 플레이 기록" in output
+    assert "2026-04-03T10:00:00 - 1문제 중 1문제 정답 (100점, 힌트 0회 사용)" not in output
+
+    recent_entries = [
+        "2026-04-03T15:00:00 - 6문제 중 5문제 정답 (83점, 힌트 0회 사용)",
+        "2026-04-03T14:00:00 - 5문제 중 4문제 정답 (80점, 힌트 1회 사용)",
+        "2026-04-03T13:00:00 - 4문제 중 3문제 정답 (75점, 힌트 0회 사용)",
+        "2026-04-03T12:00:00 - 3문제 중 2문제 정답 (66점, 힌트 1회 사용)",
+        "2026-04-03T11:00:00 - 2문제 중 1문제 정답 (50점, 힌트 1회 사용)",
+    ]
+    positions = [output.index(entry) for entry in recent_entries]
+    assert positions == sorted(positions)
+
+
+
+
+
 def test_repository_state_sample_matches_default_quizzes():
     data = json.loads(main.STATE_PATH.read_text(encoding="utf-8"))
     default_quizzes = [

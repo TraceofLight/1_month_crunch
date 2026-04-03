@@ -1,11 +1,13 @@
 import json
 import random
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
 STATE_PATH = Path(__file__).with_name("state.json")
 DEFAULT_HINT = "힌트가 없습니다."
+RECENT_HISTORY_LIMIT = 5
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -170,6 +172,7 @@ class QuizGame:
 
         total_questions = len(round_quizzes)
         score = self.calculate_score(correct_answers, total_questions, hint_used_count)
+        self.record_history(correct_answers, total_questions, score, hint_used_count)
         print("\n========================================")
         print(f"결과: {total_questions}문제 중 {correct_answers}문제 정답! ({score}점)")
         if self.update_best_score(correct_answers, total_questions, score):
@@ -189,6 +192,20 @@ class QuizGame:
     def calculate_score(self, correct_answers, total_questions, hint_used_count):
         base_score = int(correct_answers / total_questions * 100)
         return max(0, base_score - hint_used_count * 10)
+
+    def get_current_timestamp(self):
+        return datetime.now().replace(microsecond=0).isoformat()
+
+    def record_history(self, correct_answers, total_questions, score, hint_used_count):
+        self.history.append(
+            {
+                "played_at": self.get_current_timestamp(),
+                "total": total_questions,
+                "correct": correct_answers,
+                "score": score,
+                "hint_used": hint_used_count,
+            }
+        )
 
     def add_quiz(self):
         print("\n새로운 퀴즈를 추가합니다.")
@@ -220,6 +237,16 @@ class QuizGame:
             f"\n최고 점수: {self.best_score['score']}점 "
             f"({self.best_score['total']}문제 중 {self.best_score['correct']}문제 정답)"
         )
+        if self.history:
+            print("\n최근 플레이 기록")
+            print("----------------------------------------")
+            recent_history = self.history[-RECENT_HISTORY_LIMIT:]
+            for entry in reversed(recent_history):
+                print(
+                    f"{entry['played_at']} - {entry['total']}문제 중 {entry['correct']}문제 정답 "
+                    f"({entry['score']}점, 힌트 {entry['hint_used']}회 사용)"
+                )
+            print("----------------------------------------")
 
     def exit_game(self):
         self.save_state()
