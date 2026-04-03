@@ -251,6 +251,108 @@ def test_save_state_writes_hint_and_history(tmp_path, monkeypatch):
 
 
 
+def test_prepare_quiz_round_returns_shuffled_subset_without_mutating_quizzes(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    original_quizzes = game.quizzes[:]
+    selected_total = 3
+    asked = {}
+
+    def fake_ask_number(prompt, min_value, max_value):
+        asked["prompt"] = prompt
+        asked["min"] = min_value
+        asked["max"] = max_value
+        return selected_total
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+
+    def reverse_quizzes(quizzes):
+        quizzes.reverse()
+
+    monkeypatch.setattr(main.random, "shuffle", reverse_quizzes)
+
+    round_quizzes = game.prepare_quiz_round()
+
+    assert asked == {
+        "prompt": "몇 문제를 푸시겠습니까? ",
+        "min": 1,
+        "max": len(original_quizzes),
+    }
+    assert round_quizzes == list(reversed(original_quizzes))[:selected_total]
+    assert game.quizzes == original_quizzes
+
+
+
+def test_prepare_quiz_round_asks_for_single_question_when_only_one_quiz_exists(
+    tmp_path, monkeypatch
+):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    game.quizzes = [main.Quiz("문제", ["1", "2", "3", "4"], 1)]
+    asked = {}
+
+    def fake_ask_number(prompt, min_value, max_value):
+        asked["min"] = min_value
+        asked["max"] = max_value
+        return 1
+
+    monkeypatch.setattr(game, "ask_number", fake_ask_number)
+    monkeypatch.setattr(main.random, "shuffle", lambda quizzes: None)
+
+    round_quizzes = game.prepare_quiz_round()
+
+    assert asked == {"min": 1, "max": 1}
+    assert round_quizzes == game.quizzes
+
+
+
+def test_play_quiz_uses_prepared_round_count_for_score_and_best_score(tmp_path, monkeypatch, capsys):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    round_quizzes = [
+        main.Quiz("문제 1", ["1", "2", "3", "4"], 2),
+        main.Quiz("문제 2", ["1", "2", "3", "4"], 4),
+        main.Quiz("문제 3", ["1", "2", "3", "4"], 1),
+    ]
+    answers = iter([2, 1, 1])
+
+    monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: next(answers))
+
+    game.play_quiz()
+
+    output = capsys.readouterr().out
+    assert "퀴즈를 시작합니다! (총 3문제)" in output
+    assert "결과: 3문제 중 2문제 정답! (66점)" in output
+    assert game.best_score == {"correct": 2, "total": 3, "score": 66}
+
+
+
+def test_play_quiz_keeps_stored_quiz_order_after_round(tmp_path, monkeypatch):
+    state_path = tmp_path / "state.json"
+    monkeypatch.setattr(main, "STATE_PATH", state_path)
+
+    game = main.QuizGame()
+    original_quizzes = game.quizzes[:]
+    round_quizzes = list(reversed(game.quizzes[:2]))
+    answers = iter([quiz.answer for quiz in round_quizzes])
+
+    monkeypatch.setattr(game, "prepare_quiz_round", lambda: round_quizzes)
+    monkeypatch.setattr(game, "ask_number", lambda prompt, min_value, max_value: next(answers))
+
+    game.play_quiz()
+
+    assert game.quizzes == original_quizzes
+    assert [quiz.question for quiz in game.quizzes] != [quiz.question for quiz in round_quizzes]
+
+
+
 def test_repository_state_sample_matches_default_quizzes():
     data = json.loads(main.STATE_PATH.read_text(encoding="utf-8"))
     default_quizzes = [

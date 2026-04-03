@@ -1,4 +1,5 @@
 import json
+import random
 import sys
 from pathlib import Path
 
@@ -140,15 +141,22 @@ class QuizGame:
         else:
             self.exit_game()
 
+    def prepare_quiz_round(self):
+        total_questions = self.ask_number("몇 문제를 푸시겠습니까? ", 1, len(self.quizzes))
+        round_quizzes = self.quizzes[:]
+        random.shuffle(round_quizzes)
+        return round_quizzes[:total_questions]
+
     def play_quiz(self):
         if not self.quizzes:
             print("\n등록된 퀴즈가 없습니다.")
             return
 
-        print(f"\n퀴즈를 시작합니다! (총 {len(self.quizzes)}문제)")
+        round_quizzes = self.prepare_quiz_round()
+        print(f"\n퀴즈를 시작합니다! (총 {len(round_quizzes)}문제)")
         correct_answers = 0
 
-        for number, quiz in enumerate(self.quizzes, start=1):
+        for number, quiz in enumerate(round_quizzes, start=1):
             quiz.display(number)
             selected_answer = self.ask_number("정답 입력 (1-4): ", 1, 4)
             if quiz.is_correct(selected_answer):
@@ -157,7 +165,7 @@ class QuizGame:
             else:
                 print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
 
-        total_questions = len(self.quizzes)
+        total_questions = len(round_quizzes)
         score = int(correct_answers / total_questions * 100)
         print("\n========================================")
         print(f"결과: {total_questions}문제 중 {correct_answers}문제 정답! ({score}점)")
