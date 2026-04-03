@@ -8,7 +8,8 @@
         "James Gosling",
         "Bjarne Stroustrup"
       ],
-      "answer": 1
+      "answer": 1,
+      "hint": "힌트가 없습니다."
     },
     {
       "question": "키와 값을 함께 저장하는 Python 자료형은 무엇인가요?",
@@ -18,7 +19,8 @@
         "set",
         "dict"
       ],
-      "answer": 4
+      "answer": 4,
+      "hint": "힌트가 없습니다."
     },
     {
       "question": "함수를 정의할 때 사용하는 키워드는 무엇인가요?",
@@ -28,7 +30,8 @@
         "lambda",
         "return"
       ],
-      "answer": 2
+      "answer": 2,
+      "hint": "힌트가 없습니다."
     },
     {
       "question": "len([1, 2, 3, 4])의 결과는 무엇인가요?",
@@ -38,7 +41,8 @@
         "4",
         "5"
       ],
-      "answer": 3
+      "answer": 3,
+      "hint": "힌트가 없습니다."
     },
     {
       "question": "예외 처리를 시작할 때 가장 먼저 쓰는 키워드는 무엇인가요?",
@@ -48,7 +52,8 @@
         "try",
         "finally"
       ],
-      "answer": 3
+      "answer": 3,
+      "hint": "힌트가 없습니다."
     },
     {
       "question": "조건이 거짓일 때 다른 분기를 실행하는 키워드는 무엇인가요?",
@@ -58,22 +63,14 @@
         "for",
         "while"
       ],
-      "answer": 2
-    },
-    {
-      "question": "이 퀴즈의 정답은 무엇일까요? 답은 1",
-      "choices": [
-        "이건가",
-        "저건가",
-        "그건가",
-        "다른건가"
-      ],
-      "answer": 1
+      "answer": 2,
+      "hint": "힌트가 없습니다."
     }
   ],
   "best_score": {
-    "correct": 7,
-    "total": 7,
+    "correct": 6,
+    "total": 6,
     "score": 100
-  }
+  },
+  "history": []
 }
