@@ -152,10 +152,17 @@ python main.py
 ### 7-7. 손상 복구 화면
 ![손상된 state.json 복구 화면](pics/recovery.png)
 
-- `state.json` 전체가 깨졌거나 핵심 구조가 잘못되었을 때 기본 데이터로 복구하는 흐름을 보여 주는 증빙입니다.
+- `state.json` 전체가 깨졌거나 핵심 구조가 잘못되었을 때 기본 데이터로 복구하는 로직입니다.
 
-### 7-8. 추가로 있으면 좋은 보완 증빙
-- 퀴즈 삭제 기능은 현재 저장소에 별도 삭제 캡처 파일이 없으므로, 제출 전에 실제 삭제 번호 선택과 최종 확인 문구가 함께 보이는 화면 1장을 추가해 주세요. 현재 문구는 사용자가 나중에 채워 넣을 자리표시자입니다: `퀴즈 삭제 확인 화면 추가 예정`
+### 7-8. 퀴즈 삭제
+
+![delete_quiz](pics\delete_quiz.png)
+
+### 7-9. 힌트 사용
+
+- 힌트 사용 여부 확인 및 사용 시 최고 점수에서 감점 들어간 것을 확인 가능
+
+![use_hint](pics\use_hint.png)
 
 ## 8. 데이터 파일(`state.json`) 설명
 
@@ -326,18 +333,14 @@ python -m pytest
 - 즉, 독립 작업을 최종 결과물에 반영했다는 증거가 됩니다.
 - 제출 시 브랜치 작업이 실제 프로젝트 결과에 어떻게 합쳐졌는지 보여 주는 근거로 활용할 수 있습니다.
 
-### 13-5. `git log` 증빙
-- 평가자가 작업 기록을 확인할 때는 `git log --oneline` 또는 `git log --oneline --graph`가 가장 직관적입니다.
-- 기능 추가, 문서 보강, merge 흐름이 한눈에 보여 작업 과정을 설명하기 좋습니다.
-
+### 13-5. `git log` 
 ![git log 결과](pics/git_log.png)
 
-## 14. `git clone` / `git pull` 실습 증빙
+## 14. `git clone` / `git pull`
 
-### 14-1. 왜 clone과 pull을 따로 설명하는가
+### 14-1. clone과 pull 설명
 - `git clone`은 저장소를 처음 내 컴퓨터로 받아 오는 과정입니다.
 - `git pull`은 이미 받은 저장소를 최신 상태로 갱신하는 과정입니다.
-- 둘을 구분해서 설명하면 “처음 받기”와 “이후 업데이트 반영”의 차이를 문서에서 분명하게 보여 줄 수 있습니다.
 
 ### 14-2. clone 실습 설명
 - 새 폴더에 저장소를 복제한 뒤 README, 파일 구조, 브랜치 상태가 정상적으로 내려왔는지 확인하면 됩니다.
@@ -361,18 +364,6 @@ python -m pytest
 ├─ main.py
 ├─ state.json
 ├─ pics/
-│  ├─ menu.png
-│  ├─ play.png
-│  ├─ answers.png
-│  ├─ add_quiz.png
-│  ├─ score.png
-│  ├─ wrong_answer.png
-│  ├─ EOF_control.png
-│  ├─ recovery.png
-│  ├─ git_log.png
-│  ├─ git_1.png
-│  ├─ git_2.png
-│  └─ git_3.png
 ├─ docs/
 └─ tests/
    └─ test_main.py
@@ -399,17 +390,3 @@ python -m pytest
 - 퀴즈 1개와 게임 전체 흐름의 책임을 분리하기 위해서입니다.
 - 함수만으로 모두 구현하면 데이터와 상태가 여러 곳에 흩어지기 쉬워 수정 범위가 커집니다.
 - 클래스로 나누면 저장, 출력, 판정, 메뉴 흐름의 경계가 더 분명해집니다.
-
-## 17. 최종 제출 전 체크리스트
-
-### README 내용 점검
-- [x] 현재 메뉴가 6개(풀기/추가/목록/삭제/점수/종료)로 반영되어 있다.
-- [x] random order, selectable question count, hints, history가 현재 구현대로 설명되어 있다.
-- [x] `state.json` 스키마에 `hint`와 `history`가 포함되어 있다.
-- [x] `load_state()` / `save_state()`의 호출 시점과 복구 동작이 현재 코드와 맞다.
-- [x] `history`만 잘못되었을 때의 fallback 동작을 별도로 설명했다.
-- [x] `git log` 증빙과 `git clone` / `git pull` 설명이 포함되어 있다.
-
-### 추가로 보완하면 좋은 항목
-- [ ] 퀴즈 삭제 실화면 캡처 1장 추가
-- [ ] 문제 수 선택 또는 힌트 사용 장면이 더 잘 보이는 캡처가 필요하면 1장 추가
