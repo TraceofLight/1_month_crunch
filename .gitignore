@@ -1,2 +1,4 @@
 .worktrees/
 __pycache__/
+.DS_Store
+.openclaude-profile.json
