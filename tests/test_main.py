@@ -2,10 +2,11 @@ import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from main import Matrix, generate_cross_pattern, generate_x_pattern, normalize_label
 from main import EPSILON, benchmark_mac, judge_scores, mac_1d, mac_2d
-from main import analyze_data_file, save_default_data
+from main import analyze_data_file, main, save_default_data
 
 
 class FoundationTests(unittest.TestCase):
@@ -106,6 +107,73 @@ class ConsoleFlowTests(unittest.TestCase):
 
         self.assertEqual(result["decision"], "B")
         self.assertTrue(any("입력 형식 오류" in line for line in output))
+
+
+from main import append_generated_pattern_case, main, run_pattern_generator_mode, safe_main
+
+
+class BonusFeatureTests(unittest.TestCase):
+    def test_append_generated_pattern_case_adds_new_case(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.json"
+            save_default_data(data_path)
+
+            case_id = append_generated_pattern_case(data_path, generate_cross_pattern(7), "Cross")
+            payload = json.loads(data_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(case_id, "size_7_1")
+        self.assertIn("size_7_1", payload["patterns"])
+        self.assertEqual(payload["patterns"]["size_7_1"]["expected"], "+")
+
+    def test_run_pattern_generator_mode_retries_invalid_size_and_prints_benchmark(self) -> None:
+        answers = iter(["4", "5", "1", "n"])
+        output: list[str] = []
+
+        result = run_pattern_generator_mode(input_func=lambda _: next(answers), output_func=output.append)
+
+        self.assertEqual(result["label"], "Cross")
+        self.assertEqual(result["size"], 5)
+        self.assertIsNone(result["saved_case_id"])
+        self.assertTrue(any("홀수" in line for line in output))
+        self.assertTrue(any("2D" in line for line in output))
+        self.assertTrue(any("1D" in line for line in output))
+
+    def test_analyze_data_file_reports_missing_related_filters_as_readable_fail(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.json"
+            save_default_data(data_path)
+            append_generated_pattern_case(data_path, generate_cross_pattern(7), "Cross")
+
+            report = analyze_data_file(data_path)
+
+        reasons = {item["case_id"]: item["reason"] for item in report["failures"]}
+        self.assertIn("size_7_1", reasons)
+        self.assertIn("관련 필터", reasons["size_7_1"])
+        self.assertIn("판정", reasons["size_7_1"])
+
+
+class EntryPointTests(unittest.TestCase):
+    def test_main_dispatches_pattern_generator_mode(self) -> None:
+        output: list[str] = []
+
+        with patch("main.run_pattern_generator_mode") as generator_mode:
+            main(input_func=lambda _: "3", output_func=output.append)
+
+        generator_mode.assert_called_once()
+
+    def test_safe_main_handles_keyboard_interrupt(self) -> None:
+        output: list[str] = []
+
+        safe_main(input_func=lambda _: (_ for _ in ()).throw(KeyboardInterrupt()), output_func=output.append)
+
+        self.assertTrue(any("종료" in line for line in output))
+
+    def test_safe_main_handles_eof_error(self) -> None:
+        output: list[str] = []
+
+        safe_main(input_func=lambda _: (_ for _ in ()).throw(EOFError()), output_func=output.append)
+
+        self.assertTrue(any("입력이 종료" in line or "종료" in line for line in output))
 
 
 if __name__ == "__main__":

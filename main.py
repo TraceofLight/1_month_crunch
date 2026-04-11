@@ -186,9 +186,14 @@ def matrix_from_raw(raw_matrix: list[list[float]]) -> Matrix:
 def analyze_case(case_id: str, case_payload: dict, filters: dict[str, dict[str, Matrix]]) -> dict:
     try:
         size = parse_pattern_size(case_id)
-        filter_group = filters[f"size_{size}"]
+        filter_key = f"size_{size}"
         pattern = matrix_from_raw(case_payload["input"])
         expected = normalize_label(case_payload["expected"])
+
+        if filter_key not in filters:
+            raise ValueError(f"관련 필터가 없어 판정할 수 없음: {filter_key}")
+
+        filter_group = filters[filter_key]
 
         if pattern.size != size:
             raise ValueError(f"pattern size mismatch: expected {size}x{size}, got {pattern.size}x{pattern.size}")
@@ -305,6 +310,109 @@ def render_performance_lines(performance_rows: list[dict]) -> list[str]:
     return lines
 
 
+def render_matrix_lines(matrix: Matrix) -> list[str]:
+    return [" ".join(str(int(value)) if value.is_integer() else str(value) for value in row) for row in matrix.values]
+
+
+
+def read_odd_size(input_func=input, output_func=print) -> int:
+    while True:
+        raw_value = input_func("패턴 크기 N(홀수, 3 이상): ").strip()
+        try:
+            size = int(raw_value)
+        except ValueError:
+            output_func("입력 형식 오류: 크기 N은 정수로 입력하세요.")
+            continue
+
+        if size < 3 or size % 2 == 0:
+            output_func("입력 형식 오류: 크기 N은 3 이상의 홀수여야 합니다.")
+            continue
+
+        return size
+
+
+
+def read_pattern_kind(input_func=input, output_func=print) -> str:
+    while True:
+        output_func("1. Cross")
+        output_func("2. X")
+        choice = input_func("패턴 선택: ").strip()
+        if choice == "1":
+            return "Cross"
+        if choice == "2":
+            return "X"
+        output_func("잘못된 선택입니다. 1 또는 2를 입력하세요.")
+
+
+
+def read_yes_no(prompt: str, input_func=input, output_func=print) -> bool:
+    while True:
+        choice = input_func(prompt).strip().lower()
+        if choice in {"y", "yes"}:
+            return True
+        if choice in {"n", "no"}:
+            return False
+        output_func("잘못된 입력입니다. y 또는 n을 입력하세요.")
+
+
+
+def append_generated_pattern_case(data_path: str | Path, pattern: Matrix, label: str) -> str:
+    target_path = Path(data_path)
+    if not target_path.exists():
+        save_default_data(target_path)
+
+    payload = json.loads(target_path.read_text(encoding="utf-8"))
+    patterns = payload.setdefault("patterns", {})
+    prefix = f"size_{pattern.size}_"
+    indexes = []
+
+    for case_id in patterns:
+        match = re.fullmatch(rf"{re.escape(prefix)}(\d+)", case_id)
+        if match is not None:
+            indexes.append(int(match.group(1)))
+
+    next_index = (max(indexes) + 1) if indexes else 1
+    case_id = f"{prefix}{next_index}"
+    patterns[case_id] = {
+        "input": pattern.values,
+        "expected": "+" if label == "Cross" else "x",
+    }
+
+    target_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return case_id
+
+
+
+def run_pattern_generator_mode(data_path: str | Path = "data.json", input_func=input, output_func=print) -> dict:
+    output_func("=== 패턴 생성기 (보너스) ===")
+    size = read_odd_size(input_func=input_func, output_func=output_func)
+    label = read_pattern_kind(input_func=input_func, output_func=output_func)
+    pattern = generate_cross_pattern(size) if label == "Cross" else generate_x_pattern(size)
+
+    output_func(f"생성된 패턴 ({label}, {size}x{size})")
+    for line in render_matrix_lines(pattern):
+        output_func(line)
+
+    two_d_ms = benchmark_mac(pattern, pattern, runs=10, use_flatten=False)
+    one_d_ms = benchmark_mac(pattern, pattern, runs=10, use_flatten=True)
+    output_func(f"연산 시간(평균/10회, 2D): {two_d_ms:.6f} ms")
+    output_func(f"연산 시간(평균/10회, 1D): {one_d_ms:.6f} ms")
+
+    saved_case_id = None
+    if read_yes_no("data.json에 추가할까요? (y/n): ", input_func=input_func, output_func=output_func):
+        saved_case_id = append_generated_pattern_case(data_path, pattern, label)
+        output_func(f"data.json에 저장했습니다: {saved_case_id}")
+
+    return {
+        "size": size,
+        "label": label,
+        "pattern": pattern,
+        "two_d_ms": two_d_ms,
+        "one_d_ms": one_d_ms,
+        "saved_case_id": saved_case_id,
+    }
+
+
 def run_manual_mode(input_func=input, output_func=print) -> dict:
     output_func("=== Mini NPU Simulator ===")
     filter_a = read_matrix_from_input("필터 A (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
@@ -368,15 +476,28 @@ def main(input_func=input, output_func=print) -> None:
     output_func("=== Mini NPU Simulator ===")
     output_func("1. 사용자 입력 (3x3)")
     output_func("2. data.json 분석")
+    output_func("3. 패턴 생성기 (보너스)")
     choice = input_func("선택: ").strip()
 
     if choice == "1":
         run_manual_mode(input_func=input_func, output_func=output_func)
     elif choice == "2":
         run_json_mode(output_func=output_func)
+    elif choice == "3":
+        run_pattern_generator_mode(input_func=input_func, output_func=output_func)
     else:
-        output_func("잘못된 선택입니다. 1 또는 2를 입력하세요.")
+        output_func("잘못된 선택입니다. 1, 2 또는 3을 입력하세요.")
+
+
+
+def safe_main(input_func=input, output_func=print) -> None:
+    try:
+        main(input_func=input_func, output_func=output_func)
+    except EOFError:
+        output_func("입력이 종료되어 프로그램을 종료합니다.")
+    except KeyboardInterrupt:
+        output_func("프로그램을 종료합니다.")
 
 
 if __name__ == "__main__":
-    main()
+    safe_main()
