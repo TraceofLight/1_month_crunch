@@ -108,8 +108,43 @@ class ConsoleFlowTests(unittest.TestCase):
         self.assertEqual(result["decision"], "B")
         self.assertTrue(any("입력 형식 오류" in line for line in output))
 
+    def test_parse_matrix_row_rejects_non_binary_numbers(self) -> None:
+        with self.assertRaises(ValueError):
+            parse_matrix_row("1 2 0", 3)
 
-from main import append_generated_pattern_case, main, run_pattern_generator_mode, safe_main
+        with self.assertRaises(ValueError):
+            parse_matrix_row("-1 0 1", 3)
+
+        with self.assertRaises(ValueError):
+            parse_matrix_row("0.5 0 1", 3)
+
+    def test_run_manual_mode_retries_non_binary_row_input(self) -> None:
+        answers = iter(
+            [
+                "1 2 0",
+                "0 1 0",
+                "1 1 1",
+                "0 1 0",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+            ]
+        )
+        output: list[str] = []
+
+        result = run_manual_mode(input_func=lambda _: next(answers), output_func=output.append)
+
+        self.assertEqual(result["decision"], "B")
+        self.assertTrue(any("입력 형식 오류" in line for line in output))
+        self.assertGreaterEqual(output.count("필터 A (3줄 입력, 공백 구분)"), 2)
+
+
+from main import append_generated_pattern_case, main, run_json_mode, run_pattern_generator_mode, safe_main
 
 
 class BonusFeatureTests(unittest.TestCase):
@@ -174,6 +209,61 @@ class EntryPointTests(unittest.TestCase):
         safe_main(input_func=lambda _: (_ for _ in ()).throw(EOFError()), output_func=output.append)
 
         self.assertTrue(any("입력이 종료" in line or "종료" in line for line in output))
+
+
+class OutputFormatTests(unittest.TestCase):
+    def test_main_menu_includes_mode_header_and_generator_option(self) -> None:
+        output: list[str] = []
+
+        main(input_func=lambda _: "9", output_func=output.append)
+
+        self.assertEqual(output[0], "=== Mini NPU Simulator ===")
+        self.assertIn("[모드 선택]", output)
+        self.assertIn("1. 사용자 입력 (3x3)", output)
+        self.assertIn("2. data.json 분석", output)
+        self.assertIn("3. 패턴 생성기 (보너스)", output)
+
+    def test_run_manual_mode_prints_section_headers(self) -> None:
+        answers = iter(
+            [
+                "0 1 0",
+                "1 1 1",
+                "0 1 0",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+                "1 0 1",
+                "0 1 0",
+                "1 0 1",
+            ]
+        )
+        output: list[str] = []
+
+        run_manual_mode(input_func=lambda _: next(answers), output_func=output.append)
+
+        self.assertIn("# [1] 필터 입력", output)
+        self.assertIn("# [2] 패턴 입력", output)
+        self.assertIn("# [3] MAC 결과", output)
+        self.assertTrue(any(line.startswith("A 점수:") for line in output))
+        self.assertTrue(any(line.startswith("B 점수:") for line in output))
+        self.assertTrue(any(line.startswith("판정:") for line in output))
+
+    def test_run_json_mode_prints_sectioned_sample_like_output(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.json"
+            save_default_data(data_path)
+            output: list[str] = []
+
+            run_json_mode(data_path=data_path, output_func=output.append)
+
+        self.assertIn("# [1] 필터 로드", output)
+        self.assertIn("# [2] 패턴 분석 (라벨 정규화 적용)", output)
+        self.assertIn("# [3] 성능 분석 (평균/10회)", output)
+        self.assertIn("# [4] 결과 요약", output)
+        self.assertIn("--- size_5_1 ---", output)
+        self.assertTrue(any(line.startswith("Cross 점수:") for line in output))
+        self.assertTrue(any(line.startswith("X 점수:") for line in output))
+        self.assertTrue(any(line.startswith("판정:") for line in output))
 
 
 if __name__ == "__main__":

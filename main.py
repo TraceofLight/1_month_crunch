@@ -280,9 +280,14 @@ def parse_matrix_row(raw_text: str, expected_size: int) -> list[float]:
         raise ValueError(f"각 줄에 {expected_size}개의 숫자를 공백으로 구분해 입력하세요.")
 
     try:
-        return [float(part) for part in parts]
+        values = [float(part) for part in parts]
     except ValueError as error:
         raise ValueError(f"각 줄에 {expected_size}개의 숫자를 공백으로 구분해 입력하세요.") from error
+
+    if any(value not in {0.0, 1.0} for value in values):
+        raise ValueError(f"각 줄에 {expected_size}개의 숫자를 공백으로 구분해 입력하세요.")
+
+    return values
 
 
 def read_matrix_from_input(title: str, size: int, input_func=input, output_func=print) -> Matrix:
@@ -313,6 +318,13 @@ def render_performance_lines(performance_rows: list[dict]) -> list[str]:
 def render_matrix_lines(matrix: Matrix) -> list[str]:
     return [" ".join(str(int(value)) if value.is_integer() else str(value) for value in row) for row in matrix.values]
 
+
+def render_section_header(title: str) -> list[str]:
+    return [
+        "#----------------------------------------",
+        title,
+        "#----------------------------------------",
+    ]
 
 
 def read_odd_size(input_func=input, output_func=print) -> int:
@@ -384,7 +396,9 @@ def append_generated_pattern_case(data_path: str | Path, pattern: Matrix, label:
 
 
 def run_pattern_generator_mode(data_path: str | Path = "data.json", input_func=input, output_func=print) -> dict:
-    output_func("=== 패턴 생성기 (보너스) ===")
+    output_func("=== Mini NPU Simulator ===")
+    for line in render_section_header("# [보너스] 패턴 생성기"):
+        output_func(line)
     size = read_odd_size(input_func=input_func, output_func=output_func)
     label = read_pattern_kind(input_func=input_func, output_func=output_func)
     pattern = generate_cross_pattern(size) if label == "Cross" else generate_x_pattern(size)
@@ -393,11 +407,15 @@ def run_pattern_generator_mode(data_path: str | Path = "data.json", input_func=i
     for line in render_matrix_lines(pattern):
         output_func(line)
 
+    for line in render_section_header("# [성능 비교]"):
+        output_func(line)
     two_d_ms = benchmark_mac(pattern, pattern, runs=10, use_flatten=False)
     one_d_ms = benchmark_mac(pattern, pattern, runs=10, use_flatten=True)
     output_func(f"연산 시간(평균/10회, 2D): {two_d_ms:.6f} ms")
     output_func(f"연산 시간(평균/10회, 1D): {one_d_ms:.6f} ms")
 
+    for line in render_section_header("# [저장 여부]"):
+        output_func(line)
     saved_case_id = None
     if read_yes_no("data.json에 추가할까요? (y/n): ", input_func=input_func, output_func=output_func):
         saved_case_id = append_generated_pattern_case(data_path, pattern, label)
@@ -415,8 +433,13 @@ def run_pattern_generator_mode(data_path: str | Path = "data.json", input_func=i
 
 def run_manual_mode(input_func=input, output_func=print) -> dict:
     output_func("=== Mini NPU Simulator ===")
+    for line in render_section_header("# [1] 필터 입력"):
+        output_func(line)
     filter_a = read_matrix_from_input("필터 A (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
     filter_b = read_matrix_from_input("필터 B (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
+
+    for line in render_section_header("# [2] 패턴 입력"):
+        output_func(line)
     pattern = read_matrix_from_input("패턴 (3줄 입력, 공백 구분)", 3, input_func=input_func, output_func=output_func)
 
     score_a = mac_2d(pattern, filter_a)
@@ -425,12 +448,13 @@ def run_manual_mode(input_func=input, output_func=print) -> dict:
     average_ms = benchmark_mac(pattern, filter_a, runs=10, use_flatten=False)
     optimized_ms = benchmark_mac(pattern, filter_a, runs=10, use_flatten=True)
 
+    for line in render_section_header("# [3] MAC 결과"):
+        output_func(line)
     output_func(f"A 점수: {score_a}")
     output_func(f"B 점수: {score_b}")
     output_func(f"연산 시간(평균/10회, 2D): {average_ms:.6f} ms")
     output_func(f"연산 시간(평균/10회, 1D): {optimized_ms:.6f} ms")
     output_func(f"판정: {decision}")
-
     return {
         "score_a": score_a,
         "score_b": score_b,
@@ -447,33 +471,46 @@ def run_json_mode(data_path: str | Path = "data.json", output_func=print) -> dic
         output_func(f"기본 data.json을 생성했습니다: {target_path}")
 
     report = analyze_data_file(target_path)
+    payload = json.loads(target_path.read_text(encoding="utf-8"))
 
-    output_func("=== data.json 분석 결과 ===")
+    for line in render_section_header("# [1] 필터 로드"):
+        output_func(line)
+    for size_key in sorted(payload["filters"].keys()):
+        output_func(f"✓ {size_key} 필터 로드 완료 (Cross, X)")
+
+    for line in render_section_header("# [2] 패턴 분석 (라벨 정규화 적용)"):
+        output_func(line)
     for result in report["results"]:
+        output_func(f"--- {result['case_id']} ---")
         if result["cross_score"] is None:
-            output_func(f"{result['case_id']}: FAIL | reason: {result['reason']}")
+            output_func(f"판정 불가 | expected: {result['expected']} | FAIL")
+            output_func(f"reason: {result['reason']}")
         else:
-            output_func(
-                f"{result['case_id']}: Cross={result['cross_score']}, X={result['x_score']}, "
-                f"판정={result['predicted']}, expected={result['expected']}, {result['status']}"
-            )
+            output_func(f"Cross 점수: {result['cross_score']}")
+            output_func(f"X 점수: {result['x_score']}")
+            output_func(f"판정: {result['predicted']} | expected: {result['expected']} | {result['status']}")
 
-    output_func("=== 성능 분석 ===")
+    for line in render_section_header("# [3] 성능 분석 (평균/10회)"):
+        output_func(line)
     for line in render_performance_lines(report["performance"]):
         output_func(line)
 
-    output_func("=== 결과 요약 ===")
-    output_func(f"총 테스트: {report['summary']['total']}")
-    output_func(f"통과: {report['summary']['passed']}")
-    output_func(f"실패: {report['summary']['failed']}")
-    for failure in report["failures"]:
-        output_func(f"- {failure['case_id']}: {failure['reason']}")
+    for line in render_section_header("# [4] 결과 요약"):
+        output_func(line)
+    output_func(f"총 테스트: {report['summary']['total']}개")
+    output_func(f"통과: {report['summary']['passed']}개")
+    output_func(f"실패: {report['summary']['failed']}개")
+    if report["failures"]:
+        output_func("실패 케이스:")
+        for failure in report["failures"]:
+            output_func(f"- {failure['case_id']}: {failure['reason']}")
 
     return report
 
 
 def main(input_func=input, output_func=print) -> None:
     output_func("=== Mini NPU Simulator ===")
+    output_func("[모드 선택]")
     output_func("1. 사용자 입력 (3x3)")
     output_func("2. data.json 분석")
     output_func("3. 패턴 생성기 (보너스)")
