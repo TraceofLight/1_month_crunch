@@ -42,9 +42,8 @@ python -m unittest -v
 ├─ README.md
 ├─ data.json
 ├─ docs/
-│  └─ superpowers/
-│     ├─ plans/
-│     └─ specs/
+│   ├─ plans/
+│   └─ specs/
 ├─ main.py
 └─ tests/
    ├─ __init__.py
