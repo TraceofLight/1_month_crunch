@@ -2,4 +2,6 @@
 __pycache__/
 .DS_Store
 .claude/
+.idea/
+.venv/
 .openclaude-profile.json
