@@ -1,0 +1,45 @@
+[linear_algebra]
+rotation: det=1.000000, area_ratio=1.000000, relative_error=0.00000000
+scaling: det=1.000000, area_ratio=1.000000, relative_error=0.00000000
+shear: det=1.000000, area_ratio=1.000000, relative_error=0.00000000
+power_iteration: lambda=4.61803399, numpy_lambda=4.61803399, relative_error=0.00000000, iterations=37, converged=True
+power_iteration_vector: computed=[-0.850651 -0.525731], numpy=[-0.850651 -0.525731]
+svd_k_10: rank_used=10, energy_ratio=0.99766132
+svd_k_50: rank_used=50, energy_ratio=0.99999963
+svd_k_100: rank_used=64, energy_ratio=1.00000000
+[calculus]
+central_difference_x2_at_3=6.0000000000
+analytic_derivative=6.0000000000
+absolute_error=0.0000000000
+[backprop]
+z1=[0.1 0.3]
+a1=[0.52497919 0.57444252]
+z2=0.6071551038
+y_pred=0.6472915700
+loss=0.4349584369
+dL_dy_pred=-1.5448988468
+dL_dz2=-0.3527084300
+dL_dW2=[-0.18516459 -0.20261072]
+dL_da1=[-0.17635422 -0.21162506]
+dL_dz1=[-0.04397852 -0.0517335 ]
+dL_dW1=[[-0.04397852 -0.        ]
+ [-0.0517335  -0.        ]]
+[optimization]
+vanilla_lr_0_1_final=[1.01851799e-09 1.01851799e-09]
+vanilla_lr_0_1_radius=0.0000000014
+divergent_lr_1_1_start_radius=1.4142135624
+divergent_lr_1_1_final_radius=54.2175537620
+momentum_lr_0_1_final=[-0.01425706 -0.01425706]
+ellipse_vanilla_final_value=0.4396986651
+ellipse_momentum_final_value=0.0024795600
+ellipse_adam_final_value=0.0160775851
+[probability]
+normal_N_0_1_peak=0.3989310040
+bernoulli_B_0_3=[0.7 0.3]
+bernoulli_B_0_7=[0.3 0.7]
+softmax=[0.0900305732 0.2447284711 0.6652409558]
+softmax_sum=1.0000000000
+softmax_sum_gap=0.000000000000
+entropy_bonus=0.5623351446
+kl_divergence_bonus=0.0498567562
+cross_entropy_bonus=0.6121919008

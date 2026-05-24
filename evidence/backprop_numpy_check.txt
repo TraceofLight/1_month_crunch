@@ -1,0 +1,14 @@
+2-layer neural network NumPy verification
+x shape=(2,), W1 shape=(2,2), b1 shape=(2,), W2 shape=(2,), b2 scalar
+z1 shape=(2,) [0.1 0.3]
+a1 shape=(2,) [0.5249791875 0.5744425168]
+z2 scalar 0.6071551038
+y_pred scalar 0.6472915700
+loss scalar 0.4349584369
+dL/dy_pred scalar -1.5448988468
+dL/dz2 scalar -0.3527084300
+dL/dW2 shape=(2,) [-0.185164585  -0.2026107182]
+dL/da1 shape=(2,) [-0.176354215 -0.211625058]
+dL/dz1 shape=(2,) [-0.0439785158 -0.0517335044]
+dL/dW1 shape=(2,2) [[-0.0439785158 -0.          ]
+ [-0.0517335044 -0.          ]]
