@@ -1,0 +1,1047 @@
+{
+  "case_count": 50,
+  "metrics": {
+    "emails": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    },
+    "phones": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    },
+    "dates": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    },
+    "amounts": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    },
+    "urls": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    }
+  },
+  "predictions": [
+    {
+      "id": "email-01",
+      "text": "문의는 user@domain.com 으로 주세요.",
+      "predicted": {
+        "emails": [
+          {
+            "text": "user@domain.com",
+            "normalized": "user@domain.com",
+            "span": [
+              4,
+              19
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-02",
+      "text": "담당자 메일은 user.name@sub.domain.co.kr입니다.",
+      "predicted": {
+        "emails": [
+          {
+            "text": "user.name@sub.domain.co.kr",
+            "normalized": "user.name@sub.domain.co.kr",
+            "span": [
+              8,
+              34
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-03",
+      "text": "VIP 주소 help+vip@shop.io 확인.",
+      "predicted": {
+        "emails": [
+          {
+            "text": "help+vip@shop.io",
+            "normalized": "help+vip@shop.io",
+            "span": [
+              7,
+              23
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-04",
+      "text": "운영 계정 admin_01@example.co 입니다.",
+      "predicted": {
+        "emails": [
+          {
+            "text": "admin_01@example.co",
+            "normalized": "admin_01@example.co",
+            "span": [
+              6,
+              25
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-05",
+      "text": "지원 first-last@my-domain.net",
+      "predicted": {
+        "emails": [
+          {
+            "text": "first-last@my-domain.net",
+            "normalized": "first-last@my-domain.net",
+            "span": [
+              3,
+              27
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-06",
+      "text": "보고서 a.b_c+tag@service.org",
+      "predicted": {
+        "emails": [
+          {
+            "text": "a.b_c+tag@service.org",
+            "normalized": "a.b_c+tag@service.org",
+            "span": [
+              4,
+              25
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-07",
+      "text": "팀 메일 cs.team@company.co.kr",
+      "predicted": {
+        "emails": [
+          {
+            "text": "cs.team@company.co.kr",
+            "normalized": "cs.team@company.co.kr",
+            "span": [
+              5,
+              26
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-08",
+      "text": "알림 no-reply@alerts.example.com",
+      "predicted": {
+        "emails": [
+          {
+            "text": "no-reply@alerts.example.com",
+            "normalized": "no-reply@alerts.example.com",
+            "span": [
+              3,
+              30
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-09",
+      "text": "계정 qa123@test-lab.dev",
+      "predicted": {
+        "emails": [
+          {
+            "text": "qa123@test-lab.dev",
+            "normalized": "qa123@test-lab.dev",
+            "span": [
+              3,
+              21
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "email-10",
+      "text": "영업 sales.korea@biz.example.kr",
+      "predicted": {
+        "emails": [
+          {
+            "text": "sales.korea@biz.example.kr",
+            "normalized": "sales.korea@biz.example.kr",
+            "span": [
+              3,
+              29
+            ]
+          }
+        ],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-01",
+      "text": "연락처 010-1234-5678",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "010-1234-5678",
+            "normalized": "010-1234-5678",
+            "span": [
+              4,
+              17
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-02",
+      "text": "사무실 02-123-4567",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "02-123-4567",
+            "normalized": "02-123-4567",
+            "span": [
+              4,
+              15
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-03",
+      "text": "본사 031-1234-5678",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "031-1234-5678",
+            "normalized": "031-1234-5678",
+            "span": [
+              3,
+              16
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-04",
+      "text": "공백 표기 010 9876 5432",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "010 9876 5432",
+            "normalized": "010-9876-5432",
+            "span": [
+              6,
+              19
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-05",
+      "text": "점 표기 070.2222.3333",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "070.2222.3333",
+            "normalized": "070-2222-3333",
+            "span": [
+              5,
+              18
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-06",
+      "text": "괄호 표기 (02) 987-6543",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "(02) 987-6543",
+            "normalized": "02-987-6543",
+            "span": [
+              6,
+              19
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-07",
+      "text": "국제 표기 +82-10-5555-6666",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "+82-10-5555-6666",
+            "normalized": "010-5555-6666",
+            "span": [
+              6,
+              22
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-08",
+      "text": "부산 지점 051 321 7654",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "051 321 7654",
+            "normalized": "051-321-7654",
+            "span": [
+              6,
+              18
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-09",
+      "text": "대구 지점 053-444-5555",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "053-444-5555",
+            "normalized": "053-444-5555",
+            "span": [
+              6,
+              18
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "phone-10",
+      "text": "세종 지점 044-1234-0000",
+      "predicted": {
+        "emails": [],
+        "phones": [
+          {
+            "text": "044-1234-0000",
+            "normalized": "044-1234-0000",
+            "span": [
+              6,
+              19
+            ]
+          }
+        ],
+        "dates": [],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-01",
+      "text": "일시는 2024년 1월 15일입니다.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024년 1월 15일",
+            "normalized": "2024-01-15",
+            "span": [
+              4,
+              16
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-02",
+      "text": "기한 2024/01/15까지.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024/01/15",
+            "normalized": "2024-01-15",
+            "span": [
+              3,
+              13
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-03",
+      "text": "마감 2024-01-15.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024-01-15",
+            "normalized": "2024-01-15",
+            "span": [
+              3,
+              13
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-04",
+      "text": "점검일 2024.03.05",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024.03.05",
+            "normalized": "2024-03-05",
+            "span": [
+              4,
+              14
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-05",
+      "text": "예약 2025년 12월 3일",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2025년 12월 3일",
+            "normalized": "2025-12-03",
+            "span": [
+              3,
+              15
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-06",
+      "text": "납품 2023/7/9",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2023/7/9",
+            "normalized": "2023-07-09",
+            "span": [
+              3,
+              11
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-07",
+      "text": "계약 2026-05-25",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2026-05-25",
+            "normalized": "2026-05-25",
+            "span": [
+              3,
+              13
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-08",
+      "text": "행사 2024.11.30",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024.11.30",
+            "normalized": "2024-11-30",
+            "span": [
+              3,
+              13
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-09",
+      "text": "발송 2024년 09월 01일",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024년 09월 01일",
+            "normalized": "2024-09-01",
+            "span": [
+              3,
+              16
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "date-10",
+      "text": "정산일 2024/12/31",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [
+          {
+            "text": "2024/12/31",
+            "normalized": "2024-12-31",
+            "span": [
+              4,
+              14
+            ]
+          }
+        ],
+        "amounts": [],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-01",
+      "text": "가격은 10,000원입니다.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "10,000원",
+            "normalized": 10000,
+            "span": [
+              4,
+              11
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-02",
+      "text": "총액은 1억 2천만원 예정입니다.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "1억 2천만원",
+            "normalized": 120000000,
+            "span": [
+              4,
+              11
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-03",
+      "text": "보증금 $100 필요.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "$100",
+            "normalized": 100,
+            "span": [
+              4,
+              8
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-04",
+      "text": "배송비 3천원.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "3천원",
+            "normalized": 3000,
+            "span": [
+              4,
+              7
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-05",
+      "text": "할인 후 5만원입니다.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "5만원",
+            "normalized": 50000,
+            "span": [
+              5,
+              8
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-06",
+      "text": "계약금 2,500,000원.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "2,500,000원",
+            "normalized": 2500000,
+            "span": [
+              4,
+              14
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-07",
+      "text": "예산 1억원.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "1억원",
+            "normalized": 100000000,
+            "span": [
+              3,
+              6
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-08",
+      "text": "수수료 2천5백원.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "2천5백원",
+            "normalized": 2500,
+            "span": [
+              4,
+              9
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-09",
+      "text": "출장비 15달러.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "15달러",
+            "normalized": 15,
+            "span": [
+              4,
+              8
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "amount-10",
+      "text": "추가금 7백원.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [
+          {
+            "text": "7백원",
+            "normalized": 700,
+            "span": [
+              4,
+              7
+            ]
+          }
+        ],
+        "urls": []
+      }
+    },
+    {
+      "id": "url-01",
+      "text": "링크 https://www.example.com/path?query=value",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "https://www.example.com/path?query=value",
+            "normalized": "https://www.example.com/path?query=value",
+            "span": [
+              3,
+              43
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-02",
+      "text": "홈페이지 http://example.org",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "http://example.org",
+            "normalized": "http://example.org",
+            "span": [
+              5,
+              23
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-03",
+      "text": "문서 www.example.net/docs",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "www.example.net/docs",
+            "normalized": "https://www.example.net/docs",
+            "span": [
+              3,
+              23
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-04",
+      "text": "결제 https://shop.example.co.kr/pay?id=10",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "https://shop.example.co.kr/pay?id=10",
+            "normalized": "https://shop.example.co.kr/pay?id=10",
+            "span": [
+              3,
+              39
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-05",
+      "text": "상태 https://status.example.com/",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "https://status.example.com/",
+            "normalized": "https://status.example.com/",
+            "span": [
+              3,
+              30
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-06",
+      "text": "FAQ www.help.example.com/faq.",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "www.help.example.com/faq.",
+            "normalized": "https://www.help.example.com/faq",
+            "span": [
+              4,
+              29
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-07",
+      "text": "약관 https://example.com/a-b_c",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "https://example.com/a-b_c",
+            "normalized": "https://example.com/a-b_c",
+            "span": [
+              3,
+              28
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-08",
+      "text": "검색 https://example.com/search?q=배송&sort=latest",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "https://example.com/search?q=배송&sort=latest",
+            "normalized": "https://example.com/search?q=배송&sort=latest",
+            "span": [
+              3,
+              46
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-09",
+      "text": "API http://api.example.io/v1/items",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "http://api.example.io/v1/items",
+            "normalized": "http://api.example.io/v1/items",
+            "span": [
+              4,
+              34
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "url-10",
+      "text": "공지 www.company.co.kr/news?no=3",
+      "predicted": {
+        "emails": [],
+        "phones": [],
+        "dates": [],
+        "amounts": [],
+        "urls": [
+          {
+            "text": "www.company.co.kr/news?no=3",
+            "normalized": "https://www.company.co.kr/news?no=3",
+            "span": [
+              3,
+              30
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "input": "문의: support@company.co.kr, 전화 02-1234-5678, 일시: 2024년 3월 15일, 참가비: 50,000원. 링크 https://www.example.com/path?q=1 서비스가 정말 좋지 않았어요.",
+  "extraction": {
+    "emails": [
+      {
+        "text": "support@company.co.kr",
+        "normalized": "support@company.co.kr",
+        "span": [
+          4,
+          25
+        ]
+      }
+    ],
+    "phones": [
+      {
+        "text": "02-1234-5678",
+        "normalized": "02-1234-5678",
+        "span": [
+          30,
+          42
+        ]
+      }
+    ],
+    "dates": [
+      {
+        "text": "2024년 3월 15일",
+        "normalized": "2024-03-15",
+        "span": [
+          48,
+          60
+        ]
+      }
+    ],
+    "amounts": [
+      {
+        "text": "50,000원",
+        "normalized": 50000,
+        "span": [
+          67,
+          74
+        ]
+      }
+    ],
+    "urls": [
+      {
+        "text": "https://www.example.com/path?q=1",
+        "normalized": "https://www.example.com/path?q=1",
+        "span": [
+          79,
+          111
+        ]
+      }
+    ]
+  },
+  "sentiment": {
+    "tokens": [
+      "문의",
+      "support",
+      "company",
+      "co",
+      "kr",
+      "전화",
+      "02",
+      "1234",
+      "5678",
+      "일시",
+      "2024",
+      "년",
+      "3",
+      "월",
+      "15",
+      "일",
+      "참가비",
+      "50",
+      "000",
+      "원",
+      "링크",
+      "https",
+      "www",
+      "example",
+      "com",
+      "path",
+      "q",
+      "1",
+      "서비스가",
+      "정말",
+      "좋지",
+      "않았어요"
+    ],
+    "score": -3.0,
+    "label": "negative",
+    "matches": [
+      {
+        "token": "좋지",
+        "lexicon_key": "좋",
+        "base_score": 2,
+        "multiplier": 1.5,
+        "negation_count": 1,
+        "contribution": -3.0
+      }
+    ],
+    "negation_events": [
+      {
+        "token": "좋지",
+        "lexicon_key": "좋",
+        "base_score": 2,
+        "multiplier": 1.5,
+        "negation_count": 1,
+        "contribution": -3.0
+      }
+    ]
+  },
+  "masked": "문의: support@company.co.kr, 전화 02-****-5678, 일시: 2024년 3월 15일, 참가비: 50,000원. 링크 https://www.example.com/path?q=1 서비스가 정말 좋지 않았어요."
+}

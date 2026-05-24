@@ -1,0 +1,115 @@
+[
+  {
+    "text": "연기력때문에 10점",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "도라에몽 짱짱짱짱짱짱~!!!!!!!!!",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "와 진짜 뭐냐 이게 아니 어느정도는 이해를 가게해줘야 맞장구를 쳐주지 리뷰보니까 그나마 이해하겠는데 처음봤을땐 진짜 어우...",
+    "gold": "negative",
+    "predicted": "positive",
+    "score": 1.0,
+    "matches": [
+      {
+        "token": "이해하겠는데",
+        "lexicon_key": "이해하고",
+        "base_score": 1,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": 1.0
+      }
+    ]
+  },
+  {
+    "text": "축구영화인데 무슨 사랑 이야기 같네... 훈련하는건 별로 나오지도 않고...",
+    "gold": "negative",
+    "predicted": "positive",
+    "score": 2.0,
+    "matches": [
+      {
+        "token": "사랑",
+        "lexicon_key": "사랑",
+        "base_score": 2,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": 2.0
+      },
+      {
+        "token": "이야기",
+        "lexicon_key": "이야기하다",
+        "base_score": -1,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": -1.0
+      },
+      {
+        "token": "별로",
+        "lexicon_key": "별로",
+        "base_score": -1,
+        "multiplier": 1.0,
+        "negation_count": 1,
+        "contribution": 1.0
+      }
+    ]
+  },
+  {
+    "text": "왠만하면 댓글안다는데 알바들땜에 빡쳐서 올려요. 평점 8점대이길래 괜찮겠다 싶어 봤는데 참여자가 40명 정도라는걸 간과했음 ㅜㅜ 댓글 10점 단 사람들 모두 알바 아니면 관계자네요. 2점 정도 주고 싶은데 알바땜에 1점줍니다.",
+    "gold": "negative",
+    "predicted": "positive",
+    "score": 1.0,
+    "matches": [
+      {
+        "token": "괜찮겠다",
+        "lexicon_key": "괜찮고",
+        "base_score": 1,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": 1.0
+      }
+    ]
+  },
+  {
+    "text": "절대로,그 어떠한 경우에도,리메이크 하지 말야야 할,제일 첫번째 순위 영화 !",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "7점대는 가자",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "꼭 봐야할 영화",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "보면서 나도모르게 제발!하게되는 영화",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  },
+  {
+    "text": "아~여자들이보면 공감가는그런영화?진심 웃겨죽는줄알앗음, 초콜릿분수대 밀어서 엎을려고하는데, 꿈쩍도 안해, 아~이여자 왜이렇게 리얼하게 연기한거야, 진짜 울뻔했으무 아놔~ㅎㅎ",
+    "gold": "positive",
+    "predicted": "negative",
+    "score": 0.0,
+    "matches": []
+  }
+]
