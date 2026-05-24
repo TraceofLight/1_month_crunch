@@ -1,0 +1,53 @@
+usage: ai-gitgen [-h] [--version] {commit,pr} ...
+
+Git 변경 사항을 입력으로 받아 커밋 메시지 / PR 초안을 생성하는 CLI
+
+positional arguments:
+  {commit,pr}
+    commit     현재 변경을 요약한 커밋 메시지 1개 생성
+    pr         현재 브랜치와 base 브랜치 차이로 PR 초안 생성
+
+options:
+  -h, --help   show this help message and exit
+  --version    show program's version number and exit
+usage: ai-gitgen commit [-h] [--model MODEL] [--temperature TEMPERATURE]
+                        [--max-tokens MAX_TOKENS] [--safe-mode]
+                        [--max-files MAX_FILES] [--max-lines MAX_LINES]
+                        [--cwd CWD] [--dry-run] [--staged]
+
+options:
+  -h, --help            show this help message and exit
+  --model MODEL         AI 모델 식별자 (기본: claude-haiku-4-5-20251001)
+  --temperature TEMPERATURE
+                        샘플링 온도 0.0~1.0 (기본: 0.3, 결정적 출력은 낮게)
+  --max-tokens MAX_TOKENS
+                        응답 최대 토큰 (기본: 1024)
+  --safe-mode           민감정보 마스킹 + diff 분량 제한을 적용한 뒤 프롬프트로 전송
+  --max-files MAX_FILES
+                        safe-mode 활성 시 전송할 최대 파일 수 (기본: 10, 0=무제한)
+  --max-lines MAX_LINES
+                        safe-mode 활성 시 전송할 최대 diff 라인 수 (기본: 200, 0=무제한)
+  --cwd CWD             대상 Git 저장소 경로 (기본: 현재 작업 디렉터리)
+  --dry-run             AI API 를 호출하지 않고 구성된 프롬프트만 출력하여 점검
+  --staged              staging area 의 변경만 사용 (기본: staged + unstaged 모두)
+---
+usage: ai-gitgen pr [-h] [--model MODEL] [--temperature TEMPERATURE]
+                    [--max-tokens MAX_TOKENS] [--safe-mode]
+                    [--max-files MAX_FILES] [--max-lines MAX_LINES]
+                    [--cwd CWD] [--dry-run] [--base BASE]
+
+options:
+  -h, --help            show this help message and exit
+  --model MODEL         AI 모델 식별자 (기본: claude-haiku-4-5-20251001)
+  --temperature TEMPERATURE
+                        샘플링 온도 0.0~1.0 (기본: 0.3, 결정적 출력은 낮게)
+  --max-tokens MAX_TOKENS
+                        응답 최대 토큰 (기본: 1024)
+  --safe-mode           민감정보 마스킹 + diff 분량 제한을 적용한 뒤 프롬프트로 전송
+  --max-files MAX_FILES
+                        safe-mode 활성 시 전송할 최대 파일 수 (기본: 10, 0=무제한)
+  --max-lines MAX_LINES
+                        safe-mode 활성 시 전송할 최대 diff 라인 수 (기본: 200, 0=무제한)
+  --cwd CWD             대상 Git 저장소 경로 (기본: 현재 작업 디렉터리)
+  --dry-run             AI API 를 호출하지 않고 구성된 프롬프트만 출력하여 점검
+  --base BASE           비교 기준 base 브랜치 (기본: main)

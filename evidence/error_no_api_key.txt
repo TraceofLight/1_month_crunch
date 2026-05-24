@@ -1,0 +1,6 @@
+[INFO] Git 변경 사항 수집 중...
+[INFO] 변경 파일 7개 / diff 118줄 감지
+[INFO] AI API 요청 중...
+[ERROR] AI_API_KEY (또는 ANTHROPIC_API_KEY) 환경변수가 설정되지 않았습니다.
+  예) Windows PowerShell: $env:AI_API_KEY = "YOUR_KEY"
+       Bash:               export AI_API_KEY="YOUR_KEY"

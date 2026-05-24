@@ -1,0 +1,20 @@
+=== MASKED DIFF ===
+diff --git a/config/secret.py b/config/secret.py
+new file mode 100644
+--- /dev/null
++++ b/config/secret.py
+@@ -0,0 +1,8 @@
++ANTHROPIC_API_KEY = "sk-***gh"
++OPENAI_KEY = "sk-***FG"
++GITHUB_TOKEN = "ghp***yz"
++ADMIN_EMAIL = "h***@example.com"
++password=***MASKED***
++Authorization: Bearer ***MASKED***
+diff --git a/docs/note.md b/docs/note.md
+@@ -1,3 +1,5 @@
+-old line
++new line that is harmless
+
+=== REPORT ===
+mask counts: {'api_key_prefixed': 3, 'bearer': 1, 'kv_secret': 1, 'email': 1}
+truncate: TruncateStats(original_files=2, kept_files=2, original_lines=15, kept_lines=15)
