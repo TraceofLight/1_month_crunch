@@ -1,0 +1,8 @@
+﻿chart,file,title,x_axis,y_axis,interpretation
+히스토그램,evidence/histogram_unit_price.png,Unit Price Distribution After IQR Capping,Unit price capped,Transaction count,IQR 처리 후에도 단가가 낮은 거래에 집중되어 있어 대표 단가는 평균보다 중앙값이 안정적이다.
+박스플롯,evidence/boxplot_outlier_before_after.png,Unit Price Outlier Treatment Before vs After,Treatment stage,Unit price,처리 전 극단 단가가 분포를 압축하므로 처리 후 컬럼을 비교 분석용으로 함께 보관한다.
+막대그래프,evidence/bar_rfm_segments.png,RFM Segment Customer Counts,RFM segment,Customer count,Churned와 VIP가 가장 큰 의사결정 축이므로 방어 캠페인과 핵심 고객 유지 캠페인을 분리해야 한다.
+히트맵,evidence/heatmap_correlation.png,Numeric Feature Correlation Matrix,Feature,Feature,수량-금액 관계가 가장 강하고 이미지/텍스트 파생 변수의 가격 설명력은 제한적이다.
+산점도,evidence/scatter_image_mean_price.png,Image Mean vs Unit Price,Image mean,Unit price capped,이미지 평균 밝기만으로 단가 군집이 뚜렷하게 갈리지 않아 추가 이미지 특성이 필요하다.
+라인차트,evidence/line_monthly_revenue.png,Monthly Revenue Trend,Order month,Revenue,월별 매출 변동이 커서 세그먼트 캠페인은 시즌성과 함께 평가해야 한다.
+보너스 히트맵,evidence/bonus_cohort_retention_heatmap.png,Cohort Retention Rate,Months since first purchase,First purchase cohort,첫 구매 월별 재구매율 차이가 있어 New 고객 캠페인은 유입 코호트별로 나눠 검증한다.

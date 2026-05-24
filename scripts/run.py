@@ -25,6 +25,59 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.pipeline import DataAnalyzer
 
 
+CHART_DETAILS = {
+    "evidence/histogram_unit_price.png": {
+        "chart": "히스토그램",
+        "title": "Unit Price Distribution After IQR Capping",
+        "x_axis": "Unit price capped",
+        "y_axis": "Transaction count",
+        "interpretation": "IQR 처리 후에도 단가가 낮은 거래에 집중되어 있어 대표 단가는 평균보다 중앙값이 안정적이다.",
+    },
+    "evidence/boxplot_outlier_before_after.png": {
+        "chart": "박스플롯",
+        "title": "Unit Price Outlier Treatment Before vs After",
+        "x_axis": "Treatment stage",
+        "y_axis": "Unit price",
+        "interpretation": "처리 전 극단 단가가 분포를 압축하므로 처리 후 컬럼을 비교 분석용으로 함께 보관한다.",
+    },
+    "evidence/bar_rfm_segments.png": {
+        "chart": "막대그래프",
+        "title": "RFM Segment Customer Counts",
+        "x_axis": "RFM segment",
+        "y_axis": "Customer count",
+        "interpretation": "Churned와 VIP가 가장 큰 의사결정 축이므로 방어 캠페인과 핵심 고객 유지 캠페인을 분리해야 한다.",
+    },
+    "evidence/heatmap_correlation.png": {
+        "chart": "히트맵",
+        "title": "Numeric Feature Correlation Matrix",
+        "x_axis": "Feature",
+        "y_axis": "Feature",
+        "interpretation": "수량-금액 관계가 가장 강하고 이미지/텍스트 파생 변수의 가격 설명력은 제한적이다.",
+    },
+    "evidence/scatter_image_mean_price.png": {
+        "chart": "산점도",
+        "title": "Image Mean vs Unit Price",
+        "x_axis": "Image mean",
+        "y_axis": "Unit price capped",
+        "interpretation": "이미지 평균 밝기만으로 단가 군집이 뚜렷하게 갈리지 않아 추가 이미지 특성이 필요하다.",
+    },
+    "evidence/line_monthly_revenue.png": {
+        "chart": "라인차트",
+        "title": "Monthly Revenue Trend",
+        "x_axis": "Order month",
+        "y_axis": "Revenue",
+        "interpretation": "월별 매출 변동이 커서 세그먼트 캠페인은 시즌성과 함께 평가해야 한다.",
+    },
+    "evidence/bonus_cohort_retention_heatmap.png": {
+        "chart": "보너스 히트맵",
+        "title": "Cohort Retention Rate",
+        "x_axis": "Months since first purchase",
+        "y_axis": "First purchase cohort",
+        "interpretation": "첫 구매 월별 재구매율 차이가 있어 New 고객 캠페인은 유입 코호트별로 나눠 검증한다.",
+    },
+}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run e-commerce multimodal EDA and RFM analysis.")
     parser.add_argument("--dataset", default="carrie1/ecommerce-data", help="Kaggle dataset slug.")
@@ -231,6 +284,8 @@ def summarize_results(
     rfm.to_csv(evidence_dir / "rfm_customers.csv", encoding="utf-8-sig")
     numeric_summary.to_csv(evidence_dir / "numeric_summary.csv", encoding="utf-8-sig")
     corr.to_csv(evidence_dir / "correlation_matrix.csv", encoding="utf-8-sig")
+    chart_inventory = build_chart_inventory(plot_paths)
+    chart_inventory.to_csv(evidence_dir / "chart_inventory.csv", index=False, encoding="utf-8-sig")
 
     high_corr = corr.where(~np.eye(len(corr), dtype=bool)).stack().sort_values(key=lambda s: s.abs(), ascending=False)
     corr_pairs = [
@@ -280,6 +335,7 @@ def summarize_results(
         },
         "correlation_pairs": corr_pairs,
         "plots": plot_paths,
+        "chart_inventory": chart_inventory.to_dict(orient="records"),
     }
     (evidence_dir / "analysis_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2),
@@ -287,6 +343,23 @@ def summarize_results(
     )
     write_summary_text(summary, numeric_summary, segment_summary, corr, evidence_dir)
     return summary
+
+
+def build_chart_inventory(plot_paths: list[str]) -> pd.DataFrame:
+    records = []
+    for path in plot_paths:
+        details = CHART_DETAILS.get(path, {})
+        records.append(
+            {
+                "chart": details.get("chart", Path(path).stem),
+                "file": path,
+                "title": details.get("title", ""),
+                "x_axis": details.get("x_axis", ""),
+                "y_axis": details.get("y_axis", ""),
+                "interpretation": details.get("interpretation", ""),
+            }
+        )
+    return pd.DataFrame.from_records(records)
 
 
 def row_to_dict(row: pd.Series | None) -> dict[str, float | int] | None:
@@ -333,7 +406,10 @@ def write_summary_text(
 def build_notebook(summary: dict[str, object], notebook_path: Path) -> None:
     notebook_path.parent.mkdir(parents=True, exist_ok=True)
     plots = summary["plots"]
-    plot_markdown = "\n\n".join([f"![{Path(path).stem}](../{path})" for path in plots])
+    plot_markdown = build_plot_markdown(summary)
+    correlation_markdown = build_correlation_markdown(summary)
+    rfm_markdown = build_rfm_markdown(summary)
+    business_markdown = build_business_markdown(summary)
     notebook = {
         "cells": [
             markdown_cell(
@@ -343,10 +419,15 @@ def build_notebook(summary: dict[str, object], notebook_path: Path) -> None:
                 "상품 코드/상품명에서 생성한 NumPy 이미지 배열 피처를 하나의 분석 흐름으로 처리한다."
             ),
             code_cell(
+                "import sys\n"
                 "from pathlib import Path\n"
-                "from src.pipeline import DataAnalyzer\n"
                 "\n"
                 "PROJECT_ROOT = Path.cwd().parent if Path.cwd().name == 'notebooks' else Path.cwd()\n"
+                "if str(PROJECT_ROOT) not in sys.path:\n"
+                "    sys.path.insert(0, str(PROJECT_ROOT))\n"
+                "\n"
+                "from src.pipeline import DataAnalyzer\n"
+                "\n"
                 f"analyzer = DataAnalyzer(PROJECT_ROOT / '{summary['data_file']}')\n"
                 "df = analyzer.load_data()\n"
                 "df.info()\n"
@@ -382,12 +463,10 @@ def build_notebook(summary: dict[str, object], notebook_path: Path) -> None:
                 "corr = analyzer.correlation_matrix(['quantity', 'unit_price_capped', 'amount', 'name_word_count', 'image_mean', 'image_std', 'edge_strength'])\n"
                 "numeric_summary, corr\n"
             ),
+            markdown_cell(correlation_markdown),
             markdown_cell(plot_markdown),
-            markdown_cell(
-                "RFM 세그먼트별 고객 수, 평균 최근성, 평균 구매 빈도, 평균 구매 금액은 "
-                "`evidence/rfm_segment_summary.csv`에 저장했다. "
-                "막대그래프는 세그먼트 규모를, 라인차트는 월별 매출 추세를, 히트맵은 수치 피처 간 상관관계와 코호트 유지율을 확인하는 근거로 사용한다."
-            ),
+            markdown_cell(rfm_markdown),
+            markdown_cell(business_markdown),
         ],
         "metadata": {
             "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
@@ -397,6 +476,101 @@ def build_notebook(summary: dict[str, object], notebook_path: Path) -> None:
         "nbformat_minor": 5,
     }
     notebook_path.write_text(json.dumps(notebook, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def build_plot_markdown(summary: dict[str, object]) -> str:
+    inventory = summary.get("chart_inventory") or build_chart_inventory(list(summary["plots"])).to_dict(orient="records")
+    lines = ["## 차트별 제목과 축 레이블", ""]
+    lines.append("| 차트 | 파일 | 제목 | X축 | Y축 |")
+    lines.append("|---|---|---|---|---|")
+    for row in inventory:
+        lines.append(
+            f"| {row['chart']} | `{row['file']}` | {row['title']} | {row['x_axis']} | {row['y_axis']} |"
+        )
+    lines.append("")
+    for row in inventory:
+        lines.append(f"![{Path(row['file']).stem}](../{row['file']})")
+        if row.get("interpretation"):
+            lines.append("")
+            lines.append(f"- 해석: {row['interpretation']}")
+        lines.append("")
+    return "\n".join(lines).strip()
+
+
+def build_correlation_markdown(summary: dict[str, object]) -> str:
+    pairs = summary.get("correlation_pairs", [])
+    lines = ["## 상관계수 해석", ""]
+    if not pairs:
+        return "\n".join(lines + ["상관계수 결과가 비어 있다."])
+    lines.append("| 변수 쌍 | 상관계수 | 해석과 시사점 |")
+    lines.append("|---|---:|---|")
+    for pair in pairs[:5]:
+        label = str(pair["pair"])
+        value = float(pair["correlation"])
+        if abs(value) >= 0.7:
+            implication = "강한 관계가 있어 한 변수가 변할 때 다른 변수도 함께 움직일 가능성이 높다."
+        elif abs(value) >= 0.2:
+            implication = "약한 관계가 있지만 단독 설명 변수로 쓰기에는 부족하다."
+        else:
+            implication = "관계가 거의 없어 가격/매출 판단에는 다른 피처가 필요하다."
+        lines.append(f"| {label} | {value:.3f} | {implication} |")
+    lines.append("")
+    lines.append("`quantity-amount`처럼 강한 상관이 있는 조합은 대량 주문 관리 지표로 쓰고, 이미지/텍스트 파생 변수는 보조 피처로 제한한다.")
+    return "\n".join(lines)
+
+
+def build_rfm_markdown(summary: dict[str, object]) -> str:
+    segments = summary.get("segments", {})
+    actions = {
+        "VIP": "전용 멤버십과 신상품 선공개로 이탈을 막는다.",
+        "Loyal": "반복 구매 카테고리 추천과 적립 혜택으로 구매 주기를 유지한다.",
+        "New": "첫 구매 후 7일 이내 2회차 구매 쿠폰으로 전환을 유도한다.",
+        "Churned": "마지막 구매 카테고리 기반 윈백 쿠폰과 이탈 사유 설문을 병행한다.",
+        "At Risk": "관심 약화 고객에게 가격/재입고 알림을 보내 반응을 측정한다.",
+        "Big Spenders": "프리미엄 번들, 대량 구매 견적, 전담 상담 링크를 제공한다.",
+        "Regular": "일반 프로모션과 추천 영역으로 유지 비용을 낮춘다.",
+    }
+    lines = [
+        "## RFM 세그먼트별 특징",
+        "",
+        "고객 수, 평균 최근성, 평균 빈도, 평균 구매 금액, 매출 비중을 함께 보아 세그먼트의 운영 우선순위를 정한다.",
+        "",
+        "| 세그먼트 | 고객 수 | 평균 Recency | 평균 Frequency | 평균 Monetary | 매출 비중 | 특징/액션 |",
+        "|---|---:|---:|---:|---:|---:|---|",
+    ]
+    for segment, row in segments.items():
+        lines.append(
+            "| "
+            f"{segment} | {int(row['customers']):,} | {float(row['avg_recency']):.1f}일 | "
+            f"{float(row['avg_frequency']):.2f}회 | {float(row['avg_monetary']):,.2f} | "
+            f"{float(row['revenue_share']):.1%} | {actions.get(segment, '기본 유지 캠페인 대상으로 관리한다.')} |"
+        )
+    return "\n".join(lines)
+
+
+def build_business_markdown(summary: dict[str, object]) -> str:
+    segments = summary.get("segments", {})
+    vip = segments.get("VIP", {})
+    churned = segments.get("Churned", {})
+    new = segments.get("New", {})
+    lines = ["## 비즈니스 인사이트", ""]
+    if vip:
+        lines.append(
+            f"- VIP는 고객 비중 {float(vip['customer_share']):.1%}, 매출 비중 {float(vip['revenue_share']):.1%}이므로 "
+            "전용 혜택의 손익을 마진 데이터와 함께 검증해야 한다."
+        )
+    if churned:
+        lines.append(
+            f"- Churned는 {int(churned['customers']):,}명이고 평균 Recency가 {float(churned['avg_recency']):.1f}일이라 "
+            "윈백 대상 규모가 가장 크지만 계절 구매자를 실제 이탈로 오분류할 수 있다."
+        )
+    if new:
+        lines.append(
+            f"- New는 평균 Frequency가 {float(new['avg_frequency']):.2f}회라 2회차 구매 전환 캠페인의 직접 대상이다."
+        )
+    lines.append("")
+    lines.append("검증에는 캠페인 노출, 클릭, 쿠폰 사용, 반품, 유입 채널, 상품 마진 데이터가 추가로 필요하다.")
+    return "\n".join(lines)
 
 
 def markdown_cell(source: str) -> dict[str, object]:

@@ -120,6 +120,18 @@ IQR 단가 이상치 탐지 결과 Q1=1.25, Q3=4.13, IQR=2.88, 하한=-3.07, 상
 
 ## 시각화 evidence
 
+### 차트별 제목과 축 레이블
+
+| 차트 | 파일 | 제목 | X축 | Y축 |
+|---|---|---|---|---|
+| 히스토그램 | [evidence/histogram_unit_price.png](evidence/histogram_unit_price.png) | Unit Price Distribution After IQR Capping | Unit price capped | Transaction count |
+| 박스플롯 | [evidence/boxplot_outlier_before_after.png](evidence/boxplot_outlier_before_after.png) | Unit Price Outlier Treatment Before vs After | Treatment stage | Unit price |
+| 막대그래프 | [evidence/bar_rfm_segments.png](evidence/bar_rfm_segments.png) | RFM Segment Customer Counts | RFM segment | Customer count |
+| 히트맵 | [evidence/heatmap_correlation.png](evidence/heatmap_correlation.png) | Numeric Feature Correlation Matrix | Feature | Feature |
+| 산점도 | [evidence/scatter_image_mean_price.png](evidence/scatter_image_mean_price.png) | Image Mean vs Unit Price | Image mean | Unit price capped |
+| 라인차트 | [evidence/line_monthly_revenue.png](evidence/line_monthly_revenue.png) | Monthly Revenue Trend | Order month | Revenue |
+| 보너스 코호트 히트맵 | [evidence/bonus_cohort_retention_heatmap.png](evidence/bonus_cohort_retention_heatmap.png) | Cohort Retention Rate | Months since first purchase | First purchase cohort |
+
 히스토그램: 수치형 단가 분포  
 ![히스토그램](evidence/histogram_unit_price.png)
 
@@ -168,6 +180,18 @@ RFM은 양수 거래와 고객 ID가 있는 행만 사용했다. `Recency`는 20
 | Big Spenders | 282 | 6.5% | 102.8일 | 2.16회 | 2,860.61 | 9.1% |
 | Regular | 279 | 6.4% | 15.1일 | 2.18회 | 490.32 | 1.5% |
 | New | 227 | 5.2% | 17.7일 | 1.00회 | 275.76 | 0.7% |
+
+### RFM 세그먼트별 특징과 운영 전략
+
+| 대상 세그먼트 | 데이터 특징 | 운영 해석 | 실행 우선순위 |
+|---|---|---|---|
+| VIP | 고객 945명, 매출 비중 64.4%, 평균 Frequency 11.16회 | 고객 수는 전체의 21.8%지만 매출 의존도가 가장 크다. 혜택 축소나 경쟁사 이동이 전체 매출에 즉시 영향을 줄 수 있다. | 최우선 유지: 전용 멤버십, 신상품 선공개, 무료 배송, 재입고 우선 알림 |
+| Churned | 고객 1,564명, 고객 비중 36.1%, 평균 Recency 193.9일 | 규모는 가장 크지만 최근성이 낮다. 재활성화 비용 대비 반응률을 엄격히 봐야 한다. | 선별 윈백: 마지막 구매 카테고리 기반 쿠폰, 무응답 고객 이탈 사유 설문 |
+| Loyal | 고객 506명, 평균 Frequency 5.16회, 매출 비중 10.6% | VIP보다 금액은 낮지만 반복 구매 습관이 형성되어 있다. 교차 판매로 객단가를 키울 수 있다. | 성장 관리: 반복 구매 상품 추천, 적립 혜택, 묶음 구매 제안 |
+| Big Spenders | 고객 282명, 평균 Monetary 2,860.61, 평균 Recency 102.8일 | 고액 구매력이 있으나 방문 주기가 길다. B2B성 대량 구매나 이벤트성 구매 가능성을 분리해야 한다. | 고액 복귀: 프리미엄 번들, 대량 구매 견적, 전담 상담 링크 |
+| New | 고객 227명, 평균 Frequency 1.00회, 평균 Recency 17.7일 | 최근 유입됐지만 아직 반복 구매가 검증되지 않았다. 첫 구매 경험 직후의 접점이 중요하다. | 2회차 전환: 첫 구매 후 7일 이내 보완 상품 추천과 배송비 쿠폰 |
+| At Risk | 고객 535명, 평균 Frequency 1.56회, 평균 Recency 51.1일 | 완전 이탈 전 단계로 볼 수 있다. 저비용 알림과 가격 민감도 테스트가 적합하다. | 조기 방어: 가격 인하 알림, 재입고 알림, 소액 쿠폰 A/B 테스트 |
+| Regular | 고객 279명, 평균 Monetary 490.32, 매출 비중 1.5% | 최근성은 좋지만 금액 기여가 작다. 과도한 할인보다 기본 추천 품질 개선이 적합하다. | 저비용 유지: 일반 추천 영역, 카테고리 뉴스레터 |
 
 ## 비즈니스 인사이트
 
@@ -240,7 +264,8 @@ python -m pytest tests/test_pipeline.py -q
 | [evidence/correlation_matrix.csv](evidence/correlation_matrix.csv) | 상관계수 행렬 |
 | [evidence/rfm_customers.csv](evidence/rfm_customers.csv) | 고객별 RFM 점수와 세그먼트 |
 | [evidence/rfm_segment_summary.csv](evidence/rfm_segment_summary.csv) | 세그먼트별 고객 수, 평균 RFM, 매출 비중 |
+| [evidence/chart_inventory.csv](evidence/chart_inventory.csv) | 6종 차트의 제목, 축 레이블, 해석 |
 | [evidence/test_output.txt](evidence/test_output.txt) | `DataAnalyzer` 단위 테스트 실행 결과 |
 | [notebooks/analysis_report.ipynb](notebooks/analysis_report.ipynb) | 마크다운 해석과 재현 코드가 포함된 분석 노트북 |
 
-단위 테스트는 `DataAnalyzer`의 컬럼 정규화, 그룹별 결측치 대치, IQR 이상치 탐지, NumPy 이미지 피처, CSV 이미지 배열 문자열 복구, RFM 세그먼트 산출을 검증한다. 실행 결과는 6개 테스트 통과다.
+단위 테스트는 `DataAnalyzer`의 컬럼 정규화, 그룹별 결측치 대치, IQR 이상치 탐지, NumPy 이미지 피처, CSV 이미지 배열 문자열 복구, RFM 세그먼트 산출, 노트북 필수 해석 섹션, README 인사이트 구조를 검증한다. 실행 결과는 8개 테스트 통과다.
