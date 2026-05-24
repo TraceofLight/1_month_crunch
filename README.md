@@ -16,7 +16,7 @@ python -m pytest -q
 ```python
 from main import search
 
-results: list[tuple[float, int, str]] = search("space shuttle nasa mission")
+results: list[tuple[float, int, str]] = search("space shuttle nasa mission", topk=5)
 ```
 
 CLI 예시 출력:
@@ -203,7 +203,7 @@ Log와 Double Normalization은 반복 단어의 영향력을 눌러 분류 성�
 
 ```text
 python -m pytest -q
-8 passed in 1.26s
+9 passed
 ```
 
 ## 오분류 분석

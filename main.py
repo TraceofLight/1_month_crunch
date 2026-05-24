@@ -45,12 +45,12 @@ def _default_engine(sample_per_class: int = 200, random_state: int = 42) -> Sear
     return SearchEngine.from_documents(ordered, preprocessor=preprocessor)
 
 
-def search(query: str) -> list[tuple[float, int, str]]:
+def search(query: str, topk: int = 5) -> list[tuple[float, int, str]]:
     """Return [(score, doc_id, text_snippet), ...] for the default corpus."""
 
     return [
         (result.score, result.doc_id, result.snippet)
-        for result in _default_engine().search(query, topk=5)
+        for result in _default_engine().search(query, topk=topk)
     ]
 
 
