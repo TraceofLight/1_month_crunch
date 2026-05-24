@@ -80,12 +80,12 @@ Dockerfile                       # 컨테이너 실행 환경
 |---|---|---|
 | `load_data()` | Kaggle/UCI 컬럼명을 `invoice_no`, `stock_code`, `product_name`, `quantity`, `order_date`, `unit_price`, `customer_id`, `country`로 표준화하고 `amount`, `category`를 추가한다. | `nrows`, `encoding` |
 | `handle_missing_values()` | 상품군별 중앙값/평균으로 수치 결측치를 대치하고 텍스트 결측치를 지정 문자열로 채운다. | `numeric_strategy`, `group_col`, `numeric_cols`, `text_fill` |
-| `engineer_multimodal_features()` | 상품명 단어 수/길이와 8x8 이미지 배열의 평균, 표준편차, 엣지 강도를 생성한다. | `image_size`, `image_col`, `store_arrays` |
+| `engineer_multimodal_features()` | 상품명 단어 수/길이와 8x8 이미지 배열의 평균, 표준편차, 엣지 강도를 생성한다. `image_col`이 있으면 `ast.literal_eval` 또는 `np.fromstring`으로 CSV 문자열 배열을 복구한다. | `image_size`, `image_col`, `store_arrays` |
 | `detect_outliers()` | Q1, Q3, IQR, 하한, 상한을 직접 계산해 이상치 행과 경계를 반환한다. | `column`, `threshold` |
 | `cap_outliers()` | IQR 경계로 winsorizing한 컬럼을 추가한다. | `column`, `threshold`, `output_col` |
 | `calculate_rfm()` | 고객별 Recency, Frequency, Monetary와 1~5점 R/F/M 점수, 세그먼트를 계산한다. | `customer_col`, `date_col`, `amount_col`, `reference_date` |
 
-이미지 피처는 반복문으로 행마다 처리하지 않고 `image_tensor.mean(axis=(1, 2))`, `image_tensor.std(axis=(1, 2))`, `np.diff()`를 사용해 전체 배열을 한 번에 계산한다. 텍스트 피처는 Pandas 문자열 벡터 연산으로 `name_word_count`, `name_length`를 만든다.
+이미지 피처는 반복문으로 행마다 처리하지 않고 `image_tensor.mean(axis=(1, 2))`, `image_tensor.std(axis=(1, 2))`, `np.diff()`를 사용해 전체 배열을 한 번에 계산한다. 텍스트 피처는 Pandas 문자열 벡터 연산으로 `name_word_count`, `name_length`를 만든다. 실제 이미지 배열 컬럼이 제공되는 경우 리스트 문자열(`"[[0, 1], [2, 3]]"`)과 공백 구분 문자열(`"0 1 2 3"`)을 모두 NumPy 배열로 복구한 뒤 동일한 벡터 연산 경로를 사용한다.
 
 ## EDA 결과와 해석
 
@@ -207,7 +207,7 @@ RFM은 양수 거래와 고객 ID가 있는 행만 사용했다. `Recency`는 20
 
 - 고객 ID 결측을 임의로 채우면 서로 다른 고객의 거래가 합쳐져 Frequency와 Monetary가 부풀려진다. 그래서 결측 고객 ID는 RFM에서 제외했다.
 - 음수 수량과 음수 금액은 취소/반품을 의미할 수 있다. RFM은 양수 거래만 사용하고, EDA에는 원본 분포와 이상치 처리 결과를 모두 남겼다.
-- 상품 이미지 배열은 실제 사진이 아니라 원천 상품 식별자에서 만든 재현 가능한 배열 피처다. 가격 예측이나 시각 품질 평가에는 사용할 수 없고, 실제 이미지가 제공되면 `image_col`에 배열을 넣어 같은 피처 추출 메서드로 대체해야 한다.
+- 기본 상품 이미지 배열은 실제 사진이 아니라 원천 상품 식별자에서 만든 재현 가능한 배열 피처다. 가격 예측이나 시각 품질 평가에는 사용할 수 없고, 실제 이미지가 제공되면 `image_col`에 배열 문자열 또는 NumPy 배열을 넣어 같은 피처 추출 메서드로 대체해야 한다.
 - 단가 이상치 상한 8.45는 전체 상품을 하나의 분포로 본 값이다. 카테고리별 고가 상품이 많은 실제 서비스에서는 카테고리별 IQR 또는 마진 기반 임계값을 별도로 검증해야 한다.
 - Recency 기준일은 데이터 최종 거래일이다. 운영 환경에서는 분석 실행일 또는 캠페인 발송일을 기준으로 고정해야 세그먼트가 시간에 따라 일관된다.
 
@@ -240,6 +240,7 @@ python -m pytest tests/test_pipeline.py -q
 | [evidence/correlation_matrix.csv](evidence/correlation_matrix.csv) | 상관계수 행렬 |
 | [evidence/rfm_customers.csv](evidence/rfm_customers.csv) | 고객별 RFM 점수와 세그먼트 |
 | [evidence/rfm_segment_summary.csv](evidence/rfm_segment_summary.csv) | 세그먼트별 고객 수, 평균 RFM, 매출 비중 |
+| [evidence/test_output.txt](evidence/test_output.txt) | `DataAnalyzer` 단위 테스트 실행 결과 |
 | [notebooks/analysis_report.ipynb](notebooks/analysis_report.ipynb) | 마크다운 해석과 재현 코드가 포함된 분석 노트북 |
 
-단위 테스트는 `DataAnalyzer`의 컬럼 정규화, 그룹별 결측치 대치, IQR 이상치 탐지, NumPy 이미지 피처, RFM 세그먼트 산출을 검증한다. 실행 결과는 5개 테스트 통과다.
+단위 테스트는 `DataAnalyzer`의 컬럼 정규화, 그룹별 결측치 대치, IQR 이상치 탐지, NumPy 이미지 피처, CSV 이미지 배열 문자열 복구, RFM 세그먼트 산출을 검증한다. 실행 결과는 6개 테스트 통과다.

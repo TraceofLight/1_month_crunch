@@ -308,13 +308,10 @@ class DataAnalyzer:
         return pixels.astype(np.float32).reshape(len(df), image_size, image_size)
 
     def _stack_image_column(self, series: pd.Series, image_size: int) -> np.ndarray:
-        parsed = series.map(self._parse_image_value).to_numpy()
+        parsed = series.map(
+            lambda value: self._normalize_image_array(self._parse_image_value(value), image_size=image_size)
+        ).to_numpy()
         tensor = np.stack(parsed).astype(np.float32)
-        if tensor.ndim == 4:
-            tensor = tensor.mean(axis=3)
-        if tensor.shape[1] != image_size or tensor.shape[2] != image_size:
-            tensor = tensor[:, :: max(tensor.shape[1] // image_size, 1), :: max(tensor.shape[2] // image_size, 1)]
-            tensor = tensor[:, :image_size, :image_size]
         return tensor
 
     @staticmethod
@@ -324,8 +321,42 @@ class DataAnalyzer:
         if isinstance(value, list):
             return np.asarray(value)
         if isinstance(value, str):
-            return np.asarray(ast.literal_eval(value))
+            text = value.strip()
+            try:
+                return np.asarray(ast.literal_eval(text))
+            except (SyntaxError, ValueError):
+                cleaned = text.replace("[", " ").replace("]", " ").replace(",", " ")
+                parsed = np.fromstring(cleaned, sep=" ")
+                if parsed.size == 0:
+                    raise ValueError(f"Could not parse image array string: {value!r}")
+                return parsed
         raise TypeError(f"Unsupported image value type: {type(value)!r}")
+
+    @staticmethod
+    def _normalize_image_array(value: np.ndarray, image_size: int) -> np.ndarray:
+        array = np.asarray(value)
+        if array.ndim == 1:
+            if array.size == image_size * image_size:
+                side = image_size
+            else:
+                side = int(np.sqrt(array.size))
+                if side * side != array.size:
+                    raise ValueError(f"Flat image array length must be a square number: {array.size}")
+            array = array.reshape(side, side)
+        elif array.ndim == 3:
+            array = array.mean(axis=2)
+        elif array.ndim != 2:
+            raise ValueError(f"Image array must be 1D, 2D, or 3D, got {array.ndim}D")
+
+        if array.shape != (image_size, image_size):
+            row_step = max(array.shape[0] // image_size, 1)
+            col_step = max(array.shape[1] // image_size, 1)
+            array = array[::row_step, ::col_step][:image_size, :image_size]
+            pad_rows = image_size - array.shape[0]
+            pad_cols = image_size - array.shape[1]
+            if pad_rows > 0 or pad_cols > 0:
+                array = np.pad(array, ((0, max(pad_rows, 0)), (0, max(pad_cols, 0))), mode="edge")
+        return array.astype(np.float32)
 
     @staticmethod
     def _score_series(series: pd.Series, higher_is_better: bool, buckets: int = 5) -> pd.Series:

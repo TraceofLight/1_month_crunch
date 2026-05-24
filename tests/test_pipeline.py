@@ -106,6 +106,33 @@ def test_multimodal_feature_engineering_uses_numpy_tensor(tmp_path):
     )
 
 
+def test_multimodal_feature_engineering_parses_space_separated_image_arrays(tmp_path):
+    df = pd.DataFrame(
+        {
+            "InvoiceNo": ["A1", "A2"],
+            "StockCode": ["S1", "S2"],
+            "Description": ["RED HEART MUG", "BLUE BAG"],
+            "Quantity": [1, 2],
+            "InvoiceDate": ["2024-01-01", "2024-01-02"],
+            "UnitPrice": [10.0, 20.0],
+            "CustomerID": [101, 102],
+            "Country": ["UK", "UK"],
+            "ImageArray": ["0 1 2 3", "4 5 6 7"],
+        }
+    )
+    path = tmp_path / "image_arrays.csv"
+    df.to_csv(path, index=False)
+    analyzer = DataAnalyzer(path)
+    analyzer.load_data()
+
+    featured = analyzer.engineer_multimodal_features(image_size=2, image_col="image_array", store_arrays=False)
+
+    expected = np.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]], dtype=np.float32)
+    assert analyzer.image_tensor.shape == (2, 2, 2)
+    np.testing.assert_allclose(analyzer.image_tensor, expected)
+    np.testing.assert_allclose(featured["image_mean"].to_numpy(), expected.mean(axis=(1, 2)))
+
+
 def test_calculate_rfm_assigns_actionable_segments(tmp_path):
     analyzer = DataAnalyzer(write_sample_csv(tmp_path))
     analyzer.load_data()
