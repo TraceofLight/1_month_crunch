@@ -69,7 +69,7 @@
     "matches": [
       {
         "token": "괜찮겠다",
-        "lexicon_key": "괜찮고",
+        "lexicon_key": "괜찮",
         "base_score": 1,
         "multiplier": 1.0,
         "negation_count": 0,
@@ -106,10 +106,59 @@
     "matches": []
   },
   {
-    "text": "아~여자들이보면 공감가는그런영화?진심 웃겨죽는줄알앗음, 초콜릿분수대 밀어서 엎을려고하는데, 꿈쩍도 안해, 아~이여자 왜이렇게 리얼하게 연기한거야, 진짜 울뻔했으무 아놔~ㅎㅎ",
+    "text": "주성치영화라서 10점주고싶었지만...최근에본 영화중에 너무 재밌게 봤는데 너무잔인하더라구요 그래서1점뺌 삼정법사 손오공의 계기랄까..스토리도 그렇고 흥미진진 재밌었음 근데 너무 쓸데없이 잔인함",
     "gold": "positive",
     "predicted": "negative",
-    "score": 0.0,
-    "matches": []
+    "score": -1.8,
+    "matches": [
+      {
+        "token": "재밌게",
+        "lexicon_key": "재밌",
+        "base_score": 2,
+        "multiplier": 1.4,
+        "negation_count": 0,
+        "contribution": 2.8
+      },
+      {
+        "token": "너무잔인하더라구요",
+        "lexicon_key": "너무하다",
+        "base_score": -2,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": -2.0
+      },
+      {
+        "token": "흥미진진",
+        "lexicon_key": "흥미",
+        "base_score": 1,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": 1.0
+      },
+      {
+        "token": "재밌었음",
+        "lexicon_key": "재밌",
+        "base_score": 2,
+        "multiplier": 1.0,
+        "negation_count": 0,
+        "contribution": 2.0
+      },
+      {
+        "token": "쓸데없이",
+        "lexicon_key": "쓸데없이",
+        "base_score": -2,
+        "multiplier": 1.4,
+        "negation_count": 0,
+        "contribution": -2.8
+      },
+      {
+        "token": "잔인함",
+        "lexicon_key": "잔인",
+        "base_score": -2,
+        "multiplier": 1.4,
+        "negation_count": 0,
+        "contribution": -2.8
+      }
+    ]
   }
 ]

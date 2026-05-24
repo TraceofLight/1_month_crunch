@@ -57,3 +57,13 @@ def test_single_character_stems_do_not_overmatch_common_nouns():
 
     assert result["score"] == 2.0
     assert [match["token"] for match in result["matches"]] == ["좋아요"]
+
+
+def test_builtin_lexicon_satisfies_minimum_size_without_external_file(tmp_path):
+    missing_lexicon = tmp_path / "missing_sentiword.json"
+
+    analyzer = SentimentAnalyzer(lexicon_path=missing_lexicon)
+
+    assert len(analyzer.lexicon) >= 200
+    assert analyzer.analyze("배송이 빠르고 상담이 친절해요")["label"] == "positive"
+    assert analyzer.analyze("환불이 지연되고 품질이 엉망이에요")["label"] == "negative"
