@@ -1,0 +1,26 @@
+.rating {
+  display: inline-flex;
+  gap: 2px;
+}
+.rating__star {
+  font-size: 18px;
+  color: var(--border);
+  line-height: 1;
+}
+.rating__star.is-active {
+  color: var(--accent);
+}
+.rating__btn {
+  background: none;
+  border: 0;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.rating__btn:hover {
+  background: var(--surface-2);
+}
+.rating__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

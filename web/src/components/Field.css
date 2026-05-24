@@ -1,0 +1,28 @@
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.input--error {
+  border-color: var(--danger);
+}
+.input--error:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
+}
+.input--textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+.field .req {
+  color: var(--danger);
+  margin-left: 2px;
+}

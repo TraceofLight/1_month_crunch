@@ -1,0 +1,51 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 16px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+.state__title {
+  color: var(--text);
+  font-size: 16px;
+}
+.state__desc {
+  margin: 0;
+  font-size: 13px;
+}
+.state__spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  animation: state-spin 700ms linear infinite;
+}
+@keyframes state-spin {
+  to { transform: rotate(360deg); }
+}
+.state--error {
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.state--error .state__title { color: var(--danger); }
+.state__retry {
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+}
+.state__action {
+  margin-top: 8px;
+}

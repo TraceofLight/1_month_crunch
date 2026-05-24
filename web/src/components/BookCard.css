@@ -1,0 +1,26 @@
+.book-card-link {
+  display: block;
+  color: inherit;
+}
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.book-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+.book-card__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.book-card__author {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}

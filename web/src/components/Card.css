@@ -1,0 +1,19 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: inherit;
+  display: block;
+}
+.card--sm { padding: 12px; }
+.card--md { padding: 16px; }
+.card--lg { padding: 24px; }
+.card--interactive {
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+.card--interactive:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}

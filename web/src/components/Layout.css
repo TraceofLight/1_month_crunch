@@ -1,0 +1,55 @@
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+}
+.header__brand {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text);
+}
+.header__email {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.nav__inner {
+  display: flex;
+  gap: 4px;
+  padding: 4px 20px;
+  overflow-x: auto;
+}
+.nav__link {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-muted);
+  border-radius: var(--radius) var(--radius) 0 0;
+  white-space: nowrap;
+}
+.nav__link:hover {
+  color: var(--text);
+}
+.nav__link.is-active {
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 16px 0;
+  text-align: center;
+  color: var(--text-muted);
+}

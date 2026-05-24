@@ -1,0 +1,30 @@
+# Node / Vite
+web/node_modules/
+web/dist/
+web/.vite/
+web/.vercel/
+node_modules/
+
+# 환경변수 (반드시 추적 금지)
+web/.env
+web/.env.local
+web/.env.*.local
+.env
+.env.local
+
+# 로그
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python 잔재
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
