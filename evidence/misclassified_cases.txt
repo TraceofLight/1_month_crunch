@@ -1,0 +1,57 @@
+=== 오분류 케이스 분석 ===
+
+[케이스 1]
+예측: talk.politics.misc / 실제: sci.space
+문서 ID: 80
+예측 클래스 쪽으로 작용한 단어: war, claim, evidence, perhaps, support
+문서: At one time there was speculation that the first spacewalk (Alexei Leonov ?) was a staged fake. Has any evidence to support or contradict this claim emerged ? Was this claim perhaps another fevered Cold War hallucination ?
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 2]
+예측: sci.space / 실제: comp.graphics
+문서 ID: 437
+예측 클래스 쪽으로 작용한 단어: space, system, something, phase, like
+문서: I'm interested in simulating reverse (or negative) color video mathematically. What is the transform? Is it a simple reversal of the hue value in the HSV color space? Is it a manipulation in the YUV color space? How is it related to solarization? If you want to see something truly wild, turn on the reverse video effect on a camcorder so equipped, and point i
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 3]
+예측: comp.graphics / 실제: sci.space
+문서 ID: 576
+예측 클래스 쪽으로 작용한 단어: used, language, sorry, talking
+문서: Sorry, _perijoves_...I'm not used to talking this language.
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 4]
+예측: comp.graphics / 실제: sci.space
+문서 ID: 227
+예측 클래스 쪽으로 작용한 단어: format, ftp, find, use, picture
+문서: Someone named Hansk asked about pictures. Well, there is an archive of portraits in xfaces format at ftp.uu.net. Henry Spencer's picture is there somewhere, along with several thousand others. I don't remember the path, though it should be easy to find. Remember, though, it seems to use both internet and uucp addresses.
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 5]
+예측: rec.sport.baseball / 실제: comp.graphics
+문서 ID: 643
+예측 클래스 쪽으로 작용한 단어: go, home, albany, heavy, bitnet
+문서: -- ||||||||||| ||||||||||| _|||||||||||_______________________|||||||||||_ jr0930@eve.albany.edu -|||||||||||-----------------------|||||||||||- jr0930@Albnyvms.bitnet ||||||||||| GO HEAVY OR GO HOME |||||||||||
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 6]
+예측: talk.politics.misc / 실제: sci.space
+문서 ID: 235
+예측 클래스 쪽으로 작용한 단어: state, don, think, really, processes
+문서: I don't think so at first, but solid state offered better reliabity, id bet, and any lower costs would be only after the processes really scaled up.
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 7]
+예측: talk.politics.misc / 실제: rec.sport.baseball
+문서 ID: 482
+예측 클래스 쪽으로 작용한 단어: people, made, school, well, tell
+문서: Heheheheh.. Sorry, Roger, I wronged you.. You're not boring ALL the time.. This one is a classic. 'cordially, as always' HEHEHEHEHHE! Are you a jerk? Do people hate you? Are you no fun at parties? Well! Come to the ROGER MAYNARD SCHOOL OF CORDIALITY! We can teach you to be 'cordial' with the best of them! Use such time honored 'cordiality' techniques as: 1) 
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.
+
+[케이스 8]
+예측: comp.graphics / 실제: rec.sport.baseball
+문서 ID: 471
+예측 클래스 쪽으로 작용한 단어: information, using, line, drop, would
+문서: What's with John Franco? The Mets are hardly using him. I heard he was completely recovered, but now I'm not so sure. If there is anybody out there with information about Franco, I would appreciate it if you could drop me a line.
+원인: 단어 빈도 기반 특성이 주제 단어의 문맥, 부정, 인용 관계를 구분하지 못해 예측 클래스에서 자주 등장한 표면 단어에 끌린 사례다.

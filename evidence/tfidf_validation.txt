@@ -1,0 +1,9 @@
+=== TF-IDF 구현 검증 결과 ===
+TF-IDF 행렬 shape: (800, 14401)
+[검증] 직접 구현 vs Scikit-learn
+  - sklearn 설정: tokenizer=str.split, lowercase=False, token_pattern=None
+  - sklearn 설정: smooth_idf=True, sublinear_tf=False, norm='l2'
+  - 직접 구현 설정: raw count TF, smooth_idf=True, sublinear_tf=False, norm='l2'
+  - 최대 오차: 5.218048215738e-15
+  - 평균 오차: 1.008411539472e-19
+  - 결과: PASS (허용 오차 1e-6)
