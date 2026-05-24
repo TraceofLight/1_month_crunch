@@ -1,0 +1,167 @@
+{
+  "data_file": "data/ecommerce/data.csv",
+  "row_count": 541909,
+  "column_count": 17,
+  "order_start": "2010-12-01",
+  "order_end": "2011-12-09",
+  "customers": 4338,
+  "missing_before_total": 136534,
+  "missing_after_total": 135080,
+  "unit_price_outliers": 39627,
+  "unit_price_outlier_rate": 0.07312482354048373,
+  "outlier_bounds": {
+    "q1": 1.25,
+    "q3": 4.13,
+    "iqr": 2.88,
+    "lower": -3.0700000000000003,
+    "upper": 8.45
+  },
+  "unit_price_mean": 4.611113626088514,
+  "unit_price_median": 2.08,
+  "amount_mean": 17.987794876999644,
+  "amount_q3": 17.4,
+  "image_mean_avg": 127.4443359375,
+  "top_segment": {
+    "name": "Churned",
+    "customers": 1564
+  },
+  "vip": {
+    "customers": 945,
+    "avg_recency": 11.4994708994709,
+    "avg_frequency": 11.157671957671958,
+    "avg_monetary": 6077.304592592593,
+    "customer_share": 0.21784232365145229,
+    "revenue_share": 0.6444607745339718
+  },
+  "churned": {
+    "customers": 1564,
+    "avg_recency": 193.8631713554987,
+    "avg_frequency": 1.9814578005115089,
+    "avg_monetary": 567.5043171355499,
+    "customer_share": 0.36053480866758875,
+    "revenue_share": 0.09960005888649755
+  },
+  "loyal": {
+    "customers": 506,
+    "avg_recency": 36.42885375494071,
+    "avg_frequency": 5.158102766798419,
+    "avg_monetary": 1860.1720770750987,
+    "customer_share": 0.11664361456892577,
+    "revenue_share": 0.10562271204951901
+  },
+  "new": {
+    "customers": 227,
+    "avg_recency": 17.709251101321588,
+    "avg_frequency": 1.0,
+    "avg_monetary": 275.7630396475771,
+    "customer_share": 0.05232826187183034,
+    "revenue_share": 0.007024502825406742
+  },
+  "segments": {
+    "Churned": {
+      "customers": 1564,
+      "avg_recency": 193.8631713554987,
+      "avg_frequency": 1.9814578005115089,
+      "avg_monetary": 567.5043171355499,
+      "customer_share": 0.36053480866758875,
+      "revenue_share": 0.09960005888649755
+    },
+    "VIP": {
+      "customers": 945,
+      "avg_recency": 11.4994708994709,
+      "avg_frequency": 11.157671957671958,
+      "avg_monetary": 6077.304592592593,
+      "customer_share": 0.21784232365145229,
+      "revenue_share": 0.6444607745339718
+    },
+    "At Risk": {
+      "customers": 535,
+      "avg_recency": 51.11588785046729,
+      "avg_frequency": 1.5644859813084113,
+      "avg_monetary": 623.2527663551401,
+      "customer_share": 0.12332872291378516,
+      "revenue_share": 0.0374172334598589
+    },
+    "Loyal": {
+      "customers": 506,
+      "avg_recency": 36.42885375494071,
+      "avg_frequency": 5.158102766798419,
+      "avg_monetary": 1860.1720770750987,
+      "customer_share": 0.11664361456892577,
+      "revenue_share": 0.10562271204951901
+    },
+    "Big Spenders": {
+      "customers": 282,
+      "avg_recency": 102.83687943262412,
+      "avg_frequency": 2.1560283687943262,
+      "avg_monetary": 2860.6104290780145,
+      "customer_share": 0.06500691562932227,
+      "revenue_share": 0.09052353451780674
+    },
+    "Regular": {
+      "customers": 279,
+      "avg_recency": 15.11111111111111,
+      "avg_frequency": 2.175627240143369,
+      "avg_monetary": 490.32494623655913,
+      "customer_share": 0.06431535269709543,
+      "revenue_share": 0.015351183726938953
+    },
+    "New": {
+      "customers": 227,
+      "avg_recency": 17.709251101321588,
+      "avg_frequency": 1.0,
+      "avg_monetary": 275.7630396475771,
+      "customer_share": 0.05232826187183034,
+      "revenue_share": 0.007024502825406742
+    }
+  },
+  "correlation_pairs": [
+    {
+      "pair": "quantity-amount",
+      "correlation": 0.8866810911791394
+    },
+    {
+      "pair": "edge_strength-image_std",
+      "correlation": 0.235137212081123
+    },
+    {
+      "pair": "name_word_count-image_std",
+      "correlation": 0.038056871392469015
+    },
+    {
+      "pair": "image_mean-name_word_count",
+      "correlation": -0.03530207060169012
+    },
+    {
+      "pair": "name_word_count-unit_price_capped",
+      "correlation": -0.030858268969861564
+    }
+  ],
+  "plots": [
+    "evidence/histogram_unit_price.png",
+    "evidence/boxplot_outlier_before_after.png",
+    "evidence/bar_rfm_segments.png",
+    "evidence/heatmap_correlation.png",
+    "evidence/scatter_image_mean_price.png",
+    "evidence/line_monthly_revenue.png",
+    "evidence/bonus_cohort_retention_heatmap.png"
+  ],
+  "basic_eda": {
+    "row_count": 541909,
+    "column_count": 10,
+    "columns": [
+      "invoice_no",
+      "stock_code",
+      "product_name",
+      "quantity",
+      "order_date",
+      "unit_price",
+      "customer_id",
+      "country",
+      "category",
+      "amount"
+    ],
+    "info": "<class 'pandas.DataFrame'>\nRangeIndex: 541909 entries, 0 to 541908\nData columns (total 10 columns):\n #   Column        Non-Null Count   Dtype         \n---  ------        --------------   -----         \n 0   invoice_no    541909 non-null  str           \n 1   stock_code    541909 non-null  str           \n 2   product_name  540455 non-null  str           \n 3   quantity      541909 non-null  int64         \n 4   order_date    541909 non-null  datetime64[us]\n 5   unit_price    541909 non-null  float64       \n 6   customer_id   406829 non-null  float64       \n 7   country       541909 non-null  str           \n 8   category      541909 non-null  str           \n 9   amount        541909 non-null  float64       \ndtypes: datetime64[us](1), float64(3), int64(1), str(5)\nmemory usage: 41.3 MB\n",
+    "describe_path": "evidence/describe.csv"
+  }
+}

@@ -1,0 +1,17 @@
+<class 'pandas.DataFrame'>
+RangeIndex: 541909 entries, 0 to 541908
+Data columns (total 10 columns):
+ #   Column        Non-Null Count   Dtype         
+---  ------        --------------   -----         
+ 0   invoice_no    541909 non-null  str           
+ 1   stock_code    541909 non-null  str           
+ 2   product_name  540455 non-null  str           
+ 3   quantity      541909 non-null  int64         
+ 4   order_date    541909 non-null  datetime64[us]
+ 5   unit_price    541909 non-null  float64       
+ 6   customer_id   406829 non-null  float64       
+ 7   country       541909 non-null  str           
+ 8   category      541909 non-null  str           
+ 9   amount        541909 non-null  float64       
+dtypes: datetime64[us](1), float64(3), int64(1), str(5)
+memory usage: 41.3 MB
