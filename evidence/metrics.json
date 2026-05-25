@@ -1,0 +1,196 @@
+{
+  "dataset": {
+    "samples": 10000,
+    "features": [
+      "age",
+      "annual_income",
+      "spending_score",
+      "debt_ratio",
+      "credit_card_count",
+      "overdue_count_6m"
+    ],
+    "overdue_rate": 0.1201,
+    "credit_score_min": 78.0,
+    "credit_score_max": 676.0
+  },
+  "split": {
+    "train_rows": 8000,
+    "test_rows": 2000,
+    "test_size": 0.2,
+    "stratified_by": "is_overdue",
+    "random_state": 42,
+    "classification_train_positive_rate": 0.120125,
+    "classification_test_positive_rate": 0.12
+  },
+  "best_random_forest_params": {
+    "model__max_depth": 8,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 5,
+    "model__n_estimators": 160
+  },
+  "best_random_forest_cv_auc": 0.9467030921879086,
+  "classification": [
+    {
+      "model": "Logistic Regression (balanced)",
+      "accuracy": 0.881,
+      "precision": 0.5023696682464455,
+      "recall": 0.8833333333333333,
+      "f1_score": 0.6404833836858006,
+      "auc": 0.9492116477272726
+    },
+    {
+      "model": "Random Forest (GridSearchCV)",
+      "accuracy": 0.8865,
+      "precision": 0.5165394402035624,
+      "recall": 0.8458333333333333,
+      "f1_score": 0.641390205371248,
+      "auc": 0.940262784090909
+    },
+    {
+      "model": "규칙 기반 베이스라인",
+      "accuracy": 0.7575,
+      "precision": 0.296849087893864,
+      "recall": 0.7458333333333333,
+      "f1_score": 0.4246737841043891,
+      "auc": 0.7524621212121212
+    }
+  ],
+  "regression": [
+    {
+      "model": "Lasso",
+      "alpha": 0.01,
+      "rmse": 30.118278104856145,
+      "mae": 23.919503469008674,
+      "r2": 0.8612544390181955
+    },
+    {
+      "model": "Lasso",
+      "alpha": 0.1,
+      "rmse": 30.12080433861273,
+      "mae": 23.922252421318102,
+      "r2": 0.8612311628921085
+    },
+    {
+      "model": "Ridge",
+      "alpha": 0.01,
+      "rmse": 30.120841021082885,
+      "mae": 23.92163930187777,
+      "r2": 0.8612308248940412
+    },
+    {
+      "model": "Ridge",
+      "alpha": 0.1,
+      "rmse": 30.120841299596943,
+      "mae": 23.921612122603133,
+      "r2": 0.8612308223277673
+    },
+    {
+      "model": "Ridge",
+      "alpha": 1.0,
+      "rmse": 30.12084995917291,
+      "mae": 23.92134162568306,
+      "r2": 0.8612307425370073
+    },
+    {
+      "model": "Ridge",
+      "alpha": 10.0,
+      "rmse": 30.121490573679626,
+      "mae": 23.919141851375258,
+      "r2": 0.8612248397457594
+    },
+    {
+      "model": "Ridge",
+      "alpha": 100.0,
+      "rmse": 30.16269533629404,
+      "mae": 23.93599881619629,
+      "r2": 0.8608449044545877
+    },
+    {
+      "model": "Lasso",
+      "alpha": 1.0,
+      "rmse": 30.22027335961306,
+      "mae": 23.97694164074259,
+      "r2": 0.8603131268648613
+    },
+    {
+      "model": "Lasso",
+      "alpha": 10.0,
+      "rmse": 35.23679384199028,
+      "mae": 28.21390698849289,
+      "r2": 0.8100883574423274
+    },
+    {
+      "model": "Lasso",
+      "alpha": 100.0,
+      "rmse": 80.87369172908224,
+      "mae": 64.730243625,
+      "r2": -0.0003992454252514932
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "annual_income",
+      "importance": 0.3111637762100809
+    },
+    {
+      "feature": "overdue_count_6m",
+      "importance": 0.24943743623249776
+    },
+    {
+      "feature": "income_band_low",
+      "importance": 0.13011840438657066
+    },
+    {
+      "feature": "debt_ratio",
+      "importance": 0.10045623890259242
+    },
+    {
+      "feature": "income_band_high",
+      "importance": 0.04859628879220744
+    },
+    {
+      "feature": "income_band_middle",
+      "importance": 0.03382648515119885
+    },
+    {
+      "feature": "debt_level_high",
+      "importance": 0.03300620516243288
+    },
+    {
+      "feature": "spending_score",
+      "importance": 0.02338701014215237
+    },
+    {
+      "feature": "debt_level_low",
+      "importance": 0.02292587635685327
+    },
+    {
+      "feature": "age",
+      "importance": 0.018090557606842323
+    },
+    {
+      "feature": "credit_card_count",
+      "importance": 0.011385838813369716
+    },
+    {
+      "feature": "debt_level_middle",
+      "importance": 0.008830040786295843
+    },
+    {
+      "feature": "age_band_45_50s",
+      "importance": 0.002746382000156799
+    },
+    {
+      "feature": "age_band_30_40s",
+      "importance": 0.002344913859357963
+    },
+    {
+      "feature": "age_band_60s",
+      "importance": 0.0019051059954624612
+    },
+    {
+      "feature": "age_band_20s",
+      "importance": 0.0017794396019285253
+    }
+  ]
+}
