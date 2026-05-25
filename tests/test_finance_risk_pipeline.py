@@ -119,3 +119,33 @@ def test_run_experiment_writes_expected_evidence_files(tmp_path):
     }
     assert expected_files <= {path.name for path in evidence_dir.iterdir()}
     assert set(FEATURE_COLUMNS) <= set(results["feature_importance"]["feature"].tolist())
+
+
+def test_readme_covers_required_decision_rationale_and_operational_tradeoffs():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    required_phrases = [
+        "python data_gen.py",
+        "finance_data.csv",
+        "10,000",
+        "규칙 기반 베이스라인",
+        "Pipeline",
+        "ColumnTransformer",
+        "데이터 누수",
+        'class_weight="balanced"',
+        "혼동 행렬",
+        "ROC-AUC",
+        "Ridge와 Lasso",
+        "alpha 후보 `0.01, 0.1, 1, 10, 100`",
+        "GridSearchCV",
+        "앙상블은",
+        "편향",
+        "분산",
+        "성능과 예측 속도",
+        "성능 우선",
+        "오탐",
+        "미탐",
+    ]
+
+    missing_phrases = [phrase for phrase in required_phrases if phrase not in readme]
+
+    assert not missing_phrases

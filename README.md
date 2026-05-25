@@ -113,6 +113,8 @@ Random Forest는 `GridSearchCV(scoring="roc_auc", cv=5)`로 튜닝했다. 후보
 
 최적 조합은 `max_depth=8`, `max_features="sqrt"`, `min_samples_leaf=5`, `n_estimators=160`이며 5-fold CV AUC는 0.9467이다.
 
+앙상블은 여러 개의 약한 학습기를 결합해 단일 모델의 불안정성을 줄이는 방식이다. Random Forest는 bootstrap 샘플과 무작위 feature subset으로 서로 다른 결정나무를 학습한 뒤 평균 또는 다수결로 예측하므로, 개별 나무의 높은 분산이 서로 상쇄된다. `max_depth`와 `min_samples_leaf`를 튜닝하면 너무 깊은 나무의 과대적합을 줄이고, 너무 얕은 나무의 편향 증가를 완화할 수 있다. 이번 데이터에서는 소득, 부채 비율, 최근 연체 횟수의 비선형 조합이 존재하므로 Random Forest가 규칙 기반 임계값보다 넓은 위험 패턴을 포착했다.
+
 ### 베이스라인 vs 머신러닝 성능
 
 근거 파일: `evidence/classification_comparison.csv`, `evidence/metrics.json`
@@ -192,6 +194,8 @@ Lasso alpha 0.01이 RMSE 30.1183, MAE 23.9195, R² 0.8613으로 가장 낮은 �
 | 불균형 데이터에서 Accuracy만 보고 선택 | Precision, Recall, F1-Score, AUC를 함께 비교 |
 
 ## 운영 리스크와 보완책
+
+모델 선택은 성능과 예측 속도 중 성능 우선으로 운영한다. 은행 대출 심사에서는 예측 1건의 지연이 수십 ms 늘어나는 비용보다 연체 고객 미탐으로 발생하는 부실 대출 비용과 정상 고객 오탐으로 발생하는 민원 비용이 더 크다. 따라서 최종 심사 배치와 상담원 심사 지원에는 F1-Score와 Recall이 높은 Random Forest를 사용하고, 실시간 사전 조회처럼 응답 시간이 엄격한 화면에서는 Logistic Regression을 빠른 1차 스크리닝 모델로 둔다. 두 모델의 예측이 크게 다르거나 위험 확률이 임계값 근처에 있으면 자동 승인/거절 대신 보류 상태로 넘겨 추가 심사를 수행한다.
 
 | 리스크 | 영향 | 보완책 |
 | --- | --- | --- |
