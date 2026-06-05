@@ -1,0 +1,14 @@
+===================================================================
+# sshd_config 핵심 설정
+# $ docker exec agent-lab-run grep -E ^(Port|PermitRootLogin) /etc/ssh/sshd_config
+===================================================================
+Port 20022
+PermitRootLogin no
+
+===================================================================
+# sshd LISTEN 상태(ss)
+# $ docker exec agent-lab-run bash -c ss -tulnp | grep sshd
+===================================================================
+tcp   LISTEN 0      128          0.0.0.0:20022      0.0.0.0:*    users:(("sshd",pid=21,fd=3))
+tcp   LISTEN 0      128             [::]:20022         [::]:*    users:(("sshd",pid=21,fd=4))
+

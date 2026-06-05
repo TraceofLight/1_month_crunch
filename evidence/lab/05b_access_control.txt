@@ -1,0 +1,19 @@
+===================================================================
+# agent-test(common,비core): upload_files 쓰기 시도
+# $ docker exec -u agent-test agent-lab-run bash -c echo hello > /home/agent-admin/agent-app/upload_files/by_test.txt && echo 'RESULT: write OK (expected)'
+===================================================================
+RESULT: write OK (expected)
+
+===================================================================
+# agent-test(비core): api_keys/secret.key 읽기 시도(차단되어야 함)
+# $ docker exec -u agent-test agent-lab-run bash -c cat /home/agent-admin/agent-app/api_keys/secret.key 2>&1; echo "RESULT exit=$? (Permission denied 기대)"
+===================================================================
+cat: /home/agent-admin/agent-app/api_keys/secret.key: Permission denied
+RESULT exit=1 (Permission denied 기대)
+
+===================================================================
+# agent-dev(core): api_keys/secret.key 읽기(허용되어야 함)
+# $ docker exec -u agent-dev agent-lab-run bash -c cat /home/agent-admin/agent-app/api_keys/secret.key && echo ' <- read OK (expected)'
+===================================================================
+agent_api_key_test <- read OK (expected)
+

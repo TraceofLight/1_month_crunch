@@ -1,0 +1,21 @@
+===================================================================
+# setup_lab.sh (전체 환경 구성)
+# $ docker exec agent-lab-run bash /opt/agent/scripts/setup_lab.sh
+===================================================================
+############ [setup_lab] START ############
+## [1] SSH hardening
+   sshd configured & started on port 20022
+## [2] Accounts & groups
+   users: agent-admin/dev/test, groups: agent-common(admin,dev,test) agent-core(admin,dev)
+## [3] Directories, permissions, ACL
+   ACL applied (upload_files=common rwx, api_keys/log=core only)
+## [4] Key file & environment
+   secret.key + t_secret.key created; agent.env written
+## [5] App binary & scripts
+   monitor.sh owner=agent-dev group=agent-core mode=750
+## [6] UFW firewall
+   UFW enabled; allow 20022/tcp, 15034/tcp
+## [7] cron daemon
+   cron started
+############ [setup_lab] DONE ############
+

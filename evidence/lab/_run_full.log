@@ -1,0 +1,529 @@
+>>> [build] docker image: agent-lab
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.75kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/library/ubuntu:22.04@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d
+#5 resolve docker.io/library/ubuntu:22.04@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d 0.0s done
+#5 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 6.53MB 0.3s done
+#4 DONE 0.3s
+
+#6 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends         openssh-server         ufw         cron         acl         iproute2         procps         sudo         gzip         findutils         ca-certificates  && rm -rf /var/lib/apt/lists/*  && update-alternatives --set iptables /usr/sbin/iptables-legacy
+#6 0.834 Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+#6 0.889 Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+#6 1.669 Get:3 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [7183 kB]
+#6 2.064 Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+#6 2.307 Get:5 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [4005 kB]
+#6 2.431 Get:6 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+#6 2.474 Get:7 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1300 kB]
+#6 2.505 Get:8 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+#6 2.514 Get:9 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [77.8 kB]
+#6 2.756 Get:10 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+#6 5.356 Get:11 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+#6 5.408 Get:12 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+#6 5.480 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [7451 kB]
+#6 6.604 Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [86.4 kB]
+#6 6.608 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1607 kB]
+#6 6.818 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4344 kB]
+#6 7.506 Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [82.8 kB]
+#6 7.509 Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.6 kB]
+#6 7.615 Fetched 46.5 MB in 7s (6370 kB/s)
+#6 7.615 Reading package lists...
+#6 8.189 Reading package lists...
+#6 8.748 Building dependency tree...
+#6 8.877 Reading state information...
+#6 8.983 findutils is already the newest version (4.8.0-1ubuntu3).
+#6 8.983 gzip is already the newest version (1.10-4ubuntu4.1).
+#6 8.983 procps is already the newest version (2:3.3.17-6ubuntu2.1).
+#6 8.983 The following additional packages will be installed:
+#6 8.983   iptables libbpf0 libbsd0 libcap2-bin libcbor0.8 libedit2 libelf1 libexpat1
+#6 8.983   libfido2-1 libip4tc2 libip6tc2 libmd0 libmnl0 libmpdec3
+#6 8.983   libnetfilter-conntrack3 libnfnetlink0 libnftnl11 libpython3-stdlib
+#6 8.984   libpython3.10-minimal libpython3.10-stdlib libreadline8 libsqlite3-0
+#6 8.984   libwrap0 libxtables12 media-types netbase openssh-client openssh-sftp-server
+#6 8.984   openssl python3 python3-minimal python3.10 python3.10-minimal
+#6 8.984   readline-common ucf
+#6 8.985 Suggested packages:
+#6 8.985   anacron logrotate checksecurity default-mta | mail-transport-agent
+#6 8.985   iproute2-doc firewalld kmod nftables keychain libpam-ssh monkeysphere
+#6 8.985   ssh-askpass molly-guard python3-doc python3-tk python3-venv python3.10-venv
+#6 8.985   python3.10-doc binutils binfmt-support readline-doc rsyslog
+#6 8.985 Recommended packages:
+#6 8.985   libatm1 libpam-cap xauth default-logind | logind | libpam-systemd
+#6 8.985   ncurses-term ssh-import-id
+#6 9.050 The following NEW packages will be installed:
+#6 9.051   acl ca-certificates cron iproute2 iptables libbpf0 libbsd0 libcap2-bin
+#6 9.051   libcbor0.8 libedit2 libelf1 libexpat1 libfido2-1 libip4tc2 libip6tc2 libmd0
+#6 9.051   libmnl0 libmpdec3 libnetfilter-conntrack3 libnfnetlink0 libnftnl11
+#6 9.051   libpython3-stdlib libpython3.10-minimal libpython3.10-stdlib libreadline8
+#6 9.051   libsqlite3-0 libwrap0 libxtables12 media-types netbase openssh-client
+#6 9.051   openssh-server openssh-sftp-server openssl python3 python3-minimal
+#6 9.051   python3.10 python3.10-minimal readline-common sudo ucf ufw
+#6 9.149 0 upgraded, 42 newly installed, 0 to remove and 3 not upgraded.
+#6 9.149 Need to get 12.7 MB of archives.
+#6 9.149 After this operation, 43.2 MB of additional disk space will be used.
+#6 9.149 Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-minimal amd64 3.10.12-1~22.04.15 [816 kB]
+#6 9.443 Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libexpat1 amd64 2.4.7-1ubuntu0.7 [92.1 kB]
+#6 9.559 Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10-minimal amd64 3.10.12-1~22.04.15 [2275 kB]
+#6 10.36 Get:4 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-minimal amd64 3.10.6-1~22.04.1 [24.3 kB]
+#6 10.41 Get:5 http://archive.ubuntu.com/ubuntu jammy/main amd64 media-types all 7.0.0 [25.5 kB]
+#6 10.45 Get:6 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmpdec3 amd64 2.5.1-2build2 [86.8 kB]
+#6 10.53 Get:7 http://archive.ubuntu.com/ubuntu jammy/main amd64 readline-common all 8.1.2-1 [53.5 kB]
+#6 10.58 Get:8 http://archive.ubuntu.com/ubuntu jammy/main amd64 libreadline8 amd64 8.1.2-1 [153 kB]
+#6 10.66 Get:9 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsqlite3-0 amd64 3.37.2-2ubuntu0.5 [643 kB]
+#6 10.77 Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-stdlib amd64 3.10.12-1~22.04.15 [1850 kB]
+#6 10.94 Get:11 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10 amd64 3.10.12-1~22.04.15 [508 kB]
+#6 11.01 Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3-stdlib amd64 3.10.6-1~22.04.1 [6812 B]
+#6 11.06 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3 amd64 3.10.6-1~22.04.1 [22.8 kB]
+#6 11.10 Get:14 http://archive.ubuntu.com/ubuntu jammy/main amd64 cron amd64 3.0pl1-137ubuntu3 [73.7 kB]
+#6 11.15 Get:15 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmd0 amd64 1.0.4-1build1 [23.0 kB]
+#6 11.19 Get:16 http://archive.ubuntu.com/ubuntu jammy/main amd64 libbsd0 amd64 0.11.5-1 [44.8 kB]
+#6 11.24 Get:17 http://archive.ubuntu.com/ubuntu jammy/main amd64 libedit2 amd64 3.1-20210910-1build1 [96.8 kB]
+#6 11.29 Get:18 http://archive.ubuntu.com/ubuntu jammy/main amd64 libcbor0.8 amd64 0.8.0-2ubuntu1 [24.6 kB]
+#6 11.34 Get:19 http://archive.ubuntu.com/ubuntu jammy/main amd64 libfido2-1 amd64 1.10.0-1 [82.8 kB]
+#6 11.38 Get:20 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 openssh-client amd64 1:8.9p1-3ubuntu0.15 [904 kB]
+#6 11.47 Get:21 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 openssh-sftp-server amd64 1:8.9p1-3ubuntu0.15 [38.9 kB]
+#6 11.52 Get:22 http://archive.ubuntu.com/ubuntu jammy/main amd64 ucf all 3.0043 [56.1 kB]
+#6 11.56 Get:23 http://archive.ubuntu.com/ubuntu jammy/main amd64 libwrap0 amd64 7.6.q-31build2 [47.9 kB]
+#6 11.61 Get:24 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 openssh-server amd64 1:8.9p1-3ubuntu0.15 [435 kB]
+#6 11.68 Get:25 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 openssl amd64 3.0.2-0ubuntu1.23 [1186 kB]
+#6 11.86 Get:26 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 ca-certificates all 20240203~22.04.1 [162 kB]
+#6 11.91 Get:27 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libelf1 amd64 0.186-1ubuntu0.1 [51.1 kB]
+#6 11.96 Get:28 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libbpf0 amd64 1:0.5.0-1ubuntu22.04.1 [140 kB]
+#6 12.01 Get:29 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmnl0 amd64 1.0.4-3build2 [13.2 kB]
+#6 12.06 Get:30 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libxtables12 amd64 1.8.7-1ubuntu5.2 [31.3 kB]
+#6 12.11 Get:31 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcap2-bin amd64 1:2.44-1ubuntu0.22.04.3 [26.0 kB]
+#6 12.15 Get:32 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 iproute2 amd64 5.15.0-1ubuntu2.1 [1072 kB]
+#6 12.26 Get:33 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libip4tc2 amd64 1.8.7-1ubuntu5.2 [19.9 kB]
+#6 12.31 Get:34 http://archive.ubuntu.com/ubuntu jammy/main amd64 netbase all 6.3 [12.9 kB]
+#6 12.36 Get:35 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 sudo amd64 1.9.9-1ubuntu2.6 [820 kB]
+#6 12.44 Get:36 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libip6tc2 amd64 1.8.7-1ubuntu5.2 [20.3 kB]
+#6 12.49 Get:37 http://archive.ubuntu.com/ubuntu jammy/main amd64 libnfnetlink0 amd64 1.0.1-3build3 [14.6 kB]
+#6 12.54 Get:38 http://archive.ubuntu.com/ubuntu jammy/main amd64 libnetfilter-conntrack3 amd64 1.0.9-1 [45.3 kB]
+#6 12.58 Get:39 http://archive.ubuntu.com/ubuntu jammy/main amd64 libnftnl11 amd64 1.2.1-1build1 [65.5 kB]
+#6 12.63 Get:40 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 iptables amd64 1.8.7-1ubuntu5.2 [455 kB]
+#6 12.69 Get:41 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 ufw all 0.36.1-4ubuntu0.1 [162 kB]
+#6 12.75 Get:42 http://archive.ubuntu.com/ubuntu jammy/main amd64 acl amd64 2.3.1-1 [38.5 kB]
+#6 12.85 debconf: delaying package configuration, since apt-utils is not installed
+#6 12.87 Fetched 12.7 MB in 4s (3442 kB/s)
+#6 12.90 Selecting previously unselected package libpython3.10-minimal:amd64.
+#6 12.90 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 4393 files and directories currently installed.)
+#6 12.93 Preparing to unpack .../libpython3.10-minimal_3.10.12-1~22.04.15_amd64.deb ...
+#6 12.94 Unpacking libpython3.10-minimal:amd64 (3.10.12-1~22.04.15) ...
+#6 13.03 Selecting previously unselected package libexpat1:amd64.
+#6 13.03 Preparing to unpack .../libexpat1_2.4.7-1ubuntu0.7_amd64.deb ...
+#6 13.04 Unpacking libexpat1:amd64 (2.4.7-1ubuntu0.7) ...
+#6 13.09 Selecting previously unselected package python3.10-minimal.
+#6 13.09 Preparing to unpack .../python3.10-minimal_3.10.12-1~22.04.15_amd64.deb ...
+#6 13.10 Unpacking python3.10-minimal (3.10.12-1~22.04.15) ...
+#6 13.16 Setting up libpython3.10-minimal:amd64 (3.10.12-1~22.04.15) ...
+#6 13.18 Setting up libexpat1:amd64 (2.4.7-1ubuntu0.7) ...
+#6 13.19 Setting up python3.10-minimal (3.10.12-1~22.04.15) ...
+#6 13.53 Selecting previously unselected package python3-minimal.
+#6 13.53 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 4697 files and directories currently installed.)
+#6 13.53 Preparing to unpack .../0-python3-minimal_3.10.6-1~22.04.1_amd64.deb ...
+#6 13.53 Unpacking python3-minimal (3.10.6-1~22.04.1) ...
+#6 13.57 Selecting previously unselected package media-types.
+#6 13.57 Preparing to unpack .../1-media-types_7.0.0_all.deb ...
+#6 13.58 Unpacking media-types (7.0.0) ...
+#6 13.62 Selecting previously unselected package libmpdec3:amd64.
+#6 13.62 Preparing to unpack .../2-libmpdec3_2.5.1-2build2_amd64.deb ...
+#6 13.63 Unpacking libmpdec3:amd64 (2.5.1-2build2) ...
+#6 13.66 Selecting previously unselected package readline-common.
+#6 13.67 Preparing to unpack .../3-readline-common_8.1.2-1_all.deb ...
+#6 13.67 Unpacking readline-common (8.1.2-1) ...
+#6 13.71 Selecting previously unselected package libreadline8:amd64.
+#6 13.71 Preparing to unpack .../4-libreadline8_8.1.2-1_amd64.deb ...
+#6 13.72 Unpacking libreadline8:amd64 (8.1.2-1) ...
+#6 13.76 Selecting previously unselected package libsqlite3-0:amd64.
+#6 13.76 Preparing to unpack .../5-libsqlite3-0_3.37.2-2ubuntu0.5_amd64.deb ...
+#6 13.77 Unpacking libsqlite3-0:amd64 (3.37.2-2ubuntu0.5) ...
+#6 13.81 Selecting previously unselected package libpython3.10-stdlib:amd64.
+#6 13.81 Preparing to unpack .../6-libpython3.10-stdlib_3.10.12-1~22.04.15_amd64.deb ...
+#6 13.81 Unpacking libpython3.10-stdlib:amd64 (3.10.12-1~22.04.15) ...
+#6 13.91 Selecting previously unselected package python3.10.
+#6 13.91 Preparing to unpack .../7-python3.10_3.10.12-1~22.04.15_amd64.deb ...
+#6 13.92 Unpacking python3.10 (3.10.12-1~22.04.15) ...
+#6 13.95 Selecting previously unselected package libpython3-stdlib:amd64.
+#6 13.95 Preparing to unpack .../8-libpython3-stdlib_3.10.6-1~22.04.1_amd64.deb ...
+#6 13.96 Unpacking libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+#6 13.99 Setting up python3-minimal (3.10.6-1~22.04.1) ...
+#6 14.12 Selecting previously unselected package python3.
+#6 14.12 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5127 files and directories currently installed.)
+#6 14.12 Preparing to unpack .../00-python3_3.10.6-1~22.04.1_amd64.deb ...
+#6 14.13 Unpacking python3 (3.10.6-1~22.04.1) ...
+#6 14.17 Selecting previously unselected package cron.
+#6 14.17 Preparing to unpack .../01-cron_3.0pl1-137ubuntu3_amd64.deb ...
+#6 14.18 Unpacking cron (3.0pl1-137ubuntu3) ...
+#6 14.22 Selecting previously unselected package libmd0:amd64.
+#6 14.23 Preparing to unpack .../02-libmd0_1.0.4-1build1_amd64.deb ...
+#6 14.23 Unpacking libmd0:amd64 (1.0.4-1build1) ...
+#6 14.27 Selecting previously unselected package libbsd0:amd64.
+#6 14.27 Preparing to unpack .../03-libbsd0_0.11.5-1_amd64.deb ...
+#6 14.27 Unpacking libbsd0:amd64 (0.11.5-1) ...
+#6 14.31 Selecting previously unselected package libedit2:amd64.
+#6 14.31 Preparing to unpack .../04-libedit2_3.1-20210910-1build1_amd64.deb ...
+#6 14.32 Unpacking libedit2:amd64 (3.1-20210910-1build1) ...
+#6 14.36 Selecting previously unselected package libcbor0.8:amd64.
+#6 14.36 Preparing to unpack .../05-libcbor0.8_0.8.0-2ubuntu1_amd64.deb ...
+#6 14.37 Unpacking libcbor0.8:amd64 (0.8.0-2ubuntu1) ...
+#6 14.41 Selecting previously unselected package libfido2-1:amd64.
+#6 14.41 Preparing to unpack .../06-libfido2-1_1.10.0-1_amd64.deb ...
+#6 14.42 Unpacking libfido2-1:amd64 (1.10.0-1) ...
+#6 14.46 Selecting previously unselected package openssh-client.
+#6 14.46 Preparing to unpack .../07-openssh-client_1%3a8.9p1-3ubuntu0.15_amd64.deb ...
+#6 14.47 Unpacking openssh-client (1:8.9p1-3ubuntu0.15) ...
+#6 14.52 Selecting previously unselected package openssh-sftp-server.
+#6 14.52 Preparing to unpack .../08-openssh-sftp-server_1%3a8.9p1-3ubuntu0.15_amd64.deb ...
+#6 14.52 Unpacking openssh-sftp-server (1:8.9p1-3ubuntu0.15) ...
+#6 14.57 Selecting previously unselected package ucf.
+#6 14.57 Preparing to unpack .../09-ucf_3.0043_all.deb ...
+#6 14.58 Moving old data out of the way
+#6 14.58 Unpacking ucf (3.0043) ...
+#6 14.63 Selecting previously unselected package libwrap0:amd64.
+#6 14.63 Preparing to unpack .../10-libwrap0_7.6.q-31build2_amd64.deb ...
+#6 14.64 Unpacking libwrap0:amd64 (7.6.q-31build2) ...
+#6 14.69 Selecting previously unselected package openssh-server.
+#6 14.69 Preparing to unpack .../11-openssh-server_1%3a8.9p1-3ubuntu0.15_amd64.deb ...
+#6 14.70 Unpacking openssh-server (1:8.9p1-3ubuntu0.15) ...
+#6 14.75 Selecting previously unselected package openssl.
+#6 14.75 Preparing to unpack .../12-openssl_3.0.2-0ubuntu1.23_amd64.deb ...
+#6 14.75 Unpacking openssl (3.0.2-0ubuntu1.23) ...
+#6 14.81 Selecting previously unselected package ca-certificates.
+#6 14.81 Preparing to unpack .../13-ca-certificates_20240203~22.04.1_all.deb ...
+#6 14.82 Unpacking ca-certificates (20240203~22.04.1) ...
+#6 14.89 Selecting previously unselected package libelf1:amd64.
+#6 14.89 Preparing to unpack .../14-libelf1_0.186-1ubuntu0.1_amd64.deb ...
+#6 14.89 Unpacking libelf1:amd64 (0.186-1ubuntu0.1) ...
+#6 14.94 Selecting previously unselected package libbpf0:amd64.
+#6 14.94 Preparing to unpack .../15-libbpf0_1%3a0.5.0-1ubuntu22.04.1_amd64.deb ...
+#6 14.94 Unpacking libbpf0:amd64 (1:0.5.0-1ubuntu22.04.1) ...
+#6 14.98 Selecting previously unselected package libmnl0:amd64.
+#6 14.98 Preparing to unpack .../16-libmnl0_1.0.4-3build2_amd64.deb ...
+#6 14.99 Unpacking libmnl0:amd64 (1.0.4-3build2) ...
+#6 15.03 Selecting previously unselected package libxtables12:amd64.
+#6 15.03 Preparing to unpack .../17-libxtables12_1.8.7-1ubuntu5.2_amd64.deb ...
+#6 15.04 Unpacking libxtables12:amd64 (1.8.7-1ubuntu5.2) ...
+#6 15.07 Selecting previously unselected package libcap2-bin.
+#6 15.07 Preparing to unpack .../18-libcap2-bin_1%3a2.44-1ubuntu0.22.04.3_amd64.deb ...
+#6 15.08 Unpacking libcap2-bin (1:2.44-1ubuntu0.22.04.3) ...
+#6 15.13 Selecting previously unselected package iproute2.
+#6 15.13 Preparing to unpack .../19-iproute2_5.15.0-1ubuntu2.1_amd64.deb ...
+#6 15.14 Unpacking iproute2 (5.15.0-1ubuntu2.1) ...
+#6 15.20 Selecting previously unselected package libip4tc2:amd64.
+#6 15.20 Preparing to unpack .../20-libip4tc2_1.8.7-1ubuntu5.2_amd64.deb ...
+#6 15.20 Unpacking libip4tc2:amd64 (1.8.7-1ubuntu5.2) ...
+#6 15.24 Selecting previously unselected package netbase.
+#6 15.24 Preparing to unpack .../21-netbase_6.3_all.deb ...
+#6 15.25 Unpacking netbase (6.3) ...
+#6 15.30 Selecting previously unselected package sudo.
+#6 15.30 Preparing to unpack .../22-sudo_1.9.9-1ubuntu2.6_amd64.deb ...
+#6 15.31 Unpacking sudo (1.9.9-1ubuntu2.6) ...
+#6 15.36 Selecting previously unselected package libip6tc2:amd64.
+#6 15.36 Preparing to unpack .../23-libip6tc2_1.8.7-1ubuntu5.2_amd64.deb ...
+#6 15.37 Unpacking libip6tc2:amd64 (1.8.7-1ubuntu5.2) ...
+#6 15.41 Selecting previously unselected package libnfnetlink0:amd64.
+#6 15.41 Preparing to unpack .../24-libnfnetlink0_1.0.1-3build3_amd64.deb ...
+#6 15.41 Unpacking libnfnetlink0:amd64 (1.0.1-3build3) ...
+#6 15.45 Selecting previously unselected package libnetfilter-conntrack3:amd64.
+#6 15.45 Preparing to unpack .../25-libnetfilter-conntrack3_1.0.9-1_amd64.deb ...
+#6 15.46 Unpacking libnetfilter-conntrack3:amd64 (1.0.9-1) ...
+#6 15.50 Selecting previously unselected package libnftnl11:amd64.
+#6 15.50 Preparing to unpack .../26-libnftnl11_1.2.1-1build1_amd64.deb ...
+#6 15.51 Unpacking libnftnl11:amd64 (1.2.1-1build1) ...
+#6 15.54 Selecting previously unselected package iptables.
+#6 15.54 Preparing to unpack .../27-iptables_1.8.7-1ubuntu5.2_amd64.deb ...
+#6 15.55 Unpacking iptables (1.8.7-1ubuntu5.2) ...
+#6 15.63 Selecting previously unselected package ufw.
+#6 15.63 Preparing to unpack .../28-ufw_0.36.1-4ubuntu0.1_all.deb ...
+#6 15.65 Unpacking ufw (0.36.1-4ubuntu0.1) ...
+#6 15.70 Selecting previously unselected package acl.
+#6 15.71 Preparing to unpack .../29-acl_2.3.1-1_amd64.deb ...
+#6 15.71 Unpacking acl (2.3.1-1) ...
+#6 15.75 Setting up libip4tc2:amd64 (1.8.7-1ubuntu5.2) ...
+#6 15.76 Setting up media-types (7.0.0) ...
+#6 15.78 Setting up libip6tc2:amd64 (1.8.7-1ubuntu5.2) ...
+#6 15.80 Setting up libcbor0.8:amd64 (0.8.0-2ubuntu1) ...
+#6 15.81 Setting up libsqlite3-0:amd64 (3.37.2-2ubuntu0.5) ...
+#6 15.83 Setting up cron (3.0pl1-137ubuntu3) ...
+#6 15.91 Adding group `crontab' (GID 101) ...
+#6 15.93 Done.
+#6 15.95 invoke-rc.d: could not determine current runlevel
+#6 15.96 invoke-rc.d: policy-rc.d denied execution of start.
+#6 16.02 Setting up acl (2.3.1-1) ...
+#6 16.03 Setting up libcap2-bin (1:2.44-1ubuntu0.22.04.3) ...
+#6 16.05 Setting up libwrap0:amd64 (7.6.q-31build2) ...
+#6 16.07 Setting up libmnl0:amd64 (1.0.4-3build2) ...
+#6 16.09 Setting up sudo (1.9.9-1ubuntu2.6) ...
+#6 16.16 Setting up ucf (3.0043) ...
+#6 16.22 Setting up libxtables12:amd64 (1.8.7-1ubuntu5.2) ...
+#6 16.23 Setting up libmd0:amd64 (1.0.4-1build1) ...
+#6 16.25 Setting up libnfnetlink0:amd64 (1.0.1-3build3) ...
+#6 16.27 Setting up libmpdec3:amd64 (2.5.1-2build2) ...
+#6 16.28 Setting up netbase (6.3) ...
+#6 16.32 Setting up libfido2-1:amd64 (1.10.0-1) ...
+#6 16.34 Setting up openssl (3.0.2-0ubuntu1.23) ...
+#6 16.36 Setting up libbsd0:amd64 (0.11.5-1) ...
+#6 16.38 Setting up libelf1:amd64 (0.186-1ubuntu0.1) ...
+#6 16.40 Setting up readline-common (8.1.2-1) ...
+#6 16.42 Setting up libedit2:amd64 (3.1-20210910-1build1) ...
+#6 16.43 Setting up libreadline8:amd64 (8.1.2-1) ...
+#6 16.45 Setting up libnftnl11:amd64 (1.2.1-1build1) ...
+#6 16.47 Setting up libpython3.10-stdlib:amd64 (3.10.12-1~22.04.15) ...
+#6 16.48 Setting up ca-certificates (20240203~22.04.1) ...
+#6 16.83 Updating certificates in /etc/ssl/certs...
+#6 17.31 146 added, 0 removed; done.
+#6 17.34 Setting up libnetfilter-conntrack3:amd64 (1.0.9-1) ...
+#6 17.35 Setting up libbpf0:amd64 (1:0.5.0-1ubuntu22.04.1) ...
+#6 17.37 Setting up libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+#6 17.38 Setting up python3.10 (3.10.12-1~22.04.15) ...
+#6 17.70 Setting up iptables (1.8.7-1ubuntu5.2) ...
+#6 17.72 update-alternatives: using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in auto mode
+#6 17.72 update-alternatives: using /usr/sbin/ip6tables-legacy to provide /usr/sbin/ip6tables (ip6tables) in auto mode
+#6 17.73 update-alternatives: using /usr/sbin/iptables-nft to provide /usr/sbin/iptables (iptables) in auto mode
+#6 17.73 update-alternatives: using /usr/sbin/ip6tables-nft to provide /usr/sbin/ip6tables (ip6tables) in auto mode
+#6 17.73 update-alternatives: using /usr/sbin/arptables-nft to provide /usr/sbin/arptables (arptables) in auto mode
+#6 17.74 update-alternatives: using /usr/sbin/ebtables-nft to provide /usr/sbin/ebtables (ebtables) in auto mode
+#6 17.74 Setting up iproute2 (5.15.0-1ubuntu2.1) ...
+#6 17.86 Setting up openssh-client (1:8.9p1-3ubuntu0.15) ...
+#6 17.90 update-alternatives: using /usr/bin/ssh to provide /usr/bin/rsh (rsh) in auto mode
+#6 17.90 update-alternatives: warning: skip creation of /usr/share/man/man1/rsh.1.gz because associated file /usr/share/man/man1/ssh.1.gz (of link group rsh) doesn't exist
+#6 17.90 update-alternatives: using /usr/bin/slogin to provide /usr/bin/rlogin (rlogin) in auto mode
+#6 17.90 update-alternatives: warning: skip creation of /usr/share/man/man1/rlogin.1.gz because associated file /usr/share/man/man1/slogin.1.gz (of link group rlogin) doesn't exist
+#6 17.91 update-alternatives: using /usr/bin/scp to provide /usr/bin/rcp (rcp) in auto mode
+#6 17.91 update-alternatives: warning: skip creation of /usr/share/man/man1/rcp.1.gz because associated file /usr/share/man/man1/scp.1.gz (of link group rcp) doesn't exist
+#6 17.92 Setting up python3 (3.10.6-1~22.04.1) ...
+#6 17.98 Setting up openssh-sftp-server (1:8.9p1-3ubuntu0.15) ...
+#6 17.99 Setting up openssh-server (1:8.9p1-3ubuntu0.15) ...
+#6 18.09 
+#6 18.09 Creating config file /etc/ssh/sshd_config with new version
+#6 18.11 Creating SSH2 RSA key; this may take some time ...
+#6 18.28 3072 SHA256:xqjyggNrK3dQ1EPbip0BTGKT4Rc6C1AcUCIE0IIYOcw root@buildkitsandbox (RSA)
+#6 18.28 Creating SSH2 ECDSA key; this may take some time ...
+#6 18.28 256 SHA256:foi6F2jYeCMUWxbZ0Bc81uyJkFw8+oVQKgopHKlyj78 root@buildkitsandbox (ECDSA)
+#6 18.28 Creating SSH2 ED25519 key; this may take some time ...
+#6 18.29 256 SHA256:KyLIF5kzMI659H4Ls8HCnLYY9Mv4rzMPhmYOZ9ntXGY root@buildkitsandbox (ED25519)
+#6 18.37 invoke-rc.d: could not determine current runlevel
+#6 18.37 invoke-rc.d: policy-rc.d denied execution of start.
+#6 18.47 Setting up ufw (0.36.1-4ubuntu0.1) ...
+#6 18.56 
+#6 18.56 Creating config file /etc/ufw/before.rules with new version
+#6 18.59 
+#6 18.59 Creating config file /etc/ufw/before6.rules with new version
+#6 18.62 
+#6 18.62 Creating config file /etc/ufw/after.rules with new version
+#6 18.65 
+#6 18.65 Creating config file /etc/ufw/after6.rules with new version
+#6 18.80 Processing triggers for libc-bin (2.35-0ubuntu3.13) ...
+#6 18.85 Processing triggers for ca-certificates (20240203~22.04.1) ...
+#6 18.85 Updating certificates in /etc/ssl/certs...
+#6 19.19 0 added, 0 removed; done.
+#6 19.19 Running hooks in /etc/ca-certificates/update.d...
+#6 19.19 done.
+#6 19.22 update-alternatives: using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in manual mode
+#6 DONE 19.3s
+
+#7 [3/5] COPY agent-app-linux-x86 /opt/agent/agent-app-linux-x86
+#7 DONE 0.1s
+
+#8 [4/5] COPY scripts/ /opt/agent/scripts/
+#8 DONE 0.1s
+
+#9 [5/5] RUN chmod +x /opt/agent/agent-app-linux-x86  && sed -i 's/\r$//' /opt/agent/scripts/*.sh  && chmod +x /opt/agent/scripts/*.sh
+#9 DONE 0.2s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 1.2s done
+#10 exporting manifest sha256:669d5cf21957cb74d1a32b86abcedaa30dc31e1935d912947b40cd1349969242 0.0s done
+#10 exporting config sha256:632f7b7a93e54d7938524dc1a4769d9325286783ee60f31f269dae3160999b44 0.0s done
+#10 exporting attestation manifest sha256:225a1fce0bd469cac2d114a4ac3ff1a870352a04fa0d3a7edb09a3ccdcd2951d 0.0s done
+#10 exporting manifest list sha256:2d70aa4377059924d2016a068bd683e3e8da82f7e2d80767381e4473977b02b3 0.0s done
+#10 naming to docker.io/library/agent-lab:latest
+#10 naming to docker.io/library/agent-lab:latest done
+#10 unpacking to docker.io/library/agent-lab:latest
+#10 unpacking to docker.io/library/agent-lab:latest 0.5s done
+#10 DONE 1.9s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/70gfdlibjvujf0gjughwczoke
+>>> [run] container: agent-lab-run
+===================================================================
+# setup_lab.sh (전체 환경 구성)
+# $ docker exec agent-lab-run bash /opt/agent/scripts/setup_lab.sh
+===================================================================
+############ [setup_lab] START ############
+## [1] SSH hardening
+   sshd configured & started on port 20022
+## [2] Accounts & groups
+   users: agent-admin/dev/test, groups: agent-common(admin,dev,test) agent-core(admin,dev)
+## [3] Directories, permissions, ACL
+   ACL applied (upload_files=common rwx, api_keys/log=core only)
+## [4] Key file & environment
+   secret.key + t_secret.key created; agent.env written
+## [5] App binary & scripts
+   monitor.sh owner=agent-dev group=agent-core mode=750
+## [6] UFW firewall
+   UFW enabled; allow 20022/tcp, 15034/tcp
+## [7] cron daemon
+   cron started
+############ [setup_lab] DONE ############
+
+===================================================================
+# sshd_config 핵심 설정
+# $ docker exec agent-lab-run grep -E ^(Port|PermitRootLogin) /etc/ssh/sshd_config
+===================================================================
+Port 20022
+PermitRootLogin no
+
+===================================================================
+# sshd LISTEN 상태(ss)
+# $ docker exec agent-lab-run bash -c ss -tulnp | grep sshd
+===================================================================
+tcp   LISTEN 0      128          0.0.0.0:20022      0.0.0.0:*    users:(("sshd",pid=21,fd=3))
+tcp   LISTEN 0      128             [::]:20022         [::]:*    users:(("sshd",pid=21,fd=4))
+
+===================================================================
+# ufw status verbose
+# $ docker exec agent-lab-run ufw status verbose
+===================================================================
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+20022/tcp                  ALLOW IN    Anywhere                  
+15034/tcp                  ALLOW IN    Anywhere                  
+20022/tcp (v6)             ALLOW IN    Anywhere (v6)             
+15034/tcp (v6)             ALLOW IN    Anywhere (v6)             
+
+
+===================================================================
+# id agent-admin / agent-dev / agent-test
+# $ docker exec agent-lab-run bash -c id agent-admin; id agent-dev; id agent-test
+===================================================================
+uid=1000(agent-admin) gid=1002(agent-admin) groups=1002(agent-admin),1000(agent-common),1001(agent-core)
+uid=1001(agent-dev) gid=1003(agent-dev) groups=1003(agent-dev),1000(agent-common),1001(agent-core)
+uid=1002(agent-test) gid=1004(agent-test) groups=1004(agent-test),1000(agent-common)
+
+===================================================================
+# 그룹 멤버십(getent)
+# $ docker exec agent-lab-run bash -c getent group agent-common; getent group agent-core
+===================================================================
+agent-common:x:1000:agent-admin,agent-dev,agent-test
+agent-core:x:1001:agent-admin,agent-dev
+
+===================================================================
+# 디렉터리 트리/권한
+# $ docker exec agent-lab-run bash -c ls -ld /home/agent-admin/agent-app /home/agent-admin/agent-app/upload_files /home/agent-admin/agent-app/api_keys /home/agent-admin/agent-app/bin /var/log/agent-app; echo; ls -l /home/agent-admin/agent-app/bin
+===================================================================
+drwxr-x---+ 5 agent-admin agent-common 4096 Jun  5 15:39 /home/agent-admin/agent-app
+drwxrws---+ 2 agent-admin agent-core   4096 Jun  5 15:39 /home/agent-admin/agent-app/api_keys
+drwxr-x---  2 agent-admin agent-core   4096 Jun  5 15:39 /home/agent-admin/agent-app/bin
+drwxrws---+ 2 agent-admin agent-common 4096 Jun  5 15:39 /home/agent-admin/agent-app/upload_files
+drwxrws---+ 2 agent-admin agent-core   4096 Jun  5 15:39 /var/log/agent-app
+
+total 16
+-rwxr-x--- 1 agent-dev agent-core 7737 Jun  5 15:39 monitor.sh
+-rwxr-x--- 1 agent-dev agent-core 3332 Jun  5 15:39 report.sh
+-rwxr-x--- 1 agent-dev agent-core 3090 Jun  5 15:39 rotate_logs.sh
+
+===================================================================
+# getfacl upload_files (공유)
+# $ docker exec agent-lab-run getfacl /home/agent-admin/agent-app/upload_files
+===================================================================
+getfacl: Removing leading '/' from absolute path names
+# file: home/agent-admin/agent-app/upload_files
+# owner: agent-admin
+# group: agent-common
+# flags: -s-
+user::rwx
+group::rwx
+group:agent-common:rwx
+mask::rwx
+other::---
+default:user::rwx
+default:group::rwx
+default:group:agent-common:rwx
+default:mask::rwx
+default:other::---
+
+
+===================================================================
+# getfacl api_keys (보안)
+# $ docker exec agent-lab-run getfacl /home/agent-admin/agent-app/api_keys
+===================================================================
+# file: home/agent-admin/agent-app/api_keys
+# owner: agent-admin
+# group: agent-core
+# flags: -s-
+user::rwx
+group::rwx
+group:agent-core:rwx
+mask::rwx
+other::---
+default:user::rwx
+default:group::rwx
+default:group:agent-core:rwx
+default:mask::rwx
+default:other::---
+
+getfacl: Removing leading '/' from absolute path names
+
+===================================================================
+# getfacl /var/log/agent-app (보안)
+# $ docker exec agent-lab-run getfacl /var/log/agent-app
+===================================================================
+getfacl: Removing leading '/' from absolute path names
+# file: var/log/agent-app
+# owner: agent-admin
+# group: agent-core
+# flags: -s-
+user::rwx
+group::rwx
+group:agent-core:rwx
+mask::rwx
+other::---
+default:user::rwx
+default:group::rwx
+default:group:agent-core:rwx
+default:mask::rwx
+default:other::---
+
+
+===================================================================
+# agent-test(common,비core): upload_files 쓰기 시도
+# $ docker exec -u agent-test agent-lab-run bash -c echo hello > /home/agent-admin/agent-app/upload_files/by_test.txt && echo 'RESULT: write OK (expected)'
+===================================================================
+RESULT: write OK (expected)
+
+===================================================================
+# agent-test(비core): api_keys/secret.key 읽기 시도(차단되어야 함)
+# $ docker exec -u agent-test agent-lab-run bash -c cat /home/agent-admin/agent-app/api_keys/secret.key 2>&1; echo "RESULT exit=$? (Permission denied 기대)"
+===================================================================
+cat: /home/agent-admin/agent-app/api_keys/secret.key: Permission denied
+RESULT exit=1 (Permission denied 기대)
+
+===================================================================
+# agent-dev(core): api_keys/secret.key 읽기(허용되어야 함)
+# $ docker exec -u agent-dev agent-lab-run bash -c cat /home/agent-admin/agent-app/api_keys/secret.key && echo ' <- read OK (expected)'
+===================================================================
+agent_api_key_test <- read OK (expected)
+
+>>> [app] boot agent-app as agent-admin
