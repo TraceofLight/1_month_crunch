@@ -1,0 +1,47 @@
+===================================================================
+# size 기반 회전: MONITOR_MAX_SIZE=100 으로 5회 실행
+# $ docker exec -u agent-admin -e AGENT_LOG_DIR=/tmp/rotdemo -e MONITOR_MAX_SIZE=100 agent-lab-run bash -c for i in 1 2 3 4 5; do /home/agent-admin/agent-app/bin/monitor.sh >/dev/null; done; echo '--- /tmp/rotdemo ---'; ls -l /tmp/rotdemo/
+===================================================================
+--- /tmp/rotdemo ---
+total 12
+-rw-r--r-- 1 agent-admin agent-admin  61 Jun  5 15:41 monitor.log
+-rw-r--r-- 1 agent-admin agent-admin 122 Jun  5 15:41 monitor.log.1
+-rw-r--r-- 1 agent-admin agent-admin 122 Jun  5 15:41 monitor.log.2
+
+===================================================================
+# 시간 기반 보존: 실행 전 상태
+# $ docker exec agent-lab-run bash -c echo '[src *.log]'; ls -l /var/log/agent-app/*.log; echo '[archive]'; ls -l /var/log/monitor/agent-app/archive/
+===================================================================
+[src *.log]
+-rw-rw----+ 1 agent-admin agent-core 4782 Jun  5 15:41 /var/log/agent-app/agent_app.log
+-rw-rw----+ 1 agent-admin agent-core 5378 Jun  5 15:41 /var/log/agent-app/app.boot.log
+-rw-rw----+ 1 agent-admin agent-core  183 Jun  5 15:41 /var/log/agent-app/monitor.log
+-rw-rw----+ 1 root        agent-core    5 Jun  2 15:41 /var/log/agent-app/old3.log
+-rw-rw----+ 1 root        agent-core    5 May 28 15:41 /var/log/agent-app/old8.log
+[archive]
+total 8
+-rw-r--r-- 1 root root 22 May  5 15:41 old31.gz
+-rw-r--r-- 1 root root 22 May 31 15:41 old5.gz
+
+===================================================================
+# rotate_logs.sh 실행
+# $ docker exec agent-lab-run /home/agent-admin/agent-app/bin/rotate_logs.sh
+===================================================================
+[2026-06-05 15:41:22] [INFO] Archived: old8.log.gz -> /var/log/monitor/agent-app/archive/
+[2026-06-05 15:41:22] [INFO] Deleted old archive: old31.gz
+[2026-06-05 15:41:22] [DONE] compressed=1 deleted=1
+
+===================================================================
+# 시간 기반 보존: 실행 후 상태(old8→압축/아카이브, old31.gz 삭제, old3/old5 유지)
+# $ docker exec agent-lab-run bash -c echo '[src *.log]'; ls -l /var/log/agent-app/*.log 2>&1; echo '[archive]'; ls -l /var/log/monitor/agent-app/archive/
+===================================================================
+[src *.log]
+-rw-rw----+ 1 agent-admin agent-core 4782 Jun  5 15:41 /var/log/agent-app/agent_app.log
+-rw-rw----+ 1 agent-admin agent-core 5378 Jun  5 15:41 /var/log/agent-app/app.boot.log
+-rw-rw----+ 1 agent-admin agent-core  183 Jun  5 15:41 /var/log/agent-app/monitor.log
+-rw-rw----+ 1 root        agent-core    5 Jun  2 15:41 /var/log/agent-app/old3.log
+[archive]
+total 8
+-rw-r--r--  1 root root       22 May 31 15:41 old5.gz
+-rw-rw----+ 1 root agent-core 34 May 28 15:41 old8.log.gz
+

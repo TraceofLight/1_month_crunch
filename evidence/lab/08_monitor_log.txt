@@ -1,0 +1,8 @@
+===================================================================
+# monitor.log 최근 라인(수동 실행 직후)
+# $ docker exec agent-lab-run bash -c tail -n 5 /var/log/agent-app/monitor.log; echo '---'; wc -l /var/log/agent-app/monitor.log
+===================================================================
+[2026-06-05 15:39:54] PID:371 CPU:0.6% MEM:9.3% DISK_USED:7%
+---
+1 /var/log/agent-app/monitor.log
+

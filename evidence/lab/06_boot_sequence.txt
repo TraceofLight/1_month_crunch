@@ -1,0 +1,30 @@
+===================================================================
+# Boot Sequence 5단계 + Agent READY
+# $ docker exec agent-lab-run bash -c sed -n '1,18p' /var/log/agent-app/app.boot.log
+===================================================================
+>>> Starting Agent Boot Sequence...
+[1/5] Checking User Account               [OK]
+   ... Running as service user 'agent-admin' (uid=1000)
+[2/5] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/5] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/5] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/5] Verifying Log Permission            [OK]
+   ... Log directory is writable: /var/log/agent-app
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-06-05 15:39:44,173 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-06-05 15:39:44,173 [INFO] Agent listening at port 15034
+2026-06-05 15:39:44,173 [INFO] === Agent Worker Started ===
+2026-06-05 15:39:44,173 [INFO]    > Cycle: 0 -> 256MB/Lv10 -> 0
+
+===================================================================
+# 0.0.0.0:15034 LISTEN 확인
+# $ docker exec agent-lab-run bash -c ss -tlnp 'sport = :15034'
+===================================================================
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      1            0.0.0.0:15034      0.0.0.0:*          
+

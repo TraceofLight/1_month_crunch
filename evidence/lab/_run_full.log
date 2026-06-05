@@ -527,3 +527,150 @@ RESULT exit=1 (Permission denied 기대)
 agent_api_key_test <- read OK (expected)
 
 >>> [app] boot agent-app as agent-admin
+===================================================================
+# Boot Sequence 5단계 + Agent READY
+# $ docker exec agent-lab-run bash -c sed -n '1,18p' /var/log/agent-app/app.boot.log
+===================================================================
+>>> Starting Agent Boot Sequence...
+[1/5] Checking User Account               [OK]
+   ... Running as service user 'agent-admin' (uid=1000)
+[2/5] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/5] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/5] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/5] Verifying Log Permission            [OK]
+   ... Log directory is writable: /var/log/agent-app
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-06-05 15:39:44,173 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-06-05 15:39:44,173 [INFO] Agent listening at port 15034
+2026-06-05 15:39:44,173 [INFO] === Agent Worker Started ===
+2026-06-05 15:39:44,173 [INFO]    > Cycle: 0 -> 256MB/Lv10 -> 0
+
+===================================================================
+# 0.0.0.0:15034 LISTEN 확인
+# $ docker exec agent-lab-run bash -c ss -tlnp 'sport = :15034'
+===================================================================
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      1            0.0.0.0:15034      0.0.0.0:*          
+
+===================================================================
+# monitor.sh (agent-admin 실행)
+# $ docker exec -u agent-admin agent-lab-run /home/agent-admin/agent-app/bin/monitor.sh
+===================================================================
+====== SYSTEM MONITOR RESULT ======
+
+[HEALTH CHECK]
+Checking process 'agent-app-linux-x86'... [OK] (PID: 371)
+Checking port 15034... [OK]
+
+[STATUS CHECK]
+Checking firewall... [OK]
+
+[RESOURCE MONITORING]
+CPU Usage  : 0.6%
+MEM Usage  : 9.3%
+DISK Used  : 7%
+
+
+[INFO] Log appended: /var/log/agent-app/monitor.log
+
+===================================================================
+# monitor.log 최근 라인(수동 실행 직후)
+# $ docker exec agent-lab-run bash -c tail -n 5 /var/log/agent-app/monitor.log; echo '---'; wc -l /var/log/agent-app/monitor.log
+===================================================================
+[2026-06-05 15:39:54] PID:371 CPU:0.6% MEM:9.3% DISK_USED:7%
+---
+1 /var/log/agent-app/monitor.log
+
+>>> [cron] register agent-admin crontab (every minute)
+===================================================================
+# agent-admin crontab -l
+# $ docker exec agent-lab-run crontab -u agent-admin -l
+===================================================================
+* * * * * /home/agent-admin/agent-app/bin/monitor.sh >/dev/null 2>&1
+
+    monitor.log lines before wait: 1  (cron 자동 실행 대기 ~80s ...)
+===================================================================
+# cron 자동 누적 확인 (대기 전/후 라인 수 + 최근 라인)
+# $ docker exec agent-lab-run bash -c echo 'lines before=1  after='$(wc -l < /var/log/agent-app/monitor.log); echo '--- last 6 lines ---'; tail -n 6 /var/log/agent-app/monitor.log
+===================================================================
+lines before=1  after=3
+--- last 6 lines ---
+[2026-06-05 15:39:54] PID:371 CPU:0.6% MEM:9.3% DISK_USED:7%
+[2026-06-05 15:40:02] PID:371 CPU:0.5% MEM:9.4% DISK_USED:7%
+[2026-06-05 15:41:02] PID:371 CPU:0.5% MEM:9.5% DISK_USED:7%
+
+===================================================================
+# report.sh (전체 구간 통계)
+# $ docker exec -u agent-admin agent-lab-run /home/agent-admin/agent-app/bin/report.sh
+===================================================================
+====== STATISTICS REPORT ======
+  [CPU]
+    Average : 0.5%
+    Maximum : 0.6% at 2026-06-05 15:39:54
+    Minimum : 0.5% at 2026-06-05 15:40:02
+  [Memory]
+    Average : 9.4%
+    Maximum : 9.5% at 2026-06-05 15:41:02
+    Minimum : 9.3% at 2026-06-05 15:39:54
+  [Disk]
+    Average : 7.0%
+    Maximum : 7% at 2026-06-05 15:39:54
+    Minimum : 7% at 2026-06-05 15:39:54
+  [Samples]
+    Data Points: 3 samples
+
+===================================================================
+# size 기반 회전: MONITOR_MAX_SIZE=100 으로 5회 실행
+# $ docker exec -u agent-admin -e AGENT_LOG_DIR=/tmp/rotdemo -e MONITOR_MAX_SIZE=100 agent-lab-run bash -c for i in 1 2 3 4 5; do /home/agent-admin/agent-app/bin/monitor.sh >/dev/null; done; echo '--- /tmp/rotdemo ---'; ls -l /tmp/rotdemo/
+===================================================================
+--- /tmp/rotdemo ---
+total 12
+-rw-r--r-- 1 agent-admin agent-admin  61 Jun  5 15:41 monitor.log
+-rw-r--r-- 1 agent-admin agent-admin 122 Jun  5 15:41 monitor.log.1
+-rw-r--r-- 1 agent-admin agent-admin 122 Jun  5 15:41 monitor.log.2
+
+===================================================================
+# 시간 기반 보존: 실행 전 상태
+# $ docker exec agent-lab-run bash -c echo '[src *.log]'; ls -l /var/log/agent-app/*.log; echo '[archive]'; ls -l /var/log/monitor/agent-app/archive/
+===================================================================
+[src *.log]
+-rw-rw----+ 1 agent-admin agent-core 4782 Jun  5 15:41 /var/log/agent-app/agent_app.log
+-rw-rw----+ 1 agent-admin agent-core 5378 Jun  5 15:41 /var/log/agent-app/app.boot.log
+-rw-rw----+ 1 agent-admin agent-core  183 Jun  5 15:41 /var/log/agent-app/monitor.log
+-rw-rw----+ 1 root        agent-core    5 Jun  2 15:41 /var/log/agent-app/old3.log
+-rw-rw----+ 1 root        agent-core    5 May 28 15:41 /var/log/agent-app/old8.log
+[archive]
+total 8
+-rw-r--r-- 1 root root 22 May  5 15:41 old31.gz
+-rw-r--r-- 1 root root 22 May 31 15:41 old5.gz
+
+===================================================================
+# rotate_logs.sh 실행
+# $ docker exec agent-lab-run /home/agent-admin/agent-app/bin/rotate_logs.sh
+===================================================================
+[2026-06-05 15:41:22] [INFO] Archived: old8.log.gz -> /var/log/monitor/agent-app/archive/
+[2026-06-05 15:41:22] [INFO] Deleted old archive: old31.gz
+[2026-06-05 15:41:22] [DONE] compressed=1 deleted=1
+
+===================================================================
+# 시간 기반 보존: 실행 후 상태(old8→압축/아카이브, old31.gz 삭제, old3/old5 유지)
+# $ docker exec agent-lab-run bash -c echo '[src *.log]'; ls -l /var/log/agent-app/*.log 2>&1; echo '[archive]'; ls -l /var/log/monitor/agent-app/archive/
+===================================================================
+[src *.log]
+-rw-rw----+ 1 agent-admin agent-core 4782 Jun  5 15:41 /var/log/agent-app/agent_app.log
+-rw-rw----+ 1 agent-admin agent-core 5378 Jun  5 15:41 /var/log/agent-app/app.boot.log
+-rw-rw----+ 1 agent-admin agent-core  183 Jun  5 15:41 /var/log/agent-app/monitor.log
+-rw-rw----+ 1 root        agent-core    5 Jun  2 15:41 /var/log/agent-app/old3.log
+[archive]
+total 8
+-rw-r--r--  1 root root       22 May 31 15:41 old5.gz
+-rw-rw----+ 1 root agent-core 34 May 28 15:41 old8.log.gz
+
+
+>>> DONE. 컨테이너 'agent-lab-run' 는 점검을 위해 유지됩니다.
+>>> 정리:  docker rm -f agent-lab-run

@@ -1,0 +1,21 @@
+===================================================================
+# monitor.sh (agent-admin 실행)
+# $ docker exec -u agent-admin agent-lab-run /home/agent-admin/agent-app/bin/monitor.sh
+===================================================================
+====== SYSTEM MONITOR RESULT ======
+
+[HEALTH CHECK]
+Checking process 'agent-app-linux-x86'... [OK] (PID: 371)
+Checking port 15034... [OK]
+
+[STATUS CHECK]
+Checking firewall... [OK]
+
+[RESOURCE MONITORING]
+CPU Usage  : 0.6%
+MEM Usage  : 9.3%
+DISK Used  : 7%
+
+
+[INFO] Log appended: /var/log/agent-app/monitor.log
+

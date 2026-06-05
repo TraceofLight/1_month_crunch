@@ -1,0 +1,16 @@
+===================================================================
+# agent-admin crontab -l
+# $ docker exec agent-lab-run crontab -u agent-admin -l
+===================================================================
+* * * * * /home/agent-admin/agent-app/bin/monitor.sh >/dev/null 2>&1
+
+===================================================================
+# cron 자동 누적 확인 (대기 전/후 라인 수 + 최근 라인)
+# $ docker exec agent-lab-run bash -c echo 'lines before=1  after='$(wc -l < /var/log/agent-app/monitor.log); echo '--- last 6 lines ---'; tail -n 6 /var/log/agent-app/monitor.log
+===================================================================
+lines before=1  after=3
+--- last 6 lines ---
+[2026-06-05 15:39:54] PID:371 CPU:0.6% MEM:9.3% DISK_USED:7%
+[2026-06-05 15:40:02] PID:371 CPU:0.5% MEM:9.4% DISK_USED:7%
+[2026-06-05 15:41:02] PID:371 CPU:0.5% MEM:9.5% DISK_USED:7%
+

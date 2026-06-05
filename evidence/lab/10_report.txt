@@ -1,0 +1,20 @@
+===================================================================
+# report.sh (전체 구간 통계)
+# $ docker exec -u agent-admin agent-lab-run /home/agent-admin/agent-app/bin/report.sh
+===================================================================
+====== STATISTICS REPORT ======
+  [CPU]
+    Average : 0.5%
+    Maximum : 0.6% at 2026-06-05 15:39:54
+    Minimum : 0.5% at 2026-06-05 15:40:02
+  [Memory]
+    Average : 9.4%
+    Maximum : 9.5% at 2026-06-05 15:41:02
+    Minimum : 9.3% at 2026-06-05 15:39:54
+  [Disk]
+    Average : 7.0%
+    Maximum : 7% at 2026-06-05 15:39:54
+    Minimum : 7% at 2026-06-05 15:39:54
+  [Samples]
+    Data Points: 3 samples
+
