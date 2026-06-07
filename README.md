@@ -17,7 +17,7 @@
 - 그렇지 않으면서 `MEMORY_LIMIT <= 256` 이면 메모리 누수 경로.
 - 위 어느 것도 아니면(메모리 권장치 이상, CPU 50 미만, 단일 스레드) Healthy 모니터링.
 
-미션 예시 문서의 종료 배너(`SELF-TERMINATED (Memory Limit Exceeded)`, `WATCHDOG: INITIATING EMERGENCY ABORT (SIGTERM)`)는 이 빌드가 글자 그대로 출력하지는 않는다. 대신 같은 의미를 갖는 실제 마커가 출력되며, 본 리포트는 그 둘을 다음과 같이 대응시켜 인용한다.
+미션 예시 문서의 종료 배너(`SELF-TERMINATED (Memory Limit Exceeded)`, `WATCHDOG: INITIATING EMERGENCY ABORT (SIGTERM)`)는 이 빌드가 글자 그대로 출력하지는 않는다. 대신 같은 의미를 갖는 실제 마커가 출력된다. 미션 예시 배너와 이 빌드의 실제 마커는 다음과 같이 대응한다.
 
 | 미션 예시 배너 | 이 빌드의 실제 마커 | 부가 증거 |
 | --- | --- | --- |
@@ -147,7 +147,7 @@ System Boot Failed. Process Terminated.
 
 ## 관제 방법론과 진단 도구
 
-장애 종류와 무관하게 모든 케이스에서 공통으로 쓰인 데이터 수집·판단 절차를 먼저 정리한다.
+세 장애는 모두 동일한 데이터 수집·판단 절차 위에서 분석했다. 장애 종류와 무관하게 공통으로 적용한 관제 방법론과 진단 도구 사용 원칙은 다음과 같다.
 
 ### monitor.sh 가 수치를 추출하는 방법
 
@@ -192,7 +192,7 @@ CPU 케이스에서는 "무엇을 측정하는가"가 도구마다 다르므로,
 4. 정지의 원인을 락 대기로 좁힌다: `ps -L` / `top -H` 로 스레드별 대기 채널(`WCHAN`)을 본다. `futex_wait_queue` 는 락 대기, `do_select` 는 정상 이벤트 루프 대기다.
 5. 마지막 로그로 인과를 닫는다: 멈추기 직전 로그에서 어떤 스레드가 어떤 자원을 점유하고 무엇을 기다리는지 읽어 순환 대기를 그린다.
 
-이하 세 건의 리포트는 위 절차를 각 장애에 적용한 결과를 GitHub Issue 형식으로 정리한 것이다.
+위 절차를 OOM, CPU, Deadlock 세 장애에 각각 적용한 GitHub Issue 리포트는 다음과 같다.
 
 ## 리포트 1 — [Bug] OOM Crash: 메모리 누수로 임계 도달 후 MemoryGuard 강제 종료
 
@@ -453,7 +453,7 @@ After 실행(`MULTI_THREAD_ENABLE=false`, `evidence/deadlock/snapshot_after.txt`
 
 ### 1. 관찰 개요
 
-모든 설정이 최적(메모리 권장치 이상, CPU 50 미만, 단일 스레드)이면 Healthy 시나리오가 선택되고, 부하 워커가 돌기 전에 작업 스케줄러 안정성 테스트가 한 번 돈다. 이 `[Scheduler]`/`[Thread-X]` 블록(`evidence/scheduler/scheduler_block.txt`)의 타임스탬프와 진행률로 실행 순서와 교체 주기를 분석했다. 이는 애플리케이션 런타임의 작업 스케줄러 추론이며, OS 커널 스케줄러 추론이 아님을 명시한다.
+모든 설정이 최적(메모리 권장치 이상, CPU 50 미만, 단일 스레드)이면 Healthy 시나리오가 선택되고, 부하 워커가 돌기 전에 작업 스케줄러 안정성 테스트가 한 번 돈다. 이 `[Scheduler]`/`[Thread-X]` 블록(`evidence/scheduler/scheduler_block.txt`)의 타임스탬프와 진행률로 실행 순서와 교체 주기를 분석했다. 이 분석의 대상은 애플리케이션 런타임의 작업 스케줄러이며, OS 커널 스케줄러와는 무관하다.
 
 ### 2. 증거 자료
 
