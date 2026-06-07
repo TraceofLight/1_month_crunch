@@ -1,0 +1,31 @@
+mini-redis> CONFIG SET maxmemory 30
+OK
+mini-redis> SET user:1 "Alice"
+OK
+mini-redis> SET user:2 "Bob"
+OK
+mini-redis> SET user:3 "Charlie"
+OK
+mini-redis> GET user:1
+(nil)
+mini-redis> INFO memory
+used_memory:22
+maxmemory:30
+evicted_keys:1
+mini-redis> KEYS
+1. "user:3"
+2. "user:2"
+mini-redis> EXPIRE user:2 1
+(integer) 1
+mini-redis> TTL user:2
+(integer) 0
+mini-redis> GET user:2
+(nil)
+mini-redis> TTL user:2
+(integer) -2
+mini-redis> CONFIG SET maxmemory abc
+(error) ERR value is not an integer or out of range
+mini-redis> GET
+(error) ERR wrong number of arguments for 'GET' command
+mini-redis> HELLO
+(error) ERR unknown command 'HELLO'
