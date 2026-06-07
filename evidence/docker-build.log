@@ -12,37 +12,37 @@
 #3 DONE 0.0s
 
 #4 [internal] load build context
-#4 transferring context: 14.78kB done
+#4 transferring context: 2.04kB done
 #4 DONE 0.0s
 
 #5 [1/6] FROM docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54
 #5 resolve docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54 0.0s done
-#5 DONE 0.1s
+#5 DONE 0.0s
 
-#6 [2/6] WORKDIR /app
+#6 [5/6] RUN python3 -m venv /opt/venv     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 #6 CACHED
 
-#7 [3/6] RUN apt-get update     && apt-get install -y --no-install-recommends python3 python3-pip python3-venv     && rm -rf /var/lib/apt/lists/*
+#7 [2/6] WORKDIR /app
 #7 CACHED
 
-#8 [4/6] COPY requirements.txt .
+#8 [3/6] RUN apt-get update     && apt-get install -y --no-install-recommends python3 python3-pip python3-venv     && rm -rf /var/lib/apt/lists/*
 #8 CACHED
 
-#9 [5/6] RUN python3 -m venv /opt/venv     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+#9 [4/6] COPY requirements.txt .
 #9 CACHED
 
 #10 [6/6] COPY . .
-#10 DONE 0.1s
+#10 CACHED
 
 #11 exporting to image
-#11 exporting layers 0.1s done
-#11 exporting manifest sha256:5031853f566d24595a5347d5be7bcc95524057f722167294dd798e6f6b06c549 0.0s done
-#11 exporting config sha256:0902a28025ba416b54df36c47fbd548f718832cb92d828bdf13b722285049ce9 0.0s done
-#11 exporting attestation manifest sha256:8e4fb06960decad2bd96f7f602581821e5293bce6cfb379859042aba34544c4b 0.1s done
-#11 exporting manifest list sha256:ffae9685ee97b4b00632297235f6d0cb99166235bebc09717a1f27ad39e0c629
-#11 exporting manifest list sha256:ffae9685ee97b4b00632297235f6d0cb99166235bebc09717a1f27ad39e0c629 0.0s done
+#11 exporting layers done
+#11 exporting manifest sha256:46cd36ccf91f201f7fb6a341751d2312939f48a6243d2f26e39a74e248836cbd done
+#11 exporting config sha256:e1ea107a4a00f3084c8ff7855a936b1b2a3e0ae0c6782dd89d636e7ee7289857 done
+#11 exporting attestation manifest sha256:9c49262a1b3461feb09a3a836df5b1a68bd322b0f9eba7ec7ec6d8dc3ce2e689 0.0s done
+#11 exporting manifest list sha256:796405ead794c26099fde1b0ebc86228bfe39eb969705d1eaf40b4dc3c51c595 0.0s done
+#11 naming to docker.io/library/codyssey-cli-test-mini-redis:latest
 #11 naming to docker.io/library/codyssey-cli-test-mini-redis:latest done
-#11 unpacking to docker.io/library/codyssey-cli-test-mini-redis:latest 0.1s done
-#11 DONE 0.4s
+#11 unpacking to docker.io/library/codyssey-cli-test-mini-redis:latest 0.0s done
+#11 DONE 0.2s
 
-View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/nis5lfu5h8gvp58ot4ayas11z
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/3qf8eu0we3ld73kgwnozuz4uf
