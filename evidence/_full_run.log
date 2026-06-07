@@ -1,0 +1,38 @@
+>>> [BOOT] 정상 부트(6/6 통과) 캡처
+>>> [BOOT] 실패 케이스 1: MEMORY_LIMIT 범위 위반(40, 허용 50~512)
+>>> [BOOT] 실패 케이스 2: secret.key 내용 불일치
+>>> [BOOT] 실패 케이스 3: AGENT_PORT 고정값(15034) 위반
+>>> [BOOT] 완료. 증거: /mnt/d/Projects/Github/ai-assignment/evidence/boot/
+>>> [OOM] before 런: MEMORY_LIMIT=128 (종료 관측)
+[2026-06-07 20:57:45] PROCESS:agent-leak-app CPU:0.0% MEM:0.0% RSS:2MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:47] PROCESS:agent-leak-app CPU:3.9% MEM:0.0% RSS:18MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:49] PROCESS:agent-leak-app CPU:2.2% MEM:0.1% RSS:42MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:51] PROCESS:agent-leak-app CPU:1.6% MEM:0.2% RSS:68MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:53] PROCESS:agent-leak-app CPU:1.2% MEM:0.2% RSS:68MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:55] PROCESS:agent-leak-app CPU:0.9% MEM:0.3% RSS:92MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:57] PROCESS:agent-leak-app CPU:0.9% MEM:0.3% RSS:118MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:57:59] PROCESS:agent-leak-app CPU:0.7% MEM:0.3% RSS:118MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:01] PROCESS:agent-leak-app CPU:0.8% MEM:0.4% RSS:142MB DISK:950G FIREWALL:inactive
+/mnt/d/Projects/Github/ai-assignment/scripts/run_oom.sh: line 33:   493 Killed                  "$APP" > "$OUT/app_${tag}.log" 2>&1
+[2026-06-07 20:58:03] PROCESS:agent-leak-app STATUS:NOT_RUNNING (프로세스 종료 감지)
+>>> [OOM] mid 런: MEMORY_LIMIT=256 (종료 관측)
+[2026-06-07 20:58:05] PROCESS:agent-leak-app CPU:0.0% MEM:0.0% RSS:2MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:07] PROCESS:agent-leak-app CPU:3.4% MEM:0.0% RSS:18MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:09] PROCESS:agent-leak-app CPU:1.7% MEM:0.1% RSS:42MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:11] PROCESS:agent-leak-app CPU:1.6% MEM:0.2% RSS:68MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:13] PROCESS:agent-leak-app CPU:1.2% MEM:0.2% RSS:68MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:15] PROCESS:agent-leak-app CPU:0.9% MEM:0.3% RSS:92MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:17] PROCESS:agent-leak-app CPU:0.9% MEM:0.3% RSS:118MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:19] PROCESS:agent-leak-app CPU:0.7% MEM:0.3% RSS:118MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:21] PROCESS:agent-leak-app CPU:0.7% MEM:0.4% RSS:142MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:23] PROCESS:agent-leak-app CPU:0.6% MEM:0.5% RSS:168MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:25] PROCESS:agent-leak-app CPU:0.6% MEM:0.5% RSS:168MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:27] PROCESS:agent-leak-app CPU:0.6% MEM:0.6% RSS:192MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:29] PROCESS:agent-leak-app CPU:0.6% MEM:0.7% RSS:218MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:31] PROCESS:agent-leak-app CPU:0.5% MEM:0.8% RSS:242MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:34] PROCESS:agent-leak-app CPU:0.5% MEM:0.8% RSS:242MB DISK:950G FIREWALL:inactive
+[2026-06-07 20:58:36] PROCESS:agent-leak-app CPU:0.5% MEM:0.8% RSS:268MB DISK:950G FIREWALL:inactive
+/mnt/d/Projects/Github/ai-assignment/scripts/run_oom.sh: line 33:   655 Killed                  "$APP" > "$OUT/app_${tag}.log" 2>&1
+[2026-06-07 20:58:38] PROCESS:agent-leak-app STATUS:NOT_RUNNING (프로세스 종료 감지)
+>>> [OOM] after 런: MEMORY_LIMIT=512 (생존 관측 100s)
+[2026-06-07 20:58:40] PROCESS:agent-leak-app CPU:0.0% MEM:0.0% RSS:2MB DISK:950G FIREWALL:inactive

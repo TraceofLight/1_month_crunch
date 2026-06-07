@@ -1,0 +1,12 @@
+# macOS 압축 해제 잔여물(미션과 무관)
+__MACOSX/
+._*
+
+# Python 캐시
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 런타임 작업 디렉터리(컨테이너/로컬 모두 evidence 밖)
+agent-home/
+.agent_runtime/
