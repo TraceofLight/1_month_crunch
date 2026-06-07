@@ -25,6 +25,9 @@ DATA_DIR = REPO_ROOT / "data"
 EVIDENCE_DIR = REPO_ROOT / "evidence"
 SAMPLE_CSV = REPO_ROOT / "samples" / "import_sample.csv"
 EXPORT_CSV = EVIDENCE_DIR / "export_2024-01.csv"
+# 추가 검증 케이스를 메인 ./data 와 분리해 실행할 임시 저장소(--data-dir 옵션 시연 겸용).
+EXTRA_DIR = REPO_ROOT / "_extra_data"
+EXTRA_REL = "_extra_data"
 # 명령줄 로그를 이식 가능하게 보이도록 REPO_ROOT 기준 상대 경로를 쓴다.
 SAMPLE_REL = "samples/import_sample.csv"
 EXPORT_REL = "evidence/export_2024-01.csv"
@@ -196,6 +199,40 @@ def main() -> int:
     section(err_log, "허용되지 않은 타입으로 수정")
     step(err_log, ["update", "--id", "TX-000002", "--type", "spend"])
     write_evidence("errors.txt", "\n".join(err_log) + "\n")
+
+    # 추가 검증 케이스(메인 ./data 와 분리한 별도 저장소에서 실행).
+    #   - --data-dir 옵션으로 저장 폴더를 바꿀 수 있음을 함께 시연한다.
+    #   - 사용 중 카테고리를 대체 카테고리로 옮긴 뒤 삭제하는 흐름.
+    #   - 데이터가 없는 달의 summary("데이터 없음") 출력.
+    #   - 데코레이터(handle_errors)가 실패 호출을 로그로 남기는 케이스.
+    if EXTRA_DIR.exists():
+        shutil.rmtree(EXTRA_DIR)
+    extra_log: list[str] = [
+        "추가 검증 케이스(--data-dir 분리 저장소: 카테고리 대체 이동 / 데이터 없는 달 / 데코레이터 로그)"
+    ]
+    section(extra_log, "category remove --into (사용 중 카테고리를 대체 이동 후 삭제)")
+    step(extra_log, ["category", "list", "--data-dir", EXTRA_REL])
+    step(extra_log, ["add", "--data-dir", EXTRA_REL], stdin="2024-05-01\nexpense\nfood\n5000\n점심\n\n")
+    step(extra_log, ["add", "--data-dir", EXTRA_REL], stdin="2024-05-02\nexpense\nfood\n3000\n간식\n\n")
+    step(extra_log, ["category", "add", "--data-dir", EXTRA_REL], stdin="cafe\n")
+    step(extra_log, ["category", "remove", "--name", "food", "--into", "cafe", "--data-dir", EXTRA_REL])
+    step(extra_log, ["list", "--limit", "5", "--data-dir", EXTRA_REL])
+    section(extra_log, "summary (데이터 없는 달은 '데이터 없음' 명시)")
+    step(extra_log, ["summary", "--month", "2099-12", "--data-dir", EXTRA_REL])
+    section(extra_log, "실패 호출(handle_errors 데코레이터가 오류 로그를 남김)")
+    step(extra_log, ["delete", "--id", "TX-999999", "--data-dir", EXTRA_REL])
+    write_evidence("extra_cases.txt", "\n".join(extra_log) + "\n")
+
+    # 데코레이터가 실제로 적용되어 동작했음을 보여주는 로그 파일을 캡처한다.
+    log_header = (
+        "데코레이터 실행 로그(budget_app.log) - 위 추가 검증 케이스 실행 중 생성됨\n"
+        "log_call: '호출 시작/종료', timed: '실행 시간 ... ms', "
+        "handle_errors: '처리 실패 ...' 가 각 명령 처리에 실제 적용된 결과다.\n"
+    )
+    log_path = EXTRA_DIR / "budget_app.log"
+    log_body = log_path.read_text(encoding="utf-8") if log_path.exists() else "(로그 없음)"
+    write_evidence("decorator_log.txt", log_header + "\n" + log_body)
+    shutil.rmtree(EXTRA_DIR, ignore_errors=True)
 
     # 단위 테스트 결과
     test_proc = subprocess.run(

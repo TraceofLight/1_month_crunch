@@ -1,0 +1,27 @@
+데코레이터 실행 로그(budget_app.log) - 위 추가 검증 케이스 실행 중 생성됨
+log_call: '호출 시작/종료', timed: '실행 시간 ... ms', handle_errors: '처리 실패 ...' 가 각 명령 처리에 실제 적용된 결과다.
+
+2026-06-07 20:01:59,587 INFO 호출 시작: cmd_category_list
+2026-06-07 20:01:59,590 INFO 호출 종료: cmd_category_list
+2026-06-07 20:01:59,590 INFO 실행 시간: cmd_category_list = 2.14 ms
+2026-06-07 20:01:59,660 INFO 호출 시작: cmd_add
+2026-06-07 20:01:59,666 INFO 호출 종료: cmd_add
+2026-06-07 20:01:59,666 INFO 실행 시간: cmd_add = 5.80 ms
+2026-06-07 20:01:59,733 INFO 호출 시작: cmd_add
+2026-06-07 20:01:59,744 INFO 호출 종료: cmd_add
+2026-06-07 20:01:59,744 INFO 실행 시간: cmd_add = 11.01 ms
+2026-06-07 20:01:59,814 INFO 호출 시작: cmd_category_add
+2026-06-07 20:01:59,814 INFO 호출 종료: cmd_category_add
+2026-06-07 20:01:59,814 INFO 실행 시간: cmd_category_add = 0.60 ms
+2026-06-07 20:01:59,880 INFO 호출 시작: cmd_category_remove
+2026-06-07 20:01:59,893 INFO 호출 종료: cmd_category_remove
+2026-06-07 20:01:59,893 INFO 실행 시간: cmd_category_remove = 13.31 ms
+2026-06-07 20:01:59,953 INFO 호출 시작: cmd_list
+2026-06-07 20:01:59,959 INFO 호출 종료: cmd_list
+2026-06-07 20:01:59,959 INFO 실행 시간: cmd_list = 5.82 ms
+2026-06-07 20:02:00,019 INFO 호출 시작: cmd_summary
+2026-06-07 20:02:00,024 INFO 호출 종료: cmd_summary
+2026-06-07 20:02:00,024 INFO 실행 시간: cmd_summary = 4.48 ms
+2026-06-07 20:02:00,083 INFO 호출 시작: cmd_delete
+2026-06-07 20:02:00,084 INFO 실행 시간: cmd_delete = 0.42 ms
+2026-06-07 20:02:00,084 ERROR 처리 실패: cmd_delete - 거래를 찾을 수 없습니다: TX-999999

@@ -1,0 +1,57 @@
+추가 검증 케이스(--data-dir 분리 저장소: 카테고리 대체 이동 / 데이터 없는 달 / 데코레이터 로그)
+
+======================================================================
+# category remove --into (사용 중 카테고리를 대체 이동 후 삭제)
+======================================================================
+
+$ python -m budget_app category list --data-dir _extra_data
+[안내] 저장소를 초기화했습니다. 기본 카테고리: food, transport, rent, salary, etc
+- food
+- transport
+- rent
+- salary
+- etc
+[exit code] 0
+
+$ python -m budget_app add --data-dir _extra_data
+  (입력: 2024-05-01\nexpense\nfood\n5000\n점심\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000001
+[exit code] 0
+
+$ python -m budget_app add --data-dir _extra_data
+  (입력: 2024-05-02\nexpense\nfood\n3000\n간식\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000002
+[exit code] 0
+
+$ python -m budget_app category add --data-dir _extra_data
+  (입력: cafe\n)
+카테고리명: [저장 완료] category=cafe
+[exit code] 0
+
+$ python -m budget_app category remove --name food --into cafe --data-dir _extra_data
+[삭제 완료] category=food (거래 2건을 'cafe'로 이동)
+[exit code] 0
+
+$ python -m budget_app list --limit 5 --data-dir _extra_data
+id        | date       | type    | category | amount | memo | tags
+------------------------------------------------------------------
+TX-000002 | 2024-05-02 | expense | cafe     | 3,000  | 간식 |
+TX-000001 | 2024-05-01 | expense | cafe     | 5,000  | 점심 |
+[exit code] 0
+
+======================================================================
+# summary (데이터 없는 달은 '데이터 없음' 명시)
+======================================================================
+
+$ python -m budget_app summary --month 2099-12 --data-dir _extra_data
+2099-12: 데이터 없음
+[exit code] 0
+
+======================================================================
+# 실패 호출(handle_errors 데코레이터가 오류 로그를 남김)
+======================================================================
+
+$ python -m budget_app delete --id TX-999999 --data-dir _extra_data
+[오류] 거래를 찾을 수 없습니다: TX-999999
+[힌트] list 명령으로 존재하는 id 를 확인하세요.
+[exit code] 1

@@ -202,7 +202,7 @@ $ python -m budget_app summary --month 2024-02 --top 3
 ======================================================================
 
 $ python -m budget_app backup
-[완료] 백업 생성: data\backups\backup-20260607-194538
+[완료] 백업 생성: data\backups\backup-20260607-200158
 [exit code] 0
 
 $ python -m budget_app recurring add

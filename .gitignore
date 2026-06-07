@@ -1,5 +1,6 @@
 # 런타임 데이터(데모/실행 중 생성). 형식 증거는 evidence/ 에 별도 보존한다.
 /data/
+/_extra_data/
 
 # 파이썬 캐시
 __pycache__/

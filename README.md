@@ -62,7 +62,9 @@ python scripts/run_demo.py
 
 이 스크립트는 깨끗한 `./data` 폴더에서 10개 기능을 순서대로 실행한 뒤, 실행 로그와
 도움말, 저장 파일 내용, 오류 처리, 단위 테스트 결과를 `evidence/` 아래에 저장한다.
-저장 폴더는 `--data-dir` 옵션으로 변경할 수 있다(기본값 `./data`).
+저장 폴더는 `--data-dir` 옵션으로 변경할 수 있다(기본값 `./data`). 다른 저장 폴더로
+바꿔 실행한 예는 evidence/extra_cases.txt 에 있다(모든 명령이 `--data-dir _extra_data`
+로 동작).
 
 `python -m budget_app` 진입점은 `budget_app/__main__.py` 가 CLI 의 `main` 을
 호출하고 그 종료 코드로 프로세스를 끝내는 구조다.
@@ -321,7 +323,8 @@ return list(matched)
 
 총수입, 총지출, 잔액과 카테고리별 지출 TOP N(`--top`, 기본 3)을 출력한다. 데이터가
 없는 달은 "데이터 없음"을 명시한다. 예산이 있으면 사용률과 초과 경고를 함께 낸다.
-정상 요약은 evidence/demo_run.txt 105-116, 초과 경고는 188-198 에 있다.
+정상 요약은 evidence/demo_run.txt 105-116, 초과 경고는 188-198, 데이터 없는 달의
+출력은 evidence/extra_cases.txt 46-48 에 있다.
 
 ```text
 $ python -m budget_app summary --month 2024-01 --top 3
@@ -383,8 +386,9 @@ def set_budget(self, month, amount) -> tuple[str, int]:
 ### 6. category (카테고리 관리)
 
 `category add` 는 대화형이다. 삭제 시 사용 중이면 막고, `--into` 로 대체 카테고리를
-주면 거래를 옮긴 뒤 삭제한다. 사용 예는 evidence/demo_run.txt 16-28, 사용 중 삭제
-차단 오류는 evidence/errors.txt 37-40 에 있다.
+주면 거래를 옮긴 뒤 삭제한다. add/list 사용 예는 evidence/demo_run.txt 16-28, 사용
+중 카테고리를 대체 이동하며 삭제하는 예는 evidence/extra_cases.txt 31-40, 대체
+카테고리를 주지 않아 삭제가 차단되는 오류는 evidence/errors.txt 37-40 에 있다.
 
 ```text
 $ python -m budget_app category remove --name food --into cafe
@@ -629,6 +633,11 @@ def cmd_summary(args: argparse.Namespace) -> int:
 않도록 `data/budget_app.log` 로 남긴다. `handle_errors` 가 종료 코드를 만들어 주는
 덕분에 오류 처리와 종료 코드 정책이 한 곳에 모인다.
 
+세 데코레이터가 실제로 적용되어 명령마다 동작한 결과는 evidence/decorator_log.txt
+4-27 에서 확인할 수 있다. 각 명령에 대해 `log_call` 의 "호출 시작/종료", `timed` 의
+"실행 시간 ... ms" 가 남고, 마지막 실패한 삭제(`cmd_delete`)에서는 `handle_errors`
+가 "처리 실패 ..." 를 기록한다.
+
 ## 타입 힌트로 입출력 계약 명확화
 
 모든 함수와 데이터 구조에 타입 힌트를 적용해 입출력 계약을 분명히 했다. 요약 결과는
@@ -806,6 +815,10 @@ docker run --rm budget-app python -m budget_app summary --month 2024-01
 - evidence/data_files.txt: 실행 후 저장 파일 4종의 실제 내용과 내보낸 CSV 내용.
 - evidence/errors.txt: 잘못된 날짜, 없는 id, export 조건 누락, 사용 중 카테고리
   삭제, 허용되지 않은 타입 등 오류 처리와 종료 코드.
+- evidence/extra_cases.txt: 별도 `--data-dir` 저장소에서 카테고리 대체 이동
+  (`category remove --into`), 데이터 없는 달 요약("데이터 없음"), 실패 호출을 시연한 로그.
+- evidence/decorator_log.txt: 위 케이스 실행 중 데코레이터가 남긴 실제 로그
+  (호출 시작/종료, 실행 시간, 처리 실패).
 - evidence/tests.txt: 단위 테스트 실행 결과(31개 통과).
 - evidence/export_2024-01.csv: export 로 생성한 CSV 견본.
 
