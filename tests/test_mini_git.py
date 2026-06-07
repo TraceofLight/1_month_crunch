@@ -88,6 +88,15 @@ def test_parser_accepts_case_insensitive_commands_quotes_and_options():
     assert MiniGit().execute('commit "unterminated') == ["Invalid args"]
 
 
+def test_read_commands_require_initialized_repository():
+    repo = MiniGit()
+
+    assert repo.execute("log") == ["Repository not initialized"]
+    assert repo.execute("search login") == ["Repository not initialized"]
+    assert repo.execute("path c000001 c000002") == ["Repository not initialized"]
+    assert repo.execute("ancestors c000001") == ["Repository not initialized"]
+
+
 def test_source_does_not_use_python_standard_sort_api():
     source = inspect.getsource(__import__("main"))
     assert "sorted(" not in source

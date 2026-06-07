@@ -143,6 +143,8 @@ class MiniGit:
     def log_command(self, args: List[str]) -> List[str]:
         """기본 위상 순서 로그 또는 지정 기준 정렬 로그를 반환한다."""
 
+        if not self._is_initialized():
+            return ["Repository not initialized"]
         if len(args) == 0:
             commits = self.topological_commits()
             return self._format_commits(commits)
@@ -169,6 +171,8 @@ class MiniGit:
     def path_command(self, start: str, goal: str) -> List[str]:
         """커밋-부모 간선을 무방향으로 보아 최단 경로를 계산한다."""
 
+        if not self._is_initialized():
+            return ["Repository not initialized"]
         missing = self._first_missing_commit([start, goal])
         if missing:
             return [f"Unknown commit: {missing}"]
@@ -180,6 +184,8 @@ class MiniGit:
     def ancestors_command(self, commit_hash: str) -> List[str]:
         """지정 커밋에서 부모 방향으로 도달 가능한 모든 조상을 반환한다."""
 
+        if not self._is_initialized():
+            return ["Repository not initialized"]
         if commit_hash not in self.commits:
             return [f"Unknown commit: {commit_hash}"]
         ancestors = self.ancestors(commit_hash)
@@ -190,6 +196,8 @@ class MiniGit:
     def search_command(self, args: List[str]) -> List[str]:
         """역색인에서 키워드 또는 author 후보 커밋을 가져와 출력한다."""
 
+        if not self._is_initialized():
+            return ["Repository not initialized"]
         if len(args) != 1:
             return ["Invalid args"]
         if args[0].startswith("--author="):
