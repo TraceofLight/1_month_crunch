@@ -1,0 +1,17 @@
+Git 협업 워크플로우 점검 리포트
+생성 시각(UTC): 2026-06-07T13:48:07.064759+00:00
+전체 결과: 통과
+
+필수 경로:
+- README.md: 있음
+- SUBMISSION.md: 있음
+- docs/CONTRIBUTING.md: 있음
+- docs/conflict-resolution.md: 있음
+- docs/troubleshooting-log.md: 있음
+- src/team_utils.py: 있음
+- tests/test_team_utils.py: 있음
+- Dockerfile: 있음
+
+테스트 종료 코드: 0
+src 충돌 마커 수: 0
+

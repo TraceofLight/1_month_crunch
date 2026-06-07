@@ -1,0 +1,138 @@
+* c41ecdc docs(readme): present supporting prose directly without meta-narrative
+* 343b82c docs(readme): author full troubleshooting report with captured evidence
+* 38414a7 feat(assignment): update assignment deliverables
+| * ce4e074 docs(readme): reorganize by topic into coherent functional sections
+| * 269a986 docs(readme): verify decorator runtime, category migration, empty-month, and data-dir in evidence
+| * b8f538d feat(budget-app): implement stdlib file-based budget console app
+|/  
+| *-.   3a6c0a7 WIP on b1-2: d26de25 feat(assignment): update assignment deliverables
+| |\ \  
+| | | * 1680dcc untracked files on b1-2: d26de25 feat(assignment): update assignment deliverables
+| | * a891e93 index on b1-2: d26de25 feat(assignment): update assignment deliverables
+| |/  
+| * d26de25 feat(assignment): update assignment deliverables
+| * 7818bbc docs(readme): add troubleshooting reports with reproducible lab for OOM/CPU/deadlock
+|/  
+| * 014d985 docs(readme): reorganize deliverable by topic (security/monitoring/operations)
+| * f3facde docs(readme): document monitoring automation lab with full evidence and runbooks
+| * 0dd23b9 feat(assignment): update assignment deliverables
+|/  
+| * 67e7c36 feat(assignment): update assignment deliverables
+| * 15c0534 feat(assignment): update assignment deliverables
+|/  
+| * 1884ecf feat(assignment): update assignment deliverables
+|/  
+| * a258919 feat(assignment): update assignment deliverables
+| * 7664442 feat(assignment): update assignment deliverables
+| * 397643b feat(assignment): update assignment deliverables
+|/  
+| * 0e31835 feat(assignment): update assignment deliverables
+| * 4aa7148 feat(assignment): update assignment deliverables
+|/  
+| * f74e4ed feat(assignment): update assignment deliverables
+| * 6c19706 feat(assignment): update assignment deliverables
+|/  
+| * d20a71a docs(readme): add operations roadmap with priority rationale
+| * 2bd8329 feat(aigitgen): build AI commit and PR generator with safe-mode and dry-run
+|/  
+| * dad8c7e docs(readme): polish for human readability
+| * 053713b feat(auth): add session auth, user-memo-comment relations, Docker stack
+|/  
+| * 9aa56ec docs(readme): polish for human readability
+| * b7524e1 feat(docker): containerize app and capture end-to-end evidence
+| * 14924f7 feat(api): build FastAPI memo CRUD with SQLAlchemy and Jinja templates
+|/  
+| * 6ae8bce docs(readme): polish for human readability
+| * cf28e20 feat(sql): build SQLite library schema with 22 queries and KPIs
+|/  
+| * c1a6288 feat(web): build React SPA bookshelf with Supabase auth and CRUD
+|/  
+| * a1ec962 docs(readme): polish for human readability
+| * c55ce69 refactor(theme): extract theme-init to external file + document onclick vs addEventListener
+| * 9d45164 docs(evidence): refresh captures from latest deployment
+| * e829a41 refactor(theme): modernize FOUC inline script to ES2022+ syntax
+| * c09148e docs(evidence): refresh deployment captures after FOUC and screenshot changes
+| * e212c3f feat(theme): prevent FOUC + add tech-stack section + section-level captures
+| * 2e38978 docs(evidence): capture deployed-site HTTP headers and live screenshots
+| * ba83ee4 feat(portfolio): build vanilla HTML/CSS/JS site with Pages auto-deploy
+|/  
+| * 21ada68 feat(mini_git): build content-addressed VCS with SHA-1 objects and DAG
+|/  
+| * cfbbfb5 feat(mini_redis): build in-memory KV store with hashmap, linked list, heap
+|/  
+| * 83faf3e feat: add ignore
+| * 60cecde refactor: ui fix
+| * 7a03d81 feat: bonus exposure
+| * 3165f54 misc: move documents
+| * 56700ae feat: add image
+| * 49c22c6 feat: add gitignore
+| * 9a959d5 feat: add pics
+| * c647f90 feat: add some notes
+| *   b1c5ab7 Merge commit '7b2c14d' into e1-3
+| |\  
+| | * 7b2c14d docs: align mini npu readme with plan
+| | * d569ea4 docs: add mini npu simulator report
+| | * 9dd9a38 feat: add interactive console modes
+| | * 405a6c7 feat: add batch analysis and seed dataset
+| | * fe4c827 feat: add mac scoring and benchmark helpers
+| | * 7de36bf feat: add matrix and pattern foundations
+| |/  
+| * 7d2bb19 docs: add planning artifacts for mini npu simulator
+|/  
+| * c020d3a feat: add some pics
+| * 2e82dbc test: match standard
+| * 898a4ef feat: add remained docs
+| *   eacf25e merge: integrate bonus docs
+| |\  
+| | * e273d39 docs: clarify README state schema example
+| | * a123871 feat: collect and document quiz hints
+| |/  
+| *   e71c483 merge: integrate bonus delete
+| |\  
+| | * 943089d feat: add quiz deletion menu flow
+| |/  
+| *   12acee7 merge: integrate bonus history
+| |\  
+| | * a7b7e5e fix: bound recent history display
+| | * cd06aab feat: record and show quiz play history
+| |/  
+| *   fd74d5e merge: integrate bonus hints
+| |\  
+| | * 2970a09 feat: add hint prompt penalty scoring
+| |/  
+| *   eb56611 merge: integrate bonus random count
+| |\  
+| | * 2f7e8e7 feat: randomize quiz rounds with selected count
+| |/  
+| *   647a8c1 merge: integrate bonus state foundation
+| |\  
+| | * 1284ff5 fix: align sample state with default quiz set
+| | * 098ba0d fix: preserve quiz state when history is invalid
+| | * 4ff8c01 fix: preserve validated history schema
+| | * 8e5334b test: cover backward-compatible state foundation
+| |/  
+| * 592d354 feat: add git pics
+| * ba6f6b9 test: show it clones
+| * a10f294 feat: add application pics
+| * 7765327 docs: add evaluation evidence and submission guide
+| * a57bcf5 feat: add quiz play flow quiz creation and safe exit handling
+| *   343a2bc merge: integrate persistence branch into rewrite history
+| |\  
+| | * b75c61a feat: add state loading and recovery handling
+| | * 3bbf170 feat: add state serialization and save logic
+| |/  
+| * 5f18bc5 feat: add quiz list and score display
+| * d78fefd feat: add menu flow and validated input handling
+| * f1d4b1d feat: add quiz model and default question data
+| * c05337a docs: add quiz game overview and run guide
+| * d07d185 chore: ignore local worktrees and Python artifacts
+| * f3aed5b feat: gitignore
+|/  
+| * 0833107 feat: add some notes
+| * 28dbf1d test: move files
+| * b49d074 feat: ssh key
+| * 3229925 feat: docker compose
+| * ce788bf feat: github login
+| * e437076 feat: initial works chapter 1
+|/  
+* f1259c2 Initial commit

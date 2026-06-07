@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-06-07T13:48:07.064759+00:00",
+  "overall_pass": true,
+  "path_status": {
+    "README.md": true,
+    "SUBMISSION.md": true,
+    "docs/CONTRIBUTING.md": true,
+    "docs/conflict-resolution.md": true,
+    "docs/troubleshooting-log.md": true,
+    "src/team_utils.py": true,
+    "tests/test_team_utils.py": true,
+    "Dockerfile": true
+  },
+  "branch_names": [
+    "feature/kim-min-seo-add-math-utils",
+    "feature/lee-ji-hyun-review-guide",
+    "feature/park-seo-yeon-conflict-log",
+    "feature/choi-jun-ho-troubleshooting"
+  ],
+  "commit_status": {
+    "feat: add math utility examples": {
+      "valid": true,
+      "reason": "유효한 커밋 메시지"
+    },
+    "docs: add conflict resolution record": {
+      "valid": true,
+      "reason": "유효한 커밋 메시지"
+    },
+    "update": {
+      "valid": false,
+      "reason": "금지된 단독 메시지"
+    },
+    "fix: bug fix": {
+      "valid": false,
+      "reason": "subject가 변경 대상이나 효과를 설명하지 않음"
+    }
+  },
+  "pr_body_status": {
+    "missing": []
+  },
+  "conflict_markers": {
+    "total_markers": 0,
+    "files": []
+  },
+  "test_exit_code": 0,
+  "test_stdout": "",
+  "test_stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n"
+}

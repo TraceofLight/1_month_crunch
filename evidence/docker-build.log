@@ -1,0 +1,263 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 347B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:24.04
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/3] FROM docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54
+#4 resolve docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54 0.0s done
+#4 CACHED
+
+#5 [2/3] RUN apt-get update     && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates     && rm -rf /var/lib/apt/lists/*
+#5 0.780 Get:1 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+#5 1.024 Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+#5 1.340 Get:3 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [2148 kB]
+#5 1.358 Get:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+#5 1.706 Get:5 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+#5 1.864 Get:6 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+#5 1.900 Get:7 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+#5 1.945 Get:8 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [48.4 kB]
+#5 1.950 Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1513 kB]
+#5 2.016 Get:10 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3807 kB]
+#5 2.038 Get:11 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+#5 2.333 Get:12 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+#5 3.080 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [54.6 kB]
+#5 3.080 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2525 kB]
+#5 3.186 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2155 kB]
+#5 3.273 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [4038 kB]
+#5 3.429 Get:17 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+#5 3.429 Get:18 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+#5 3.430 Get:19 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+#5 3.922 Fetched 38.6 MB in 4s (10.8 MB/s)
+#5 3.922 Reading package lists...
+#5 4.685 Reading package lists...
+#5 5.363 Building dependency tree...
+#5 5.530 Reading state information...
+#5 5.671 The following additional packages will be installed:
+#5 5.671   libexpat1 libpython3-stdlib libpython3.12-minimal libpython3.12-stdlib
+#5 5.671   libreadline8t64 libsqlite3-0 media-types netbase openssl python3-minimal
+#5 5.671   python3-pip-whl python3-setuptools-whl python3.12 python3.12-minimal
+#5 5.671   python3.12-venv readline-common tzdata
+#5 5.672 Suggested packages:
+#5 5.672   python3-doc python3-tk python3.12-doc binutils binfmt-support readline-doc
+#5 5.730 The following NEW packages will be installed:
+#5 5.731   ca-certificates libexpat1 libpython3-stdlib libpython3.12-minimal
+#5 5.731   libpython3.12-stdlib libreadline8t64 libsqlite3-0 media-types netbase
+#5 5.731   openssl python3 python3-minimal python3-pip-whl python3-setuptools-whl
+#5 5.731   python3-venv python3.12 python3.12-minimal python3.12-venv readline-common
+#5 5.731   tzdata
+#5 5.988 0 upgraded, 20 newly installed, 0 to remove and 3 not upgraded.
+#5 5.988 Need to get 10.9 MB of archives.
+#5 5.988 After this operation, 33.0 MB of additional disk space will be used.
+#5 5.988 Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3.12-minimal amd64 3.12.3-1ubuntu0.13 [837 kB]
+#5 6.603 Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libexpat1 amd64 2.6.1-2ubuntu0.4 [88.2 kB]
+#5 6.612 Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3.12-minimal amd64 3.12.3-1ubuntu0.13 [2346 kB]
+#5 6.866 Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3-minimal amd64 3.12.3-0ubuntu2.1 [27.4 kB]
+#5 6.867 Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 media-types all 10.1.0 [27.5 kB]
+#5 6.868 Get:6 http://archive.ubuntu.com/ubuntu noble/main amd64 netbase all 6.4 [13.1 kB]
+#5 6.869 Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 tzdata all 2026a-0ubuntu0.24.04.1 [280 kB]
+#5 6.883 Get:8 http://archive.ubuntu.com/ubuntu noble/main amd64 readline-common all 8.2-4build1 [56.5 kB]
+#5 6.888 Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 libreadline8t64 amd64 8.2-4build1 [153 kB]
+#5 6.895 Get:10 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libsqlite3-0 amd64 3.45.1-1ubuntu2.5 [701 kB]
+#5 6.927 Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3.12-stdlib amd64 3.12.3-1ubuntu0.13 [2068 kB]
+#5 7.013 Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3.12 amd64 3.12.3-1ubuntu0.13 [662 kB]
+#5 7.038 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libpython3-stdlib amd64 3.12.3-0ubuntu2.1 [10.1 kB]
+#5 7.039 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 python3 amd64 3.12.3-0ubuntu2.1 [23.0 kB]
+#5 7.040 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 openssl amd64 3.0.13-0ubuntu3.9 [1002 kB]
+#5 7.080 Get:16 http://archive.ubuntu.com/ubuntu noble/main amd64 ca-certificates all 20240203 [159 kB]
+#5 7.085 Get:17 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-pip-whl all 24.0+dfsg-1ubuntu1.3 [1707 kB]
+#5 7.137 Get:18 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-setuptools-whl all 68.1.2-2ubuntu1.2 [716 kB]
+#5 7.150 Get:19 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3.12-venv amd64 3.12.3-1ubuntu0.13 [5672 B]
+#5 7.151 Get:20 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-venv amd64 3.12.3-0ubuntu2.1 [1032 B]
+#5 7.264 debconf: delaying package configuration, since apt-utils is not installed
+#5 7.288 Fetched 10.9 MB in 1s (7718 kB/s)
+#5 7.322 Selecting previously unselected package libpython3.12-minimal:amd64.
+#5 7.322 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 4381 files and directories currently installed.)
+#5 7.344 Preparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.13_amd64.deb ...
+#5 7.350 Unpacking libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.13) ...
+#5 7.461 Selecting previously unselected package libexpat1:amd64.
+#5 7.462 Preparing to unpack .../libexpat1_2.6.1-2ubuntu0.4_amd64.deb ...
+#5 7.473 Unpacking libexpat1:amd64 (2.6.1-2ubuntu0.4) ...
+#5 7.523 Selecting previously unselected package python3.12-minimal.
+#5 7.523 Preparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.13_amd64.deb ...
+#5 7.533 Unpacking python3.12-minimal (3.12.3-1ubuntu0.13) ...
+#5 7.612 Setting up libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.13) ...
+#5 7.635 Setting up libexpat1:amd64 (2.6.1-2ubuntu0.4) ...
+#5 7.653 Setting up python3.12-minimal (3.12.3-1ubuntu0.13) ...
+#5 8.232 Selecting previously unselected package python3-minimal.
+#5 8.232 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 4700 files and directories currently installed.)
+#5 8.235 Preparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2.1_amd64.deb ...
+#5 8.242 Unpacking python3-minimal (3.12.3-0ubuntu2.1) ...
+#5 8.284 Selecting previously unselected package media-types.
+#5 8.285 Preparing to unpack .../1-media-types_10.1.0_all.deb ...
+#5 8.291 Unpacking media-types (10.1.0) ...
+#5 8.339 Selecting previously unselected package netbase.
+#5 8.340 Preparing to unpack .../2-netbase_6.4_all.deb ...
+#5 8.346 Unpacking netbase (6.4) ...
+#5 8.395 Selecting previously unselected package tzdata.
+#5 8.395 Preparing to unpack .../3-tzdata_2026a-0ubuntu0.24.04.1_all.deb ...
+#5 8.401 Unpacking tzdata (2026a-0ubuntu0.24.04.1) ...
+#5 8.522 Selecting previously unselected package readline-common.
+#5 8.523 Preparing to unpack .../4-readline-common_8.2-4build1_all.deb ...
+#5 8.528 Unpacking readline-common (8.2-4build1) ...
+#5 8.576 Selecting previously unselected package libreadline8t64:amd64.
+#5 8.576 Preparing to unpack .../5-libreadline8t64_8.2-4build1_amd64.deb ...
+#5 8.585 Adding 'diversion of /lib/x86_64-linux-gnu/libhistory.so.8 to /lib/x86_64-linux-gnu/libhistory.so.8.usr-is-merged by libreadline8t64'
+#5 8.593 Adding 'diversion of /lib/x86_64-linux-gnu/libhistory.so.8.2 to /lib/x86_64-linux-gnu/libhistory.so.8.2.usr-is-merged by libreadline8t64'
+#5 8.598 Adding 'diversion of /lib/x86_64-linux-gnu/libreadline.so.8 to /lib/x86_64-linux-gnu/libreadline.so.8.usr-is-merged by libreadline8t64'
+#5 8.602 Adding 'diversion of /lib/x86_64-linux-gnu/libreadline.so.8.2 to /lib/x86_64-linux-gnu/libreadline.so.8.2.usr-is-merged by libreadline8t64'
+#5 8.606 Unpacking libreadline8t64:amd64 (8.2-4build1) ...
+#5 8.653 Selecting previously unselected package libsqlite3-0:amd64.
+#5 8.654 Preparing to unpack .../6-libsqlite3-0_3.45.1-1ubuntu2.5_amd64.deb ...
+#5 8.660 Unpacking libsqlite3-0:amd64 (3.45.1-1ubuntu2.5) ...
+#5 8.705 Selecting previously unselected package libpython3.12-stdlib:amd64.
+#5 8.705 Preparing to unpack .../7-libpython3.12-stdlib_3.12.3-1ubuntu0.13_amd64.deb ...
+#5 8.712 Unpacking libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.13) ...
+#5 8.844 Selecting previously unselected package python3.12.
+#5 8.844 Preparing to unpack .../8-python3.12_3.12.3-1ubuntu0.13_amd64.deb ...
+#5 8.850 Unpacking python3.12 (3.12.3-1ubuntu0.13) ...
+#5 8.893 Selecting previously unselected package libpython3-stdlib:amd64.
+#5 8.894 Preparing to unpack .../9-libpython3-stdlib_3.12.3-0ubuntu2.1_amd64.deb ...
+#5 8.903 Unpacking libpython3-stdlib:amd64 (3.12.3-0ubuntu2.1) ...
+#5 8.939 Setting up python3-minimal (3.12.3-0ubuntu2.1) ...
+#5 9.081 Selecting previously unselected package python3.
+#5 9.081 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 5706 files and directories currently installed.)
+#5 9.083 Preparing to unpack .../0-python3_3.12.3-0ubuntu2.1_amd64.deb ...
+#5 9.092 Unpacking python3 (3.12.3-0ubuntu2.1) ...
+#5 9.135 Selecting previously unselected package openssl.
+#5 9.136 Preparing to unpack .../1-openssl_3.0.13-0ubuntu3.9_amd64.deb ...
+#5 9.142 Unpacking openssl (3.0.13-0ubuntu3.9) ...
+#5 9.203 Selecting previously unselected package ca-certificates.
+#5 9.204 Preparing to unpack .../2-ca-certificates_20240203_all.deb ...
+#5 9.210 Unpacking ca-certificates (20240203) ...
+#5 9.285 Selecting previously unselected package python3-pip-whl.
+#5 9.286 Preparing to unpack .../3-python3-pip-whl_24.0+dfsg-1ubuntu1.3_all.deb ...
+#5 9.292 Unpacking python3-pip-whl (24.0+dfsg-1ubuntu1.3) ...
+#5 9.333 Selecting previously unselected package python3-setuptools-whl.
+#5 9.334 Preparing to unpack .../4-python3-setuptools-whl_68.1.2-2ubuntu1.2_all.deb ...
+#5 9.340 Unpacking python3-setuptools-whl (68.1.2-2ubuntu1.2) ...
+#5 9.386 Selecting previously unselected package python3.12-venv.
+#5 9.386 Preparing to unpack .../5-python3.12-venv_3.12.3-1ubuntu0.13_amd64.deb ...
+#5 9.392 Unpacking python3.12-venv (3.12.3-1ubuntu0.13) ...
+#5 9.427 Selecting previously unselected package python3-venv.
+#5 9.427 Preparing to unpack .../6-python3-venv_3.12.3-0ubuntu2.1_amd64.deb ...
+#5 9.433 Unpacking python3-venv (3.12.3-0ubuntu2.1) ...
+#5 9.470 Setting up media-types (10.1.0) ...
+#5 9.493 Setting up python3-setuptools-whl (68.1.2-2ubuntu1.2) ...
+#5 9.511 Setting up libsqlite3-0:amd64 (3.45.1-1ubuntu2.5) ...
+#5 9.529 Setting up tzdata (2026a-0ubuntu0.24.04.1) ...
+#5 9.599 
+#5 9.599 Current default time zone: 'Etc/UTC'
+#5 9.601 Local time is now:      Sun Jun  7 13:47:14 UTC 2026.
+#5 9.601 Universal Time is now:  Sun Jun  7 13:47:14 UTC 2026.
+#5 9.601 Run 'dpkg-reconfigure tzdata' if you wish to change it.
+#5 9.601 
+#5 9.618 Setting up netbase (6.4) ...
+#5 9.659 Setting up openssl (3.0.13-0ubuntu3.9) ...
+#5 9.684 Setting up readline-common (8.2-4build1) ...
+#5 9.704 Setting up ca-certificates (20240203) ...
+#5 10.13 Updating certificates in /etc/ssl/certs...
+#5 10.65 146 added, 0 removed; done.
+#5 10.68 Setting up libreadline8t64:amd64 (8.2-4build1) ...
+#5 10.70 Setting up libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.13) ...
+#5 10.71 Setting up python3-pip-whl (24.0+dfsg-1ubuntu1.3) ...
+#5 10.73 Setting up python3.12 (3.12.3-1ubuntu0.13) ...
+#5 11.38 Setting up libpython3-stdlib:amd64 (3.12.3-0ubuntu2.1) ...
+#5 11.40 Setting up python3.12-venv (3.12.3-1ubuntu0.13) ...
+#5 11.45 Setting up python3 (3.12.3-0ubuntu2.1) ...
+#5 11.52 Setting up python3-venv (3.12.3-0ubuntu2.1) ...
+#5 11.54 Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+#5 11.58 Processing triggers for ca-certificates (20240203) ...
+#5 11.59 Updating certificates in /etc/ssl/certs...
+#5 12.02 0 added, 0 removed; done.
+#5 12.02 Running hooks in /etc/ca-certificates/update.d...
+#5 12.02 done.
+#5 DONE 12.1s
+
+#6 [3/3] WORKDIR /workspace
+#6 DONE 0.1s
+
+#7 exporting to image
+#7 exporting layers
+#7 exporting layers 1.2s done
+#7 exporting manifest sha256:dde8fd4243864744e71e52e0440a96bd63d9da98f438d56806c491cbae9e09e8 0.0s done
+#7 exporting config sha256:87962dd361884f9d042d96489100b69b98e06677387b9bc7ef083114a60381ae 0.0s done
+#7 exporting attestation manifest sha256:68d241e047b94005837f7302f327d885b2173b252e4dd8cbca8e0dbdf42f4e8d 0.0s done
+#7 exporting manifest list sha256:cea27819f8aa6a428d0d54b07a2f8dc41e308f3ec4f37c3c86665acca6fbe112 0.0s done
+#7 naming to docker.io/library/codyssey-cli-test-ai-assignment:latest
+#7 naming to docker.io/library/codyssey-cli-test-ai-assignment:latest done
+#7 unpacking to docker.io/library/codyssey-cli-test-ai-assignment:latest
+#7 unpacking to docker.io/library/codyssey-cli-test-ai-assignment:latest 0.5s done
+#7 DONE 1.9s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/x4cymjghxtmz7dsmccscn9p32
