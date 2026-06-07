@@ -2,6 +2,7 @@
 
 import inspect
 
+import scripts.run as run_script
 from main import MiniGit, parse_command
 from scripts.run import run_demo
 
@@ -88,6 +89,56 @@ def test_parser_accepts_case_insensitive_commands_quotes_and_options():
     assert MiniGit().execute('commit "unterminated') == ["Invalid args"]
 
 
+def test_search_accepts_quoted_multi_word_keyword_query():
+    repo = MiniGit(clock=DeterministicClock())
+    repo.execute("init Alice")
+    matching = repo.create_commit("Add login feature")
+    repo.create_commit("Add login docs")
+    repo.create_commit("Remove payment feature")
+
+    assert repo.execute('search "login feature"') == [
+        "Found 1 commit:",
+        f"- {matching}: Add login feature",
+    ]
+
+
+def test_merge_creates_commit_with_two_parents():
+    repo = MiniGit(clock=DeterministicClock())
+    repo.execute("init Alice")
+    root = repo.create_commit("root")
+    repo.execute("branch feature")
+    repo.execute("switch feature")
+    feature = repo.create_commit("feature work")
+    repo.execute("switch main")
+    main = repo.create_commit("main work")
+
+    output = repo.execute("merge feature")
+    merge_hash = output[0].split()[1].rstrip("]")
+
+    assert output == [f"[main {merge_hash}] Merge branch feature"]
+    assert repo.commits[merge_hash].parents == [main, feature]
+    assert repo.execute(f"ancestors {merge_hash}") == [
+        f"- {main}: main work",
+        f"- {feature}: feature work",
+        f"- {root}: root",
+    ]
+
+
+def test_diff_marks_common_deleted_and_added_lines(tmp_path):
+    left = tmp_path / "left.txt"
+    right = tmp_path / "right.txt"
+    left.write_text("same\nold\nkeep\n", encoding="utf-8")
+    right.write_text("same\nnew\nkeep\n", encoding="utf-8")
+
+    repo = MiniGit()
+    assert repo.execute(f'diff "{left}" "{right}"') == [
+        "  same",
+        "- old",
+        "+ new",
+        "  keep",
+    ]
+
+
 def test_read_commands_require_initialized_repository():
     repo = MiniGit()
 
@@ -110,6 +161,16 @@ def test_demo_script_writes_reproducible_evidence(tmp_path):
     assert "mini-git> init \"Alice Kim\"" in content
     assert "Path: c000002 -> c000001 -> c000003" in content
     assert "Found 1 commit:" in content
+
+
+def test_sort_benchmark_writes_reproducible_evidence(tmp_path):
+    assert hasattr(run_script, "run_sort_benchmark")
+    output_path = run_script.run_sort_benchmark(tmp_path)
+
+    content = output_path.read_text(encoding="utf-8")
+    assert "algorithm,size,seconds,first,last" in content
+    assert "merge_sort,40," in content
+    assert "insertion_sort,40," in content
 
 
 class DeterministicClock:

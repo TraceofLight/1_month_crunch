@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 import shlex
 from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -81,6 +82,14 @@ class MiniGit:
             return self.ancestors_command(args[0])
         if command == "SEARCH":
             return self.search_command(args)
+        if command == "MERGE":
+            if len(args) != 1:
+                return ["Invalid args"]
+            return self.merge_command(args[0])
+        if command == "DIFF":
+            if len(args) != 2:
+                return ["Invalid args"]
+            return diff_files(args[0], args[1])
         return [f"Unknown command: {command.lower()}"]
 
     def initialize(self, user_name: str) -> List[str]:
@@ -139,6 +148,25 @@ class MiniGit:
         self.branches[self.current_branch] = commit_hash
         self._index_commit(commit)
         return commit_hash
+
+    def merge_command(self, branch_name: str) -> List[str]:
+        """현재 브랜치와 대상 브랜치 HEAD를 부모로 하는 병합 커밋을 만든다."""
+
+        if not self._is_initialized():
+            return ["Repository not initialized"]
+        if branch_name not in self.branches:
+            return [f"Unknown branch: {branch_name}"]
+        if branch_name == self.current_branch:
+            return ["Invalid args"]
+        current_head = self.branches[self.current_branch]
+        target_head = self.branches[branch_name]
+        if current_head is None:
+            return ["Current branch has no commits"]
+        if target_head is None:
+            return [f"Branch has no commits: {branch_name}"]
+        message = f"Merge branch {branch_name}"
+        commit_hash = self.create_commit(message, [current_head, target_head])
+        return [f"[{self.current_branch} {commit_hash}] {message}"]
 
     def log_command(self, args: List[str]) -> List[str]:
         """기본 위상 순서 로그 또는 지정 기준 정렬 로그를 반환한다."""
@@ -206,7 +234,8 @@ class MiniGit:
         elif args[0].startswith("--"):
             return ["Invalid args"]
         else:
-            hashes = self.keyword_index.get(normalize_token(args[0]), [])
+            tokens = tokenize_message(args[0])
+            hashes = indexed_intersection(self.keyword_index, tokens)
         commits = [self.commits[commit_hash] for commit_hash in hashes]
         return self._format_search(commits)
 
@@ -380,6 +409,37 @@ def append_to_index(index: Dict[str, List[str]], key: str, commit_hash: str) -> 
     index[key].append(commit_hash)
 
 
+def indexed_intersection(index: Dict[str, List[str]], keys: Sequence[str]) -> List[str]:
+    """여러 역색인 키를 모두 포함하는 커밋 해시를 첫 키의 순서대로 반환한다."""
+
+    if len(keys) == 0:
+        return []
+    first_posting = index.get(keys[0], [])
+    result: List[str] = []
+    for commit_hash in first_posting:
+        if is_in_all_postings(index, keys[1:], commit_hash):
+            result.append(commit_hash)
+    return result
+
+
+def is_in_all_postings(
+    index: Dict[str, List[str]],
+    keys: Sequence[str],
+    commit_hash: str,
+) -> bool:
+    """커밋 해시가 나머지 모든 posting list에 포함되는지 확인한다."""
+
+    for key in keys:
+        found = False
+        for candidate_hash in index.get(key, []):
+            if candidate_hash == commit_hash:
+                found = True
+                break
+        if not found:
+            return False
+    return True
+
+
 def merge_sort(items: List, compare: Callable) -> List:
     """비교 함수를 받는 안정 병합 정렬을 직접 구현한다."""
 
@@ -389,6 +449,22 @@ def merge_sort(items: List, compare: Callable) -> List:
     left = merge_sort(items[:midpoint], compare)
     right = merge_sort(items[midpoint:], compare)
     return merge(left, right, compare)
+
+
+def insertion_sort(items: List, compare: Callable) -> List:
+    """작은 입력의 비교용으로 안정 삽입 정렬을 직접 구현한다."""
+
+    result = copy_list(items)
+    index = 1
+    while index < len(result):
+        value = result[index]
+        cursor = index - 1
+        while cursor >= 0 and compare(result[cursor], value) > 0:
+            result[cursor + 1] = result[cursor]
+            cursor -= 1
+        result[cursor + 1] = value
+        index += 1
+    return result
 
 
 def merge(left: List, right: List, compare: Callable) -> List:
@@ -436,6 +512,83 @@ def path_string(path: Sequence[str]) -> str:
     """경로 후보의 사전순 비교용 문자열을 만든다."""
 
     return "->".join(path)
+
+
+def diff_files(left_path: str, right_path: str) -> List[str]:
+    """두 텍스트 파일을 줄 단위로 비교해 공통, 삭제, 추가 줄을 출력한다."""
+
+    try:
+        left_lines = Path(left_path).read_text(encoding="utf-8").splitlines()
+        right_lines = Path(right_path).read_text(encoding="utf-8").splitlines()
+    except OSError as error:
+        return [f"File error: {error.filename}"]
+    return diff_lines(left_lines, right_lines)
+
+
+def diff_lines(left_lines: Sequence[str], right_lines: Sequence[str]) -> List[str]:
+    """LCS 테이블을 사용해 두 줄 목록의 간단한 diff를 만든다."""
+
+    table = lcs_lengths(left_lines, right_lines)
+    return build_diff(left_lines, right_lines, table)
+
+
+def lcs_lengths(left_lines: Sequence[str], right_lines: Sequence[str]) -> List[List[int]]:
+    """최장 공통 부분 수열 길이 테이블을 계산한다."""
+
+    table: List[List[int]] = []
+    left_index = 0
+    while left_index <= len(left_lines):
+        row: List[int] = []
+        right_index = 0
+        while right_index <= len(right_lines):
+            row.append(0)
+            right_index += 1
+        table.append(row)
+        left_index += 1
+
+    left_index = len(left_lines) - 1
+    while left_index >= 0:
+        right_index = len(right_lines) - 1
+        while right_index >= 0:
+            if left_lines[left_index] == right_lines[right_index]:
+                table[left_index][right_index] = table[left_index + 1][right_index + 1] + 1
+            elif table[left_index + 1][right_index] >= table[left_index][right_index + 1]:
+                table[left_index][right_index] = table[left_index + 1][right_index]
+            else:
+                table[left_index][right_index] = table[left_index][right_index + 1]
+            right_index -= 1
+        left_index -= 1
+    return table
+
+
+def build_diff(
+    left_lines: Sequence[str],
+    right_lines: Sequence[str],
+    table: Sequence[Sequence[int]],
+) -> List[str]:
+    """LCS 테이블을 따라가며 공통 줄과 변경 줄을 순서대로 출력한다."""
+
+    output: List[str] = []
+    left_index = 0
+    right_index = 0
+    while left_index < len(left_lines) and right_index < len(right_lines):
+        if left_lines[left_index] == right_lines[right_index]:
+            output.append(f"  {left_lines[left_index]}")
+            left_index += 1
+            right_index += 1
+        elif table[left_index + 1][right_index] >= table[left_index][right_index + 1]:
+            output.append(f"- {left_lines[left_index]}")
+            left_index += 1
+        else:
+            output.append(f"+ {right_lines[right_index]}")
+            right_index += 1
+    while left_index < len(left_lines):
+        output.append(f"- {left_lines[left_index]}")
+        left_index += 1
+    while right_index < len(right_lines):
+        output.append(f"+ {right_lines[right_index]}")
+        right_index += 1
+    return output
 
 
 def repl() -> None:

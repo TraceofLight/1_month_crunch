@@ -10,8 +10,8 @@
 
 | 경로 | 역할 |
 | --- | --- |
-| `main.py` | Mini Git REPL, 명령 파서, 커밋 그래프, 브랜치, 역색인, 탐색, 병합 정렬 구현 |
-| `scripts/run.py` | 대표 시나리오를 한 번에 실행하고 `evidence/demo_run.txt`를 생성 |
+| `main.py` | Mini Git REPL, 명령 파서, 커밋 그래프, 브랜치, 역색인, 탐색, diff, 직접 구현 정렬 구현 |
+| `scripts/run.py` | 대표 시나리오와 정렬 비교를 실행하고 evidence 파일 생성 |
 | `tests/test_mini_git.py` | 핵심 요구사항 회귀 테스트 |
 | `requirements.txt` | 테스트 의존성 고정. `pytest==8.3.5` |
 | `Dockerfile` | `ubuntu:24.04` 기반 재현 환경 |
@@ -19,6 +19,8 @@
 | `evidence/demo_run.txt` | 컨테이너에서 생성한 CLI 시나리오 입출력 |
 | `evidence/run_script_stdout.txt` | evidence 생성 스크립트의 표준 출력 |
 | `evidence/repl_smoke.txt` | 실제 REPL에 파이프 입력을 넣어 확인한 결과 |
+| `evidence/sort_benchmark.txt` | 직접 구현한 병합 정렬과 삽입 정렬의 입력 크기별 실행 시간 |
+| `evidence/diff_left.txt`, `evidence/diff_right.txt` | diff 명령 검증에 사용한 작은 텍스트 파일 |
 
 ## 실행 방법
 
@@ -66,8 +68,10 @@ python main.py
 | `LOG --sort-by=author` | author 이름 기준 오름차순 로그 출력 |
 | `PATH <commit1> <commit2>` | 커밋-부모 연결을 무방향 간선으로 본 최단 경로 출력 |
 | `ANCESTORS <commit_hash>` | 지정 커밋의 모든 조상 출력 |
-| `SEARCH <keyword>` | 메시지 토큰 역색인에서 키워드 검색 |
+| `SEARCH <keyword>` | 메시지 토큰 역색인에서 키워드 검색. 공백 포함 검색어는 각 토큰을 모두 포함한 커밋을 반환 |
 | `SEARCH --author=<name>` | author 역색인에서 작성자 검색 |
+| `MERGE <branch_name>` | 현재 브랜치 HEAD와 대상 브랜치 HEAD를 부모로 하는 병합 커밋 생성 |
+| `DIFF <file1> <file2>` | 두 텍스트 파일을 줄 단위로 비교해 공통, 삭제, 추가 줄 출력 |
 
 대표 오류 메시지는 `Invalid args`, `Unknown branch: <name>`, `Unknown commit: <hash>`, `Repository not initialized`이다.
 
@@ -105,6 +109,22 @@ Path: c000002 -> c000001 -> c000003
 mini-git> search login
 Found 1 commit:
 - c000002: Add login feature
+
+mini-git> search "login feature"
+Found 1 commit:
+- c000002: Add login feature
+
+mini-git> merge feature
+[main c000004] Merge branch feature
+
+mini-git> diff "evidence/diff_left.txt" "evidence/diff_right.txt"
+  same
+- old line
++ new line
+  keep
+
+mini-git> path c000001 c000002
+No path
 ```
 
 ## 자료구조 설계
@@ -117,7 +137,7 @@ Found 1 commit:
 
 ## 커밋 그래프와 DAG
 
-커밋 그래프의 방향은 자식 커밋에서 부모 커밋으로 향한다. 최초 커밋은 부모가 0개이고, 일반 커밋은 현재 HEAD 하나를 부모로 가진다. 구현 함수 `create_commit`은 새 커밋을 만들 때 이미 존재하는 부모 해시만 복사하고, 기존 커밋의 부모 목록을 수정하지 않는다. 새 노드가 과거 노드만 가리키는 방식이므로 새 간선이 미래 커밋을 향할 수 없고 순환이 생기지 않는다.
+커밋 그래프의 방향은 자식 커밋에서 부모 커밋으로 향한다. 최초 커밋은 부모가 0개이고, 일반 커밋은 현재 HEAD 하나를 부모로 가진다. `MERGE`로 생성한 병합 커밋은 현재 브랜치 HEAD와 대상 브랜치 HEAD, 두 개의 부모를 가진다. 구현 함수 `create_commit`은 새 커밋을 만들 때 이미 존재하는 부모 해시만 복사하고, 기존 커밋의 부모 목록을 수정하지 않는다. 새 노드가 과거 노드만 가리키는 방식이므로 새 간선이 미래 커밋을 향할 수 없고 순환이 생기지 않는다.
 
 이 구조는 방향성 비순환 그래프, 즉 DAG이다. Git의 커밋도 같은 이유로 DAG이다. 커밋은 과거 스냅샷을 부모로 참조하고, 이미 만들어진 커밋의 부모를 바꾸지 않는 불변 객체처럼 다뤄진다. 따라서 특정 커밋에서 부모 방향으로 계속 이동하면 언젠가 부모가 없는 루트 커밋에 도달한다.
 
@@ -135,6 +155,8 @@ Python 표준 정렬 API인 `sorted()`와 `list.sort()`는 사용하지 않았�
 
 병합 정렬은 입력을 절반으로 나누고, 각 절반을 재귀적으로 정렬한 뒤, 두 정렬 구간을 하나로 병합한다. 평균 시간복잡도와 최악 시간복잡도는 모두 O(n log n)이다. 병합 단계에서 두 값이 같으면 왼쪽 원소를 먼저 선택하므로 안정 정렬이다. 추가 리스트를 만들기 때문에 공간복잡도는 O(n)이다.
 
+성능 비교용으로 안정 삽입 정렬 `insertion_sort`도 구현했다. 삽입 정렬은 입력을 앞에서부터 보며 현재 값을 이미 정렬된 왼쪽 구간의 알맞은 위치에 끼워 넣는다. 평균 시간복잡도와 최악 시간복잡도는 O(n²)이고, 같은 값은 기존 순서를 유지하므로 안정 정렬이다. 추가 배열을 만들지 않고 복사한 리스트 안에서 이동하므로 보조 공간은 O(n)이다. `evidence/sort_benchmark.txt`는 같은 역순 문자열 입력에 대해 병합 정렬과 삽입 정렬을 입력 크기 40, 120, 360에서 비교한 결과다.
+
 ## 역색인
 
 검색은 전체 커밋 순회를 기본 전략으로 삼지 않는다. 커밋을 생성할 때 두 가지 역색인을 함께 갱신한다.
@@ -144,7 +166,7 @@ Python 표준 정렬 API인 `sorted()`와 `list.sort()`는 사용하지 않았�
 | `keyword_index` | 커밋 메시지를 공백으로 나누고 소문자로 바꾼 토큰 | 해당 토큰을 포함한 커밋 해시 목록 |
 | `author_index` | author 이름 | 해당 author가 작성한 커밋 해시 목록 |
 
-`SEARCH login`은 `keyword_index["login"]`에서 후보 커밋 해시 목록을 바로 가져온다. `SEARCH --author="Alice Kim"`은 `author_index["Alice Kim"]`에서 후보를 가져온다. 커밋 수가 n이고 메시지 평균 토큰 수가 m일 때, 전체 순회 검색은 O(nm)에 가깝다. 역색인은 검색어 키 조회 후 결과 개수 r만큼 출력하므로 평균적으로 O(1 + r)에 가깝다. 인덱스 갱신 비용은 커밋 생성 시 메시지 토큰 수만큼 추가된다.
+`SEARCH login`은 `keyword_index["login"]`에서 후보 커밋 해시 목록을 바로 가져온다. `SEARCH "login feature"`처럼 공백이 포함된 검색어는 검색어도 메시지와 같은 규칙으로 토큰화한 뒤, 각 토큰의 posting list 교집합을 첫 토큰의 posting list 순서대로 만든다. 이 경우 `login`과 `feature`를 모두 포함한 커밋만 출력된다. `SEARCH --author="Alice Kim"`은 `author_index["Alice Kim"]`에서 후보를 가져온다. 커밋 수가 n이고 메시지 평균 토큰 수가 m일 때, 전체 순회 검색은 O(nm)에 가깝다. 단일 토큰 역색인 검색은 키 조회 후 결과 개수 r만큼 출력하므로 평균적으로 O(1 + r)에 가깝다. 여러 토큰 검색은 첫 토큰의 후보 수를 p, 추가 토큰 수를 k라고 할 때 posting list 포함 확인 비용이 추가되며, 그래도 모든 커밋 메시지를 다시 토큰화해 순회하지 않는다. 인덱스 갱신 비용은 커밋 생성 시 메시지 토큰 수만큼 추가된다.
 
 ## 경로 탐색
 
@@ -157,6 +179,18 @@ BFS는 간선 수가 가장 적은 경로를 먼저 발견하는 탐색이다. �
 ## 조상 탐색
 
 `ANCESTORS <commit_hash>`는 지정 커밋의 부모 방향으로 도달 가능한 모든 커밋을 출력한다. 구현은 스택 기반 DFS 형태로 부모를 따라가며 방문 집합으로 중복을 제거한다. 특정 커밋의 조상 수를 A, 조상 사이의 부모 간선을 E_A라고 하면 시간복잡도는 O(A + E_A)이다.
+
+## 병합
+
+`MERGE <branch_name>`은 현재 브랜치의 HEAD와 대상 브랜치의 HEAD를 부모로 하는 새 커밋을 만든다. 메시지는 `Merge branch <branch_name>` 형식이다. 병합 커밋도 일반 커밋과 같이 author, timestamp, parents, hash를 가진다. 병합 커밋 생성 시에도 author 인덱스와 메시지 키워드 인덱스를 갱신하므로 `SEARCH merge`나 `SEARCH --author=<name>`으로 찾을 수 있다.
+
+대상 브랜치가 없으면 `Unknown branch: <name>`을 출력한다. 현재 브랜치 자신을 병합하려는 입력은 `Invalid args`로 처리한다. 현재 브랜치나 대상 브랜치에 커밋이 없으면 부모 두 개를 만들 수 없으므로 각각 `Current branch has no commits`, `Branch has no commits: <branch_name>`을 출력한다.
+
+## Diff
+
+`DIFF <file1> <file2>`는 두 텍스트 파일을 UTF-8로 읽고 줄 단위로 비교한다. 출력 접두사는 공통 줄이 공백 두 칸, 왼쪽 파일에만 있는 줄이 `- `, 오른쪽 파일에만 있는 줄이 `+ `이다.
+
+알고리즘은 최장 공통 부분 수열, LCS 테이블을 사용한다. 먼저 두 파일의 줄 목록으로 O(nm) 크기의 길이 테이블을 만들고, 테이블을 따라가며 공통 줄, 삭제 줄, 추가 줄을 순서대로 출력한다. n은 왼쪽 파일 줄 수, m은 오른쪽 파일 줄 수다. 이 방식은 단순한 같은 줄 번호 비교보다 삽입과 삭제가 섞인 경우를 더 자연스럽게 보여 준다.
 
 ## 성장 시 병목과 개선 방향
 
@@ -187,16 +221,25 @@ BFS는 간선 수가 가장 적은 경로를 먼저 발견하는 탐색이다. �
 테스트 로그는 `evidence/test_results.txt`에 저장했다.
 
 ```text
-.......                                                                  [100%]
-7 passed in 0.16s
+...........                                                              [100%]
+11 passed in 0.12s
 ```
 
-대표 시나리오 실행 로그는 `evidence/demo_run.txt`에 저장했다. 해당 로그는 `INIT`, `COMMIT`, `BRANCH`, `SWITCH`, `LOG`, `PATH`, `ANCESTORS`, `SEARCH`, `LOG --sort-by=author`, `LOG --sort-by=date`를 포함한다.
+대표 시나리오 실행 로그는 `evidence/demo_run.txt`에 저장했다. 해당 로그는 `INIT`, `COMMIT`, `BRANCH`, `SWITCH`, `LOG`, `PATH`, `ANCESTORS`, `SEARCH`, `SEARCH "login feature"`, `SEARCH --author="Alice Kim"`, `LOG --sort-by=author`, `LOG --sort-by=date`, `MERGE`, `DIFF`, `No path`를 포함한다.
 
 evidence 생성 스크립트의 표준 출력은 `evidence/run_script_stdout.txt`에 저장했다.
 
 ```text
 Wrote evidence/demo_run.txt
+Wrote evidence/sort_benchmark.txt
+```
+
+정렬 성능 비교 로그는 `evidence/sort_benchmark.txt`에 저장했다. 실제 시간은 컨테이너 실행 환경에 따라 조금 달라질 수 있으나, 같은 입력 크기와 같은 알고리즘 목록으로 재생성된다.
+
+```text
+algorithm,size,seconds,first,last
+merge_sort,40,0.00002466,000001,000040
+insertion_sort,40,0.00004264,000001,000040
 ```
 
 REPL 동작 확인은 `evidence/repl_smoke.txt`에 저장했다.
@@ -206,6 +249,8 @@ mini-git> Initialized repository.
 Current branch: main
 Current user: Alice
 mini-git> [main c000001] Smoke test
+mini-git> Found 1 commit:
+- c000001: Smoke test
 mini-git>
 ```
 
@@ -222,3 +267,7 @@ mini-git>
 `Unknown commit: <hash>`가 출력되면 `LOG`로 현재 세션의 커밋 해시를 확인한다. 커밋 해시는 메모리에만 존재하므로 프로그램을 다시 시작하면 이전 해시는 사라진다.
 
 공백이 포함된 메시지나 이름이 `Invalid args`로 처리되면 따옴표를 확인한다. 예를 들어 `COMMIT "Add login feature"`와 `SEARCH --author="Alice Kim"`처럼 입력한다.
+
+`MERGE`에서 `Current branch has no commits` 또는 `Branch has no commits: <branch_name>`이 출력되면 병합하려는 두 브랜치에 먼저 커밋을 만든다. 병합 커밋은 부모 두 개를 기록해야 하므로 비어 있는 브랜치는 병합 대상으로 사용할 수 없다.
+
+`DIFF`에서 `File error: <path>`가 출력되면 파일 경로와 컨테이너 내부 작업 디렉터리를 확인한다. Docker 실행 예시처럼 저장소를 `/workspace`에 마운트하면 저장소 안의 상대 경로를 그대로 사용할 수 있다.

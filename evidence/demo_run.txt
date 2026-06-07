@@ -39,6 +39,10 @@ mini-git> search login
 Found 1 commit:
 - c000002: Add login feature
 
+mini-git> search "login feature"
+Found 1 commit:
+- c000002: Add login feature
+
 mini-git> search --author="Alice Kim"
 Found 3 commits:
 - c000001: Initial commit
@@ -60,4 +64,41 @@ commit c000002 (Alice Kim, 2026-06-07 09:02:00) [feature]
 Add login feature
 commit c000003 (Alice Kim, 2026-06-07 09:03:00) [main]
 Add payment feature
+
+mini-git> merge feature
+[main c000004] Merge branch feature
+
+mini-git> ancestors c000004
+- c000003: Add payment feature
+- c000002: Add login feature
+- c000001: Initial commit
+
+mini-git> diff "evidence/diff_left.txt" "evidence/diff_right.txt"
+  same
+- old line
++ new line
+  keep
+
+mini-git> init "Bob Lee"
+Initialized repository.
+Current branch: main
+Current user: Bob Lee
+
+mini-git> branch side
+Created branch: side
+
+mini-git> switch side
+Switched to branch: side
+
+mini-git> commit "Side root"
+[side c000001] Side root
+
+mini-git> switch main
+Switched to branch: main
+
+mini-git> commit "Main root"
+[main c000002] Main root
+
+mini-git> path c000001 c000002
+No path
 
