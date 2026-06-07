@@ -1,6 +1,8 @@
-* c41ecdc docs(readme): present supporting prose directly without meta-narrative
-* 343b82c docs(readme): author full troubleshooting report with captured evidence
-* 38414a7 feat(assignment): update assignment deliverables
+* 4d6806a feat(assignment): update assignment deliverables
+| * c41ecdc docs(readme): present supporting prose directly without meta-narrative
+| * 343b82c docs(readme): author full troubleshooting report with captured evidence
+| * 38414a7 feat(assignment): update assignment deliverables
+|/  
 | * ce4e074 docs(readme): reorganize by topic into coherent functional sections
 | * 269a986 docs(readme): verify decorator runtime, category migration, empty-month, and data-dir in evidence
 | * b8f538d feat(budget-app): implement stdlib file-based budget console app
