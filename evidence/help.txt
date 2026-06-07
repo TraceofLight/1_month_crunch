@@ -1,0 +1,169 @@
+명령별 --help 출력
+
+======================================================================
+# budget_app  --help
+======================================================================
+usage: budget_app [-h] <command> ...
+
+파일 기반 가계부 콘솔 프로그램
+
+positional arguments:
+  <command>
+    add        거래 추가(대화형)
+    list       거래 목록(최신순)
+    search     거래 검색(최신순)
+    summary    월별 요약
+    budget     예산 설정/조회
+    category   카테고리 관리
+    update     거래 수정(옵션 기반)
+    delete     거래 삭제
+    import     CSV 가져오기
+    export     CSV 내보내기
+    backup     데이터 백업(보너스)
+    recurring  반복 내역(보너스)
+
+options:
+  -h, --help   show this help message and exit
+
+======================================================================
+# budget_app add --help
+======================================================================
+usage: budget_app add [-h] [--data-dir DATA_DIR]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+
+======================================================================
+# budget_app list --help
+======================================================================
+usage: budget_app list [-h] [--data-dir DATA_DIR] [--limit LIMIT]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --limit LIMIT        출력 개수(기본 20)
+
+======================================================================
+# budget_app search --help
+======================================================================
+usage: budget_app search [-h] [--data-dir DATA_DIR] [--from DATE_FROM]
+                         [--to DATE_TO] [--category CATEGORY] [--type TYPE]
+                         [--q Q] [--tag TAG] [--limit LIMIT]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --from DATE_FROM     시작일 YYYY-MM-DD
+  --to DATE_TO         종료일 YYYY-MM-DD
+  --category CATEGORY  카테고리
+  --type TYPE          income 또는 expense
+  --q Q                메모 키워드
+  --tag TAG            태그
+  --limit LIMIT        출력 개수 제한
+
+======================================================================
+# budget_app summary --help
+======================================================================
+usage: budget_app summary [-h] [--data-dir DATA_DIR] --month MONTH [--top TOP]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --month MONTH        대상 월 YYYY-MM
+  --top TOP            지출 TOP N
+
+======================================================================
+# budget_app budget set --help
+======================================================================
+usage: budget_app budget set [-h] [--data-dir DATA_DIR] --month MONTH --amount
+                             AMOUNT
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --month MONTH        대상 월 YYYY-MM
+  --amount AMOUNT      예산 금액(양수)
+
+======================================================================
+# budget_app category remove --help
+======================================================================
+usage: budget_app category remove [-h] [--data-dir DATA_DIR] --name NAME
+                                  [--into INTO]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --name NAME          삭제할 카테고리
+  --into INTO          사용 중일 때 거래를 옮길 대체 카테고리
+
+======================================================================
+# budget_app update --help
+======================================================================
+usage: budget_app update [-h] [--data-dir DATA_DIR] --id ID [--date DATE]
+                         [--type TYPE] [--category CATEGORY] [--amount AMOUNT]
+                         [--memo MEMO] [--tags TAGS]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --id ID              수정할 거래 id
+  --date DATE          YYYY-MM-DD
+  --type TYPE          income 또는 expense
+  --category CATEGORY  카테고리
+  --amount AMOUNT      양수 금액
+  --memo MEMO          메모
+  --tags TAGS          쉼표로 구분한 태그
+
+======================================================================
+# budget_app delete --help
+======================================================================
+usage: budget_app delete [-h] [--data-dir DATA_DIR] --id ID
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --id ID              삭제할 거래 id
+
+======================================================================
+# budget_app import --help
+======================================================================
+usage: budget_app import [-h] [--data-dir DATA_DIR] --from FROM
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --from FROM          입력 CSV 경로
+
+======================================================================
+# budget_app export --help
+======================================================================
+usage: budget_app export [-h] [--data-dir DATA_DIR] --out OUT [--month MONTH]
+                         [--from FROM] [--to TO]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --out OUT            출력 CSV 경로
+  --month MONTH        대상 월 YYYY-MM
+  --from FROM          시작일 YYYY-MM-DD
+  --to TO              종료일 YYYY-MM-DD
+
+======================================================================
+# budget_app backup --help
+======================================================================
+usage: budget_app backup [-h] [--data-dir DATA_DIR]
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+
+======================================================================
+# budget_app recurring apply --help
+======================================================================
+usage: budget_app recurring apply [-h] [--data-dir DATA_DIR] --month MONTH
+
+options:
+  -h, --help           show this help message and exit
+  --data-dir DATA_DIR  저장 폴더 경로(기본: ./data)
+  --month MONTH        적용할 월 YYYY-MM

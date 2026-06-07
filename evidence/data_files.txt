@@ -1,0 +1,44 @@
+영구 저장 파일 내용(3개 이상 분리 저장)
+
+======================================================================
+# data/transactions.jsonl
+======================================================================
+{"id": "TX-000002", "type": "income", "date": "2024-01-14", "amount": 3000000, "category": "salary", "memo": "월급", "tags": []}
+{"id": "TX-000003", "type": "expense", "date": "2024-01-15", "amount": 15000, "category": "food", "memo": "점심", "tags": ["meal"]}
+{"id": "TX-000004", "type": "expense", "date": "2024-01-18", "amount": 150000, "category": "rent", "memo": "월세", "tags": []}
+{"id": "TX-000005", "type": "expense", "date": "2024-01-22", "amount": 28000, "category": "food", "memo": "외식수정", "tags": ["meal"]}
+{"id": "TX-000006", "type": "expense", "date": "2024-01-25", "amount": 12000, "category": "transport", "memo": "택시", "tags": ["taxi", "night"]}
+{"id": "TX-000007", "type": "income", "date": "2024-01-27", "amount": 50000, "category": "salary", "memo": "환급", "tags": []}
+{"id": "TX-000008", "type": "expense", "date": "2024-01-28", "amount": 8000, "category": "food", "memo": "간식", "tags": []}
+{"id": "TX-000009", "type": "expense", "date": "2024-02-03", "amount": 25000, "category": "food", "memo": "초과지출", "tags": []}
+{"id": "TX-000010", "type": "expense", "date": "2024-03-25", "amount": 800000, "category": "rent", "memo": "월세", "tags": ["recurring:RC-0001"]}
+
+======================================================================
+# data/categories.jsonl
+======================================================================
+{"name": "food"}
+{"name": "transport"}
+{"name": "rent"}
+{"name": "salary"}
+{"name": "etc"}
+{"name": "cafe"}
+
+======================================================================
+# data/budgets.jsonl
+======================================================================
+{"month": "2024-01", "amount": 500000}
+{"month": "2024-02", "amount": 10000}
+
+======================================================================
+# data/recurring.jsonl
+======================================================================
+{"id": "RC-0001", "type": "expense", "day": 25, "amount": 800000, "category": "rent", "memo": "월세", "tags": []}
+
+======================================================================
+# evidence/export_2024-01.csv
+======================================================================
+date,type,category,amount,memo,tags
+2024-01-22,expense,food,28000,외식수정,meal
+2024-01-18,expense,rent,150000,월세,
+2024-01-15,expense,food,15000,점심,meal
+2024-01-14,income,salary,3000000,월급,

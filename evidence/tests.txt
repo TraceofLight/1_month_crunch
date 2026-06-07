@@ -1,0 +1,36 @@
+test_backup_copies_files (test_budget_app.BackupRecurringTest.test_backup_copies_files) ... ok
+test_recurring_apply_is_idempotent (test_budget_app.BackupRecurringTest.test_recurring_apply_is_idempotent) ... ok
+test_add_and_duplicate (test_budget_app.CategoryTest.test_add_and_duplicate) ... ok
+test_remove_in_use_blocked (test_budget_app.CategoryTest.test_remove_in_use_blocked) ... ok
+test_remove_in_use_with_into_migrates (test_budget_app.CategoryTest.test_remove_in_use_with_into_migrates) ... ok
+test_add_then_summary_via_cli (test_budget_app.CliTest.test_add_then_summary_via_cli) ... ok
+test_delete_missing_returns_nonzero (test_budget_app.CliTest.test_delete_missing_returns_nonzero) ... ok
+test_list_returns_zero (test_budget_app.CliTest.test_list_returns_zero) ... ok
+test_delete_missing_id_raises (test_budget_app.CrudTest.test_delete_missing_id_raises) ... ok
+test_delete_removes_record (test_budget_app.CrudTest.test_delete_removes_record) ... ok
+test_ids_are_sequential (test_budget_app.CrudTest.test_ids_are_sequential) ... ok
+test_list_limit_and_recent_order (test_budget_app.CrudTest.test_list_limit_and_recent_order) ... ok
+test_update_changes_only_given_fields (test_budget_app.CrudTest.test_update_changes_only_given_fields) ... ok
+test_update_missing_id_raises (test_budget_app.CrudTest.test_update_missing_id_raises) ... ok
+test_export_then_import_roundtrip (test_budget_app.ImportExportTest.test_export_then_import_roundtrip) ... ok
+test_import_skips_unknown_category (test_budget_app.ImportExportTest.test_import_skips_unknown_category) ... ok
+test_transaction_roundtrip (test_budget_app.ModelTest.test_transaction_roundtrip) ... ok
+test_filter_by_date_range (test_budget_app.SearchTest.test_filter_by_date_range) ... ok
+test_filter_by_tag_and_query (test_budget_app.SearchTest.test_filter_by_tag_and_query) ... ok
+test_filter_by_type (test_budget_app.SearchTest.test_filter_by_type) ... ok
+test_atomic_write_replaces_content (test_budget_app.StorageTest.test_atomic_write_replaces_content) ... ok
+test_reverse_stream_crosses_block_boundary (test_budget_app.StorageTest.test_reverse_stream_crosses_block_boundary) ... ok
+test_reverse_stream_missing_file_is_empty (test_budget_app.StorageTest.test_reverse_stream_missing_file_is_empty) ... ok
+test_reverse_stream_yields_newest_first (test_budget_app.StorageTest.test_reverse_stream_yields_newest_first) ... ok
+test_budget_usage_and_over (test_budget_app.SummaryBudgetTest.test_budget_usage_and_over) ... ok
+test_summary_no_data (test_budget_app.SummaryBudgetTest.test_summary_no_data) ... ok
+test_summary_totals_and_top (test_budget_app.SummaryBudgetTest.test_summary_totals_and_top) ... ok
+test_bad_date_rejected (test_budget_app.ValidationTest.test_bad_date_rejected) ... ok
+test_invalid_type_rejected (test_budget_app.ValidationTest.test_invalid_type_rejected) ... ok
+test_non_positive_amount_rejected (test_budget_app.ValidationTest.test_non_positive_amount_rejected) ... ok
+test_unknown_category_rejected (test_budget_app.ValidationTest.test_unknown_category_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 0.146s
+
+OK

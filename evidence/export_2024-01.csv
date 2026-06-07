@@ -1,0 +1,5 @@
+date,type,category,amount,memo,tags
+2024-01-22,expense,food,28000,외식수정,meal
+2024-01-18,expense,rent,150000,월세,
+2024-01-15,expense,food,15000,점심,meal
+2024-01-14,income,salary,3000000,월급,

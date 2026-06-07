@@ -1,0 +1,219 @@
+파일 기반 가계부 콘솔 프로그램 - 기능 시연 로그
+
+======================================================================
+# 1. category (초기화 + 추가/목록)
+======================================================================
+
+$ python -m budget_app category list
+[안내] 저장소를 초기화했습니다. 기본 카테고리: food, transport, rent, salary, etc
+- food
+- transport
+- rent
+- salary
+- etc
+[exit code] 0
+
+$ python -m budget_app category add
+  (입력: cafe\n)
+카테고리명: [저장 완료] category=cafe
+[exit code] 0
+
+$ python -m budget_app category list
+- food
+- transport
+- rent
+- salary
+- etc
+- cafe
+[exit code] 0
+
+======================================================================
+# 2. add (대화형 거래 추가)
+======================================================================
+
+$ python -m budget_app add
+  (입력: 2024-01-12\nexpense\ntransport\n20000\n버스\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000001
+[exit code] 0
+
+$ python -m budget_app add
+  (입력: 2024-01-14\nincome\nsalary\n3000000\n월급\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000002
+[exit code] 0
+
+$ python -m budget_app add
+  (입력: 2024-01-15\nexpense\nfood\n15000\n점심\nmeal\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000003
+[exit code] 0
+
+$ python -m budget_app add
+  (입력: 2024-01-18\nexpense\nrent\n150000\n월세\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000004
+[exit code] 0
+
+$ python -m budget_app add
+  (입력: 2024-01-22\nexpense\nfood\n30000\n외식\nmeal\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000005
+[exit code] 0
+
+======================================================================
+# 3. list (최신순, 스트리밍)
+======================================================================
+
+$ python -m budget_app list --limit 3
+id        | date       | type    | category | amount  | memo | tags
+-------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 30,000  | 외식 | meal
+TX-000004 | 2024-01-18 | expense | rent     | 150,000 | 월세 |
+TX-000003 | 2024-01-15 | expense | food     | 15,000  | 점심 | meal
+[exit code] 0
+
+======================================================================
+# 4. search (조건 검색)
+======================================================================
+
+$ python -m budget_app search --type expense --category food
+id        | date       | type    | category | amount | memo | tags
+------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 30,000 | 외식 | meal
+TX-000003 | 2024-01-15 | expense | food     | 15,000 | 점심 | meal
+[exit code] 0
+
+$ python -m budget_app search --from 2024-01-15 --to 2024-01-31
+id        | date       | type    | category | amount  | memo | tags
+-------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 30,000  | 외식 | meal
+TX-000004 | 2024-01-18 | expense | rent     | 150,000 | 월세 |
+TX-000003 | 2024-01-15 | expense | food     | 15,000  | 점심 | meal
+[exit code] 0
+
+$ python -m budget_app search --tag meal
+id        | date       | type    | category | amount | memo | tags
+------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 30,000 | 외식 | meal
+TX-000003 | 2024-01-15 | expense | food     | 15,000 | 점심 | meal
+[exit code] 0
+
+======================================================================
+# 5+6. budget set & summary (예산/요약)
+======================================================================
+
+$ python -m budget_app budget set --month 2024-01 --amount 500000
+[저장 완료] 2024-01 예산 500,000원
+[exit code] 0
+
+$ python -m budget_app summary --month 2024-01 --top 3
+[2024-01 요약]
+총 수입: 3,000,000원
+총 지출: 215,000원
+잔액: 2,785,000원
+예산: 500,000원 (사용률 43.0%)
+
+지출 TOP 3
+1) rent 150,000원
+2) food 45,000원
+3) transport 20,000원
+[exit code] 0
+
+======================================================================
+# 7. update (옵션 기반 수정)
+======================================================================
+
+$ python -m budget_app update --id TX-000005 --amount 28000 --memo 외식수정
+[수정 완료] id=TX-000005
+[exit code] 0
+
+$ python -m budget_app search --category food
+id        | date       | type    | category | amount | memo     | tags
+----------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 28,000 | 외식수정 | meal
+TX-000003 | 2024-01-15 | expense | food     | 15,000 | 점심     | meal
+[exit code] 0
+
+======================================================================
+# 8. delete (삭제)
+======================================================================
+
+$ python -m budget_app delete --id TX-000001
+[삭제 완료] id=TX-000001
+[exit code] 0
+
+$ python -m budget_app list --limit 10
+id        | date       | type    | category | amount    | memo     | tags
+-------------------------------------------------------------------------
+TX-000005 | 2024-01-22 | expense | food     | 28,000    | 외식수정 | meal
+TX-000004 | 2024-01-18 | expense | rent     | 150,000   | 월세     |
+TX-000003 | 2024-01-15 | expense | food     | 15,000    | 점심     | meal
+TX-000002 | 2024-01-14 | income  | salary   | 3,000,000 | 월급     |
+[exit code] 0
+
+======================================================================
+# 9. export / import (CSV 입출력)
+======================================================================
+
+$ python -m budget_app export --out evidence/export_2024-01.csv --month 2024-01
+[완료] evidence/export_2024-01.csv (4 records)
+[exit code] 0
+
+$ python -m budget_app import --from samples/import_sample.csv
+[완료] imported=3, skipped=1
+  - 건너뜀 5행: 등록되지 않은 카테고리입니다: ghost
+[exit code] 0
+
+$ python -m budget_app list --limit 10
+id        | date       | type    | category  | amount    | memo     | tags
+--------------------------------------------------------------------------
+TX-000008 | 2024-01-28 | expense | food      | 8,000     | 간식     |
+TX-000007 | 2024-01-27 | income  | salary    | 50,000    | 환급     |
+TX-000006 | 2024-01-25 | expense | transport | 12,000    | 택시     | taxi,night
+TX-000005 | 2024-01-22 | expense | food      | 28,000    | 외식수정 | meal
+TX-000004 | 2024-01-18 | expense | rent      | 150,000   | 월세     |
+TX-000003 | 2024-01-15 | expense | food      | 15,000    | 점심     | meal
+TX-000002 | 2024-01-14 | income  | salary    | 3,000,000 | 월급     |
+[exit code] 0
+
+======================================================================
+# 10. budget 초과 경고 (summary)
+======================================================================
+
+$ python -m budget_app budget set --month 2024-02 --amount 10000
+[저장 완료] 2024-02 예산 10,000원
+[exit code] 0
+
+$ python -m budget_app add
+  (입력: 2024-02-03\nexpense\nfood\n25000\n초과지출\n\n)
+날짜(YYYY-MM-DD): 타입(income/expense): 카테고리: 금액(양수): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] id=TX-000009
+[exit code] 0
+
+$ python -m budget_app summary --month 2024-02 --top 3
+[2024-02 요약]
+총 수입: 0원
+총 지출: 25,000원
+잔액: -25,000원
+예산: 10,000원 (사용률 250.0%)
+[경고] 예산을 15,000원 초과했습니다.
+
+지출 TOP 1
+1) food 25,000원
+[exit code] 0
+
+======================================================================
+# 보너스. backup / recurring
+======================================================================
+
+$ python -m budget_app backup
+[완료] 백업 생성: data\backups\backup-20260607-194538
+[exit code] 0
+
+$ python -m budget_app recurring add
+  (입력: expense\nrent\n800000\n25\n월세\n\n)
+타입(income/expense): 카테고리: 금액(양수): 매월 적용 일(1~28): 메모(선택): 태그(쉼표로 구분, 없으면 엔터): [저장 완료] recurring=RC-0001 (매월 25일)
+[exit code] 0
+
+$ python -m budget_app recurring apply --month 2024-03
+[완료] 생성=1, 건너뜀=0
+[exit code] 0
+
+$ python -m budget_app recurring apply --month 2024-03
+[완료] 생성=0, 건너뜀=1
+[exit code] 0

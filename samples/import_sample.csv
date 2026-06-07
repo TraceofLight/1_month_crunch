@@ -1,0 +1,5 @@
+date,type,category,amount,memo,tags
+2024-01-25,expense,transport,12000,택시,"taxi,night"
+2024-01-27,income,salary,50000,환급,
+2024-01-28,expense,food,8000,간식,
+2024-01-29,expense,ghost,9999,없는카테고리,
