@@ -14,8 +14,8 @@
 ------------------------------------------------------------
 All Boot Checks Passed!
 Agent READY
-2026-06-07 20:58:05,726 [INFO] [SafetyGuard] Process priority lowered (nice=10).
-2026-06-07 20:58:05,726 [INFO] Agent listening at port 15034
+2026-06-07 21:02:36,664 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-06-07 21:02:36,664 [INFO] Agent listening at port 15034
 
 ==================================================
  [ Agent Initiate ] Resource Check 
@@ -27,16 +27,16 @@ Agent READY
  >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
 ==================================================
 
-2026-06-07 20:58:07,743 [INFO] [MemoryWorker] Current Heap: 25MB
-2026-06-07 20:58:10,771 [INFO] [MemoryWorker] Current Heap: 50MB
-2026-06-07 20:58:13,798 [INFO] [MemoryWorker] Current Heap: 75MB
-2026-06-07 20:58:16,825 [INFO] [MemoryWorker] Current Heap: 100MB
-2026-06-07 20:58:19,852 [INFO] [MemoryWorker] Current Heap: 125MB
-2026-06-07 20:58:22,881 [INFO] [MemoryWorker] Current Heap: 150MB
-2026-06-07 20:58:25,911 [INFO] [MemoryWorker] Current Heap: 175MB
-2026-06-07 20:58:28,937 [INFO] [MemoryWorker] Current Heap: 200MB
-2026-06-07 20:58:31,964 [INFO] [MemoryWorker] Current Heap: 225MB
-2026-06-07 20:58:34,992 [INFO] [MemoryWorker] Current Heap: 250MB
-2026-06-07 20:58:38,017 [INFO] [MemoryWorker] Current Heap: 275MB
-2026-06-07 20:58:38,018 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
-2026-06-07 20:58:38,018 [CRITICAL] [MemoryGuard] Self-terminating process 673 to prevent system instability.
+2026-06-07 21:02:38,683 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-06-07 21:02:41,708 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-06-07 21:02:44,735 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-06-07 21:02:47,762 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-06-07 21:02:50,788 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-06-07 21:02:53,815 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-06-07 21:02:56,841 [INFO] [MemoryWorker] Current Heap: 175MB
+2026-06-07 21:02:59,868 [INFO] [MemoryWorker] Current Heap: 200MB
+2026-06-07 21:03:02,895 [INFO] [MemoryWorker] Current Heap: 225MB
+2026-06-07 21:03:05,920 [INFO] [MemoryWorker] Current Heap: 250MB
+2026-06-07 21:03:08,943 [INFO] [MemoryWorker] Current Heap: 275MB
+2026-06-07 21:03:08,944 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
+2026-06-07 21:03:08,944 [CRITICAL] [MemoryGuard] Self-terminating process 1235 to prevent system instability.

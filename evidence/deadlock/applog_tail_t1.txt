@@ -1,0 +1,8 @@
+2026-06-07 21:06:46,294 [INFO] [AgentWorker][Worker-Thread-1] LOCK ACQUIRED: [Shared_Memory_A]. (Holding...)
+2026-06-07 21:06:46,294 [INFO] [AgentWorker][Worker-Thread-2] LOCK ACQUIRED: [Socket_Pool_B]. (Holding...)
+2026-06-07 21:06:46,295 [INFO] [AgentWorker][Worker-Thread-1] Processing critical data in Memory A...
+2026-06-07 21:06:46,295 [INFO] [AgentWorker][Worker-Thread-2] Establishing network connections in Pool B...
+2026-06-07 21:06:48,306 [INFO] [AgentWorker][Worker-Thread-1] Need resource [Socket_Pool_B] to finish job.
+2026-06-07 21:06:48,306 [INFO] [AgentWorker][Worker-Thread-2] Need resource [Shared_Memory_A] to write logs.
+2026-06-07 21:06:48,306 [INFO] [AgentWorker][Worker-Thread-1] WAITING for [Socket_Pool_B]... (Status: BLOCKED)
+2026-06-07 21:06:48,307 [INFO] [AgentWorker][Worker-Thread-2] WAITING for [Shared_Memory_A]... (Status: BLOCKED)

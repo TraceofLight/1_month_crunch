@@ -14,8 +14,8 @@
 ------------------------------------------------------------
 All Boot Checks Passed!
 Agent READY
-2026-06-07 20:57:30,567 [INFO] [SafetyGuard] Process priority lowered (nice=10).
-2026-06-07 20:57:30,567 [INFO] Agent listening at port 15034
+2026-06-07 21:02:01,487 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-06-07 21:02:01,488 [INFO] Agent listening at port 15034
 
 ==================================================
  [ Agent Initiate ] Resource Check 
@@ -27,29 +27,29 @@ Agent READY
  >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
 ==================================================
 
-2026-06-07 20:57:32,578 [INFO] >>> Scenario Selected: [Healthy System Monitoring]
+2026-06-07 21:02:03,498 [INFO] >>> Scenario Selected: [Healthy System Monitoring]
 
 >>> [SYSTEM] ALL CONFIGURATIONS OPTIMAL. RUNNING STABILITY TEST... <<<
 
-2026-06-07 20:57:32,578 [INFO] [Scheduler] Task Scheduler Initialized.
-2026-06-07 20:57:32,578 [INFO] [Scheduler] Registered Tasks: ['Thread-A', 'Thread-B', 'Thread-C']
-2026-06-07 20:57:32,579 [INFO] [Scheduler] Starting task execution...
-2026-06-07 20:57:32,579 [INFO] [Thread-B] Task Started. Calculating... (20%)
-2026-06-07 20:57:32,629 [INFO] [Thread-B] Calculating... (40%)
-2026-06-07 20:57:32,680 [INFO] [Thread-B] Calculating... (60%)
-2026-06-07 20:57:32,731 [INFO] [Thread-B] Calculating... (80%)
-2026-06-07 20:57:32,781 [INFO] [Thread-B] Task Completed. (100%)
-2026-06-07 20:57:32,832 [INFO] [Thread-C] Task Started. Calculating... (20%)
-2026-06-07 20:57:32,883 [INFO] [Thread-C] Calculating... (40%)
-2026-06-07 20:57:32,934 [INFO] [Thread-C] Calculating... (60%)
-2026-06-07 20:57:32,985 [INFO] [Thread-C] Calculating... (80%)
-2026-06-07 20:57:33,036 [INFO] [Thread-C] Task Completed. (100%)
-2026-06-07 20:57:33,086 [INFO] [Thread-A] Task Started. Calculating... (20%)
-2026-06-07 20:57:33,137 [INFO] [Thread-A] Calculating... (40%)
-2026-06-07 20:57:33,188 [INFO] [Thread-A] Calculating... (60%)
-2026-06-07 20:57:33,239 [INFO] [Thread-A] Calculating... (80%)
-2026-06-07 20:57:33,290 [INFO] [Thread-A] Task Completed. (100%)
-2026-06-07 20:57:33,341 [INFO] [Scheduler] All tasks completed.
-2026-06-07 20:57:33,356 [INFO] [MemoryWorker] Current Heap: 25MB
-2026-06-07 20:57:33,356 [INFO] [CpuWorker] Started. Maximum CPU Limit: 30%
-2026-06-07 20:57:33,357 [INFO] [CpuWorker] Current Load: 5.00%
+2026-06-07 21:02:03,499 [INFO] [Scheduler] Task Scheduler Initialized.
+2026-06-07 21:02:03,499 [INFO] [Scheduler] Registered Tasks: ['Thread-A', 'Thread-B', 'Thread-C']
+2026-06-07 21:02:03,500 [INFO] [Scheduler] Starting task execution...
+2026-06-07 21:02:03,500 [INFO] [Thread-B] Task Started. Calculating... (20%)
+2026-06-07 21:02:03,550 [INFO] [Thread-B] Calculating... (40%)
+2026-06-07 21:02:03,601 [INFO] [Thread-B] Calculating... (60%)
+2026-06-07 21:02:03,652 [INFO] [Thread-B] Calculating... (80%)
+2026-06-07 21:02:03,702 [INFO] [Thread-B] Task Completed. (100%)
+2026-06-07 21:02:03,753 [INFO] [Thread-C] Task Started. Calculating... (20%)
+2026-06-07 21:02:03,803 [INFO] [Thread-C] Calculating... (40%)
+2026-06-07 21:02:03,854 [INFO] [Thread-C] Calculating... (60%)
+2026-06-07 21:02:03,905 [INFO] [Thread-C] Calculating... (80%)
+2026-06-07 21:02:03,955 [INFO] [Thread-C] Task Completed. (100%)
+2026-06-07 21:02:04,006 [INFO] [Thread-A] Task Started. Calculating... (20%)
+2026-06-07 21:02:04,057 [INFO] [Thread-A] Calculating... (40%)
+2026-06-07 21:02:04,107 [INFO] [Thread-A] Calculating... (60%)
+2026-06-07 21:02:04,158 [INFO] [Thread-A] Calculating... (80%)
+2026-06-07 21:02:04,209 [INFO] [Thread-A] Task Completed. (100%)
+2026-06-07 21:02:04,260 [INFO] [Scheduler] All tasks completed.
+2026-06-07 21:02:04,273 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-06-07 21:02:04,274 [INFO] [CpuWorker] Started. Maximum CPU Limit: 30%
+2026-06-07 21:02:04,274 [INFO] [CpuWorker] Current Load: 5.00%

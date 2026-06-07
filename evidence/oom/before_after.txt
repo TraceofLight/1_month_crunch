@@ -1,8 +1,13 @@
 [before] MEMORY_LIMIT=128MB  exit_code=137  survival=17s  last_Current Heap: 150MB
-2026-06-07 20:58:02,503 [CRITICAL] [MemoryGuard] Memory limit exceeded (150MB >= 128MB) / (Recommend Over 256MB)
-2026-06-07 20:58:02,504 [CRITICAL] [MemoryGuard] Self-terminating process 511 to prevent system instability.
+2026-06-07 21:02:33,404 [CRITICAL] [MemoryGuard] Memory limit exceeded (150MB >= 128MB) / (Recommend Over 256MB)
+2026-06-07 21:02:33,404 [CRITICAL] [MemoryGuard] Self-terminating process 1073 to prevent system instability.
 
-[mid] MEMORY_LIMIT=256MB  exit_code=137  survival=33s  last_Current Heap: 275MB
-2026-06-07 20:58:38,018 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
-2026-06-07 20:58:38,018 [CRITICAL] [MemoryGuard] Self-terminating process 673 to prevent system instability.
+[mid] MEMORY_LIMIT=256MB  exit_code=137  survival=32s  last_Current Heap: 275MB
+2026-06-07 21:03:08,944 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
+2026-06-07 21:03:08,944 [CRITICAL] [MemoryGuard] Self-terminating process 1235 to prevent system instability.
+
+[after] MEMORY_LIMIT=512MB  after_100s=ALIVE (운영자 정지, 자가 종료 아님)
+2026-06-07 21:04:14,639 [WARNING] [MemoryWorker] Memory Usage Reached Limit (525MB). Starting cleanup...
+2026-06-07 21:04:14,654 [INFO] [System] Memory Cache Flushed. Process Stabilized.
+>>> [SYSTEM] MEMORY RECOVERED (Cache Cleared) <<<
 

@@ -1,0 +1,20 @@
+30:2026-06-07 21:07:44,571 [INFO] >>> Scenario Selected: [Healthy System Monitoring]
+34:2026-06-07 21:07:44,572 [INFO] [Scheduler] Task Scheduler Initialized.
+35:2026-06-07 21:07:44,572 [INFO] [Scheduler] Registered Tasks: ['Thread-A', 'Thread-B', 'Thread-C']
+36:2026-06-07 21:07:44,573 [INFO] [Scheduler] Starting task execution...
+37:2026-06-07 21:07:44,573 [INFO] [Thread-B] Task Started. Calculating... (20%)
+38:2026-06-07 21:07:44,623 [INFO] [Thread-B] Calculating... (40%)
+39:2026-06-07 21:07:44,674 [INFO] [Thread-B] Calculating... (60%)
+40:2026-06-07 21:07:44,725 [INFO] [Thread-B] Calculating... (80%)
+41:2026-06-07 21:07:44,776 [INFO] [Thread-B] Task Completed. (100%)
+42:2026-06-07 21:07:44,827 [INFO] [Thread-C] Task Started. Calculating... (20%)
+43:2026-06-07 21:07:44,878 [INFO] [Thread-C] Calculating... (40%)
+44:2026-06-07 21:07:44,928 [INFO] [Thread-C] Calculating... (60%)
+45:2026-06-07 21:07:44,979 [INFO] [Thread-C] Calculating... (80%)
+46:2026-06-07 21:07:45,030 [INFO] [Thread-C] Task Completed. (100%)
+47:2026-06-07 21:07:45,081 [INFO] [Thread-A] Task Started. Calculating... (20%)
+48:2026-06-07 21:07:45,132 [INFO] [Thread-A] Calculating... (40%)
+49:2026-06-07 21:07:45,182 [INFO] [Thread-A] Calculating... (60%)
+50:2026-06-07 21:07:45,233 [INFO] [Thread-A] Calculating... (80%)
+51:2026-06-07 21:07:45,284 [INFO] [Thread-A] Task Completed. (100%)
+52:2026-06-07 21:07:45,335 [INFO] [Scheduler] All tasks completed.

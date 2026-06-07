@@ -1,0 +1,18 @@
+===== AFTER (THREAD=false) =====
+### ps -ef | grep [a]gent  (PID 생존 확인)
+your 131072x1 screen size is bogus. expect trouble
+heejun_+  3415  2949  0 21:07 pts/2    00:00:00 /mnt/d/Projects/Github/ai-assignment/agent-leak-app-x86
+heejun_+  3433  3415  0 21:07 pts/2    00:00:00 /mnt/d/Projects/Github/ai-assignment/agent-leak-app-x86
+
+### ps -L -p 3433 (스레드별 상태 STAT / 대기채널 WCHAN / %CPU / RSS)
+your 131072x1 screen size is bogus. expect trouble
+  PID   TID STAT WCHAN                  %CPU   RSS
+ 3433  3433 SNl+ futex_wait_queue        0.1 145920
+ 3433  3466 SNl+ do_select               0.3 145920
+ 3433  3467 SNl+ do_select               0.6 145920
+
+### top -H -b -n1 -p 3433 (스레드별 순간 %CPU)
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 3433 heejun_+  30  10  299592 145920   9728 S   0.0   0.5   0:00.03 agent-lea+
+ 3466 heejun_+  30  10  299592 145920   9728 S   0.0   0.5   0:00.04 agent-lea+
+ 3467 heejun_+  30  10  299592 145920   9728 S   0.0   0.5   0:00.08 agent-lea+

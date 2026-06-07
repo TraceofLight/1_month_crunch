@@ -1,0 +1,12 @@
+[before] CPU_MAX_OCCUPY=95  exit_code=143  survival=33s
+2026-06-07 21:05:23,656 [INFO] [CpuWorker] Current Load: 41.98%
+2026-06-07 21:05:26,772 [INFO] [CpuWorker] Current Load: 47.63%
+2026-06-07 21:05:29,887 [INFO] [CpuWorker] Current Load: 54.56%
+2026-06-07 21:05:29,988 [CRITICAL] [CpuWorker] CPU Threshold Violated! (54.56%).
+
+[after] CPU_MAX_OCCUPY=30  after_60s=ALIVE (운영자 정지)
+Load 최고/최저 표본:
+Current Load: 5.00%
+Current Load: 30.00%
+임계 위반 로그 존재? : 0 건
+

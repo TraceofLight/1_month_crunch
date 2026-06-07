@@ -1,0 +1,14 @@
+### (1) ps %cpu = 프로세스 수명 누적 평균
+your 131072x1 screen size is bogus. expect trouble
+  PID  PPID %CPU     TIME  NI COMMAND
+ 2157  2144  0.3 00:00:00   0 agent-leak-app-
+ 2176  2157  0.8 00:00:00  10 agent-leak-app-
+
+### (2) top -b -n2 -d0.3 (2번째 표본 = 직전 0.3초 순간 %CPU)
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 2157 heejun_+  20   0    2900   1792   1792 S   0.0   0.0   0:00.05 agent-lea+
+ 2176 heejun_+  30  10   24108  17920   9728 S   0.0   0.1   0:00.12 agent-lea+
+
+### (3) top -b -n1 헤더 = 호스트 전체 CPU 포화 여부
+top - 21:05:12 up  5:23,  0 user,  load average: 0.21, 0.11, 0.03
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 

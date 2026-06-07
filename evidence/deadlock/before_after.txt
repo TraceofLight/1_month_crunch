@@ -1,0 +1,13 @@
+[before] MULTI_THREAD_ENABLE=true  process_after_28s=ALIVE (자가 종료 없음)
+T1 마지막 로그 == T2 마지막 로그 ? : SAME_그대로멈춤
+마지막 로그 지점:
+2026-06-07 21:06:48,306 [INFO] [AgentWorker][Worker-Thread-2] Need resource [Shared_Memory_A] to write logs.
+2026-06-07 21:06:48,306 [INFO] [AgentWorker][Worker-Thread-1] WAITING for [Socket_Pool_B]... (Status: BLOCKED)
+2026-06-07 21:06:48,307 [INFO] [AgentWorker][Worker-Thread-2] WAITING for [Shared_Memory_A]... (Status: BLOCKED)
+
+[after] MULTI_THREAD_ENABLE=false  로그 라인 수=33 (계속 진행 = 응답)
+마지막 진행 로그:
+2026-06-07 21:07:36,132 [INFO] [CpuWorker] Current Load: 24.76%
+2026-06-07 21:07:38,883 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-06-07 21:07:39,248 [INFO] [CpuWorker] Current Load: 28.17%
+
