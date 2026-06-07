@@ -3,26 +3,27 @@
 수입과 지출 내역을 파일에 영구 저장하고, 추가/목록/검색/수정/삭제, 월별 요약,
 예산 관리, 카테고리 관리, CSV 가져오기/내보내기를 제공하는 콘솔 애플리케이션이다.
 표준 라이브러리만으로 구현했으며, 제너레이터 스트리밍, 데코레이터를 통한 공통
-관심사 분리, 타입 힌트, 계층형 모듈 구조를 적용했다. 아래 본문은 각 요구사항의
-실제 구현 코드를 파일/메서드와 함께 인용하고, `evidence/` 의 실행 로그 줄 번호를
-근거로 제시하는 자체완결형 워크스루다.
+관심사 분리, 타입 힌트, 계층형 모듈 구조를 적용했다. 본문에서 인용하는 코드는
+`budget_app/` 패키지의 실제 파일과 메서드에서 가져왔고, 동작 근거가 되는 실행
+로그는 `evidence/` 폴더에 줄 번호와 함께 보존했다.
 
 ## 목차
 
 - [개발 환경과 제약](#개발-환경과-제약)
 - [빠른 시작](#빠른-시작)
 - [아키텍처와 모듈 구조](#아키텍처와-모듈-구조)
-- [데이터 모델](#데이터-모델)
-- [저장 파일 위치와 형식](#저장-파일-위치와-형식)
-- [기능별 워크스루](#기능별-워크스루)
-- [제너레이터 스트리밍 설계](#제너레이터-스트리밍-설계)
+- [데이터 모델과 저장 형식](#데이터-모델과-저장-형식)
+- [거래 관리](#거래-관리)
+- [카테고리 관리](#카테고리-관리)
+- [월별 요약과 예산](#월별-요약과-예산)
+- [CSV 가져오기와 내보내기](#csv-가져오기와-내보내기)
+- [운영 보조 기능](#운영-보조-기능)
+- [스트리밍 처리: 제너레이터 설계](#스트리밍-처리-제너레이터-설계)
 - [데코레이터로 공통 관심사 분리](#데코레이터로-공통-관심사-분리)
 - [타입 힌트로 입출력 계약 명확화](#타입-힌트로-입출력-계약-명확화)
-- [입력 검증, 오류 처리, 종료 코드](#입력-검증-오류-처리-종료-코드)
+- [입력 검증과 오류 처리, 종료 코드](#입력-검증과-오류-처리-종료-코드)
 - [저장 안정성: 원자적 교체](#저장-안정성-원자적-교체)
-- [import / export CSV 스키마](#import--export-csv-스키마)
-- [설계 결정 고정 사항](#설계-결정-고정-사항)
-- [보너스 기능](#보너스-기능)
+- [설계 선택 고정](#설계-선택-고정)
 - [테스트](#테스트)
 - [Docker 로 재현](#docker-로-재현)
 - [검증 산출물(evidence)](#검증-산출물evidence)
@@ -114,7 +115,9 @@ def __init__(self, data_dir: Path) -> None:
 의존 방향을 한쪽으로 정리했으므로, 저장 포맷을 바꾸더라도 storage 와 repository 만
 손대면 되고 서비스/CLI 는 영향을 받지 않는다.
 
-## 데이터 모델
+## 데이터 모델과 저장 형식
+
+### 데이터 모델
 
 거래 내역(Transaction)은 `dataclass` 로 정의하며 요구된 필드(`id`, `type`, `date`,
 `amount`, `category`, `memo`, `tags`)를 모두 포함한다. JSONL 직렬화 계약은
@@ -153,7 +156,7 @@ class Transaction:
 `BudgetStore`, `RecurringStore`, `BudgetService`)와 함께 두 개 이상의 클래스를
 사용한다.
 
-## 저장 파일 위치와 형식
+### 저장 파일과 위치
 
 기본 저장 폴더는 `./data` 이며, 용도별로 다음 4개 파일에 JSONL(한 줄에 JSON 객체
 하나) 형식으로 저장한다. 거래/카테고리/예산 3개는 필수이고, 반복 내역은 보너스용
@@ -191,11 +194,13 @@ def ensure_defaults(self) -> list[str]:
     return list(DEFAULT_CATEGORIES)
 ```
 
-## 기능별 워크스루
+## 거래 관리
 
-각 기능은 사용 예시, 실제 구현 코드, evidence 줄 인용을 함께 제시한다.
+거래는 이 프로그램의 핵심 데이터다. 추가로 새 내역을 만들고, 목록과 검색으로 찾고,
+수정과 삭제로 고친다. 추가는 파일 끝에 한 줄을 덧붙이는(append) 한 번의 쓰기로
+끝나지만, 수정과 삭제는 파일 전체를 안전하게 다시 쓴다.
 
-### 1. add (거래 추가, 대화형)
+### 거래 추가 (add, 대화형)
 
 날짜/타입/카테고리/금액/메모/태그를 순서대로 입력받고, 저장 후 생성된 id 를
 출력한다. 잘못된 값에는 원인과 힌트를 출력하고 같은 항목을 다시 입력받는다
@@ -248,10 +253,14 @@ def create_transaction(self, *, date, type, category, amount, memo="", tags=None
 id 는 기존 최대 일련번호 + 1 로 생성한다(`TransactionRepository.next_id`), 그래서
 demo 에서 `TX-000001`, `TX-000002` 처럼 순차 발급된다.
 
-### 2. list (목록, 최신순 스트리밍)
+### 목록 조회와 검색 (list, search)
 
-`--limit` 기본값은 20 이다. 최신순은 가장 최근에 입력한 순서(파일 append 역순)를
-뜻한다(근거는 아래 스트리밍 설계 절). 출력은 evidence/demo_run.txt 63-69 와 같다.
+목록과 검색은 둘 다 저장 파일을 한 번에 메모리로 올리지 않고 제너레이터로 한 줄씩
+스트리밍하며, 결과를 최신순으로 출력한다(여기서 최신순의 정의와 스트리밍 동작
+원리는 아래 스트리밍 처리 절에서 설명한다).
+
+목록(`list`)의 `--limit` 기본값은 20 이다. 최신순은 가장 최근에 입력한 순서(파일
+append 역순)를 뜻한다. 출력은 evidence/demo_run.txt 63-69 와 같다.
 
 ```text
 $ python -m budget_app list --limit 3
@@ -278,11 +287,10 @@ def list_transactions(self, limit: int) -> list[Transaction]:
     return list(_take(self.transactions.iter_recent(), limit))
 ```
 
-### 3. search (조건 검색, 최신순 스트리밍)
-
-기간(`--from`, `--to`), 카테고리(`--category`), 타입(`--type`), 메모 키워드(`--q`),
-태그(`--tag`), 개수 제한(`--limit`)을 지원하며 조건은 AND 결합이다. 실행 예는
-evidence/demo_run.txt 75-95 에 있다(타입+카테고리, 기간, 태그 검색).
+검색(`search`)은 기간(`--from`, `--to`), 카테고리(`--category`), 타입(`--type`),
+메모 키워드(`--q`), 태그(`--tag`), 개수 제한(`--limit`)을 지원하며 조건은 AND
+결합이다. 실행 예는 evidence/demo_run.txt 75-95 에 있다(타입+카테고리, 기간, 태그
+검색).
 
 ```text
 $ python -m budget_app search --type expense --category food
@@ -319,12 +327,104 @@ if limit is not None:
 return list(matched)
 ```
 
-### 4. summary (월별 요약)
+### 수정과 삭제 (update, delete)
 
-총수입, 총지출, 잔액과 카테고리별 지출 TOP N(`--top`, 기본 3)을 출력한다. 데이터가
-없는 달은 "데이터 없음"을 명시한다. 예산이 있으면 사용률과 초과 경고를 함께 낸다.
-정상 요약은 evidence/demo_run.txt 105-116, 초과 경고는 188-198, 데이터 없는 달의
-출력은 evidence/extra_cases.txt 46-48 에 있다.
+추가가 한 줄 append 로 끝나는 것과 달리, 수정과 삭제는 파일 전체를 다시 써야 한다.
+둘 다 원자적 재작성(`replace_all`)을 공유하므로(아래 저장 안정성 절), 쓰는 도중
+중단돼도 파일이 반쯤 덮어써진 손상 상태로 남지 않는다.
+
+수정(`update`)은 `--id` 로 대상을 정하고 함께 준 필드만 수정한다(나머지 유지).
+수정할 필드를 하나도 주지 않거나 없는 id 면 오류로 종료한다. 실행 예는
+evidence/demo_run.txt 122-131, 없는 타입 입력 오류는 evidence/errors.txt 46-49 에
+있다.
+
+```text
+$ python -m budget_app update --id TX-000005 --amount 28000 --memo 외식수정
+[수정 완료] id=TX-000005
+```
+
+```python
+# budget_app/services.py - BudgetService.update_transaction (발췌)
+records = list(self.transactions.iter_all())
+target = next((tx for tx in records if tx.id == tx_id), None)
+if target is None:
+    raise NotFoundError(f"거래를 찾을 수 없습니다: {tx_id}",
+                        hint="list 명령으로 존재하는 id 를 확인하세요.")
+if date is not None:     target.date = validate_date(date)
+if type is not None:     target.type = validate_type(type)
+if amount is not None:   target.amount = validate_amount(amount)
+if category is not None: self._require_category(category); target.category = category
+if memo is not None:     target.memo = memo.strip()
+if tags is not None:     target.tags = list(tags)
+self.transactions.replace_all(records)   # 원자적 재작성
+```
+
+삭제(`delete`)는 없는 id 를 "없는 데이터"로 처리해 안내한다(evidence/demo_run.txt
+137-148, 없는 id 오류는 evidence/errors.txt 19-22).
+
+```text
+$ python -m budget_app delete --id TX-000001
+[삭제 완료] id=TX-000001
+```
+
+```python
+# budget_app/services.py - BudgetService.delete_transaction
+def delete_transaction(self, tx_id: str) -> Transaction:
+    records = list(self.transactions.iter_all())
+    kept = [tx for tx in records if tx.id != tx_id]
+    if len(kept) == len(records):
+        raise NotFoundError(f"거래를 찾을 수 없습니다: {tx_id}",
+                            hint="list 명령으로 존재하는 id 를 확인하세요.")
+    removed = next(tx for tx in records if tx.id == tx_id)
+    self.transactions.replace_all(kept)   # 원자적 재작성
+    return removed
+```
+
+## 카테고리 관리
+
+`category add` 는 대화형이다. 삭제 시 사용 중이면 막고, `--into` 로 대체 카테고리를
+주면 거래를 옮긴 뒤 삭제한다. add/list 사용 예는 evidence/demo_run.txt 16-28, 사용
+중 카테고리를 대체 이동하며 삭제하는 예는 evidence/extra_cases.txt 31-40, 대체
+카테고리를 주지 않아 삭제가 차단되는 오류는 evidence/errors.txt 37-40 에 있다.
+
+```text
+$ python -m budget_app category remove --name food --into cafe
+[삭제 완료] category=food (거래 2건을 'cafe'로 이동)
+```
+
+```python
+# budget_app/services.py - BudgetService.remove_category (발췌)
+in_use = [tx for tx in self.transactions.iter_all() if tx.category == clean]
+moved = 0
+if in_use:
+    if into is None:
+        raise CategoryInUseError(
+            f"'{clean}' 카테고리를 사용하는 거래가 {len(in_use)}건 있습니다.",
+            hint="--into <대체카테고리> 로 거래를 옮긴 뒤 삭제하세요.",
+        )
+    records = list(self.transactions.iter_all())
+    for tx in records:
+        if tx.category == clean:
+            tx.category = into_clean
+            moved += 1
+    self.transactions.replace_all(records)
+self.categories.remove(clean)
+return moved
+```
+
+카테고리가 거래에서 참조되므로 add 단계에서 등록된 카테고리만 허용하고(등록 목록에
+없으면 재입력 요구), 삭제 단계에서 사용 중이면 데이터 정합성을 위해 막거나 대체
+이동을 요구한다.
+
+## 월별 요약과 예산
+
+요약과 예산은 함께 동작한다. 예산이 설정된 달은 요약에 사용률과 초과 경고가 함께
+나오기 때문이다.
+
+요약(`summary`)은 총수입, 총지출, 잔액과 카테고리별 지출 TOP N(`--top`, 기본 3)을
+출력한다. 데이터가 없는 달은 "데이터 없음"을 명시한다. 정상 요약은
+evidence/demo_run.txt 105-116, 초과 경고는 188-198, 데이터 없는 달의 출력은
+evidence/extra_cases.txt 46-48 에 있다.
 
 ```text
 $ python -m budget_app summary --month 2024-01 --top 3
@@ -362,9 +462,7 @@ if budget is not None and budget > 0:
 
 데이터 없는 달은 evidence 외에 단위 테스트로도 검증한다(`test_summary_no_data`).
 
-### 5. budget (예산 설정/조회)
-
-예산은 `data/budgets.jsonl` 에 영구 저장되고 summary 에 반영된다
+예산(`budget`)은 `data/budgets.jsonl` 에 영구 저장되고 summary 에 반영된다
 (evidence/demo_run.txt 101-103, 초과 시 194 줄의 경고).
 
 ```text
@@ -381,91 +479,11 @@ def set_budget(self, month, amount) -> tuple[str, int]:
     return clean_month, clean_amount
 ```
 
-`BudgetStore.set` 은 같은 달이 있으면 덮어쓰고 원자적으로 다시 쓴다.
+`BudgetStore.set` 은 같은 달이 있으면 덮어쓰고 원자적으로 다시 쓴다. 위 요약 코드의
+`budget is not None and budget > 0` 분기가 저장된 예산을 읽어 사용률과 초과 여부를
+계산하는 지점이다.
 
-### 6. category (카테고리 관리)
-
-`category add` 는 대화형이다. 삭제 시 사용 중이면 막고, `--into` 로 대체 카테고리를
-주면 거래를 옮긴 뒤 삭제한다. add/list 사용 예는 evidence/demo_run.txt 16-28, 사용
-중 카테고리를 대체 이동하며 삭제하는 예는 evidence/extra_cases.txt 31-40, 대체
-카테고리를 주지 않아 삭제가 차단되는 오류는 evidence/errors.txt 37-40 에 있다.
-
-```text
-$ python -m budget_app category remove --name food --into cafe
-[삭제 완료] category=food (거래 2건을 'cafe'로 이동)
-```
-
-```python
-# budget_app/services.py - BudgetService.remove_category (발췌)
-in_use = [tx for tx in self.transactions.iter_all() if tx.category == clean]
-moved = 0
-if in_use:
-    if into is None:
-        raise CategoryInUseError(
-            f"'{clean}' 카테고리를 사용하는 거래가 {len(in_use)}건 있습니다.",
-            hint="--into <대체카테고리> 로 거래를 옮긴 뒤 삭제하세요.",
-        )
-    records = list(self.transactions.iter_all())
-    for tx in records:
-        if tx.category == clean:
-            tx.category = into_clean
-            moved += 1
-    self.transactions.replace_all(records)
-self.categories.remove(clean)
-return moved
-```
-
-### 7. update (거래 수정, 옵션 기반)
-
-`--id` 로 대상을 정하고 함께 준 필드만 수정한다(나머지 유지). 수정할 필드를 하나도
-주지 않거나 없는 id 면 오류로 종료한다. 실행 예는 evidence/demo_run.txt 122-131,
-없는 타입 입력 오류는 evidence/errors.txt 46-49 에 있다.
-
-```text
-$ python -m budget_app update --id TX-000005 --amount 28000 --memo 외식수정
-[수정 완료] id=TX-000005
-```
-
-```python
-# budget_app/services.py - BudgetService.update_transaction (발췌)
-records = list(self.transactions.iter_all())
-target = next((tx for tx in records if tx.id == tx_id), None)
-if target is None:
-    raise NotFoundError(f"거래를 찾을 수 없습니다: {tx_id}",
-                        hint="list 명령으로 존재하는 id 를 확인하세요.")
-if date is not None:     target.date = validate_date(date)
-if type is not None:     target.type = validate_type(type)
-if amount is not None:   target.amount = validate_amount(amount)
-if category is not None: self._require_category(category); target.category = category
-if memo is not None:     target.memo = memo.strip()
-if tags is not None:     target.tags = list(tags)
-self.transactions.replace_all(records)   # 원자적 재작성
-```
-
-### 8. delete (거래 삭제)
-
-없는 id 는 "없는 데이터"로 처리해 안내한다(evidence/demo_run.txt 137-148, 없는 id
-오류는 evidence/errors.txt 19-22).
-
-```text
-$ python -m budget_app delete --id TX-000001
-[삭제 완료] id=TX-000001
-```
-
-```python
-# budget_app/services.py - BudgetService.delete_transaction
-def delete_transaction(self, tx_id: str) -> Transaction:
-    records = list(self.transactions.iter_all())
-    kept = [tx for tx in records if tx.id != tx_id]
-    if len(kept) == len(records):
-        raise NotFoundError(f"거래를 찾을 수 없습니다: {tx_id}",
-                            hint="list 명령으로 존재하는 id 를 확인하세요.")
-    removed = next(tx for tx in records if tx.id == tx_id)
-    self.transactions.replace_all(kept)   # 원자적 재작성
-    return removed
-```
-
-### 9. import / export (CSV 가져오기/내보내기)
+## CSV 가져오기와 내보내기
 
 `export` 는 `--month` 또는 `--from`/`--to` 중 하나 이상을 필수로 받는다. `import`
 는 각 행을 검증해 일괄 등록하고, 실패 행(잘못된 날짜/타입/금액, 등록되지 않은
@@ -502,11 +520,40 @@ for line_no, row in enumerate(reader, start=2):
         reasons.append(f"{line_no}행: {exc.message}")
 ```
 
-`export_csv` 는 검색 결과를 헤더와 함께 CSV 로 쓴다. 태그가 여러 개라 셀 안에
-쉼표가 들어가면 `csv` 모듈이 자동으로 따옴표 처리하고, 가져올 때 `parse_tags` 가
-다시 분리한다. 결과 CSV 견본은 evidence/export_2024-01.csv 에 있다.
+`export_csv` 는 검색 결과를 헤더와 함께 CSV 로 쓴다. 가져오기와 내보내기는 동일
+스키마를 고정하며, 인코딩은 UTF-8 이고 헤더를 포함한다. 견본은
+samples/import_sample.csv 에 있다.
 
-## 제너레이터 스트리밍 설계
+| column | required | 설명 |
+| --- | --- | --- |
+| date | Y | `YYYY-MM-DD` |
+| type | Y | `income` 또는 `expense` |
+| category | Y | 등록된 카테고리 |
+| amount | Y | 양수 정수 |
+| memo | N | 문자열 |
+| tags | N | 쉼표(`,`)로 구분한 문자열 |
+
+태그가 여러 개라 셀 안에 쉼표가 들어가면 `csv` 모듈이 자동으로 따옴표 처리하고,
+가져올 때 `parse_tags` 가 다시 분리한다. 예를 들어 태그가 두 개(`taxi`, `night`)이면
+CSV 에는 `"taxi,night"` 로 기록되고, 가져올 때 다시 두 태그로 분리된다. 내보내기
+결과 CSV 견본은 evidence/export_2024-01.csv 에 있다.
+
+## 운영 보조 기능
+
+운영 안전장치와 콘솔 사용성을 위한 보너스 기능을 함께 제공한다.
+
+- 백업(`backup`): 타임스탬프 폴더(`data/backups/backup-YYYYMMDD-HHMMSS`)에 저장
+  파일을 복사한다(evidence/demo_run.txt 204-206).
+- 반복 내역(`recurring add`/`recurring apply`): 월세/월급처럼 반복되는 내역을 규칙으로
+  등록하고 특정 월에 적용해 거래를 자동 생성한다. 같은 규칙을 같은 달에 두 번
+  적용하지 않도록, 생성 거래에 `recurring:<id>` 표식 태그를 달아 중복을 막는다
+  (evidence/demo_run.txt 208-219: 1회차 생성=1, 2회차 건너뜀=1).
+- 출력 테이블 정렬: 외부 라이브러리 없이 `unicodedata` 로 한글의 표시 폭(전각 2칸)을
+  계산해 열을 맞춘다(`budget_app/formatting.py` 의 `display_width`).
+- 저장 원자성 강화: 아래 저장 안정성 절의 임시 파일 + `os.replace` 방식을 수정/삭제에
+  적용했다.
+
+## 스트리밍 처리: 제너레이터 설계
 
 목록과 검색은 저장 파일 전체를 한 번에 메모리로 읽지 않고 제너레이터로 한 줄씩
 스트리밍한다. 핵심은 `budget_app/storage.py` 의 두 제너레이터다. 앞에서부터 읽는
@@ -668,7 +715,7 @@ class SummaryResult:
 명시적 계약은 IDE 자동완성과 정적 분석의 도움을 받게 하고, 잘못된 형태의 값이
 계층 사이를 넘나드는 실수를 줄인다.
 
-## 입력 검증, 오류 처리, 종료 코드
+## 입력 검증과 오류 처리, 종료 코드
 
 입력 검증은 서비스 계층에 모았다. 날짜 형식, 0 이하 금액, 허용되지 않은 타입,
 등록되지 않은 카테고리를 각각 명확한 예외로 처리한다. 검증 헬퍼는 순수 함수다.
@@ -730,28 +777,12 @@ def atomic_write_lines(path: Path, lines: Iterable[str]) -> None:
 ```
 
 `TransactionRepository.replace_all`, `CategoryStore.remove`, `BudgetStore.set` 이 모두
-이 방식을 사용한다.
+이 방식을 사용한다. 거래 수정/삭제, 카테고리 삭제, 예산 갱신이 모두 같은 안전한
+교체 경로를 지나간다는 뜻이다.
 
-## import / export CSV 스키마
+## 설계 선택 고정
 
-가져오기와 내보내기는 동일 스키마를 고정한다. 인코딩은 UTF-8 이고 헤더를 포함한다.
-견본은 samples/import_sample.csv 에 있다.
-
-| column | required | 설명 |
-| --- | --- | --- |
-| date | Y | `YYYY-MM-DD` |
-| type | Y | `income` 또는 `expense` |
-| category | Y | 등록된 카테고리 |
-| amount | Y | 양수 정수 |
-| memo | N | 문자열 |
-| tags | N | 쉼표(`,`)로 구분한 문자열 |
-
-태그가 두 개(`taxi`, `night`)이면 CSV 에는 `"taxi,night"` 로 기록되고, 가져올 때
-다시 두 태그로 분리된다. 내보내기 결과는 evidence/export_2024-01.csv 에 있다.
-
-## 설계 결정 고정 사항
-
-요구사항이 선택지를 준 항목은 다음과 같이 고정했다.
+선택지가 있는 항목은 다음과 같이 한 가지로 고정해 구현하고 문서화했다.
 
 - update 입력 방식: 옵션 기반(안 A). `update --id <id>` 에 수정할 필드만 옵션으로
   준다. 어떤 필드를 바꿀지 명시적이고 스크립트/재현에 유리해서다.
@@ -759,21 +790,8 @@ def atomic_write_lines(path: Path, lines: Iterable[str]) -> None:
   `food`, `transport`, `rent`, `salary`, `etc` 를 만들고 안내한다.
 - 카테고리 삭제 시 사용 중 처리: 기본은 삭제를 막고, `--into` 로 대체 카테고리를
   주면 거래를 옮긴 뒤 삭제한다(둘 다 지원).
-- "최신순"의 정의: 입력(append) 역순. 스트리밍과 양립시키기 위한 선택이며 위에서
-  근거를 설명했다.
-
-## 보너스 기능
-
-- 백업(`backup`): 타임스탬프 폴더(`data/backups/backup-YYYYMMDD-HHMMSS`)에 저장
-  파일을 복사한다(evidence/demo_run.txt 204-206).
-- 반복 내역(`recurring add`/`recurring apply`): 월세/월급처럼 반복되는 내역을 규칙으로
-  등록하고 특정 월에 적용해 거래를 자동 생성한다. 같은 규칙을 같은 달에 두 번
-  적용하지 않도록, 생성 거래에 `recurring:<id>` 표식 태그를 달아 중복을 막는다
-  (evidence/demo_run.txt 208-219: 1회차 생성=1, 2회차 건너뜀=1).
-- 출력 테이블 정렬: 외부 라이브러리 없이 `unicodedata` 로 한글의 표시 폭(전각 2칸)을
-  계산해 열을 맞춘다(`budget_app/formatting.py` 의 `display_width`).
-- 저장 원자성 강화: 위 "저장 안정성" 절의 임시 파일 + `os.replace` 방식을 수정/삭제에
-  적용했다.
+- "최신순"의 정의: 입력(append) 역순. 스트리밍과 양립시키기 위한 선택이며 스트리밍
+  처리 절에서 근거를 설명했다.
 
 ## 테스트
 
