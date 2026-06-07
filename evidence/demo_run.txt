@@ -1,0 +1,63 @@
+mini-git> init "Alice Kim"
+Initialized repository.
+Current branch: main
+Current user: Alice Kim
+
+mini-git> commit "Initial commit"
+[main c000001] Initial commit
+
+mini-git> branch feature
+Created branch: feature
+
+mini-git> switch feature
+Switched to branch: feature
+
+mini-git> commit "Add login feature"
+[feature c000002] Add login feature
+
+mini-git> switch main
+Switched to branch: main
+
+mini-git> commit "Add payment feature"
+[main c000003] Add payment feature
+
+mini-git> log
+commit c000001 (Alice Kim, 2026-06-07 09:01:00)
+Initial commit
+commit c000002 (Alice Kim, 2026-06-07 09:02:00) [feature]
+Add login feature
+commit c000003 (Alice Kim, 2026-06-07 09:03:00) [main]
+Add payment feature
+
+mini-git> path c000002 c000003
+Path: c000002 -> c000001 -> c000003
+
+mini-git> ancestors c000003
+- c000001: Initial commit
+
+mini-git> search login
+Found 1 commit:
+- c000002: Add login feature
+
+mini-git> search --author="Alice Kim"
+Found 3 commits:
+- c000001: Initial commit
+- c000002: Add login feature
+- c000003: Add payment feature
+
+mini-git> log --sort-by=author
+commit c000001 (Alice Kim, 2026-06-07 09:01:00)
+Initial commit
+commit c000002 (Alice Kim, 2026-06-07 09:02:00) [feature]
+Add login feature
+commit c000003 (Alice Kim, 2026-06-07 09:03:00) [main]
+Add payment feature
+
+mini-git> log --sort-by=date
+commit c000001 (Alice Kim, 2026-06-07 09:01:00)
+Initial commit
+commit c000002 (Alice Kim, 2026-06-07 09:02:00) [feature]
+Add login feature
+commit c000003 (Alice Kim, 2026-06-07 09:03:00) [main]
+Add payment feature
+

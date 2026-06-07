@@ -1,0 +1,5 @@
+mini-git> Initialized repository.
+Current branch: main
+Current user: Alice
+mini-git> [main c000001] Smoke test
+mini-git> 
