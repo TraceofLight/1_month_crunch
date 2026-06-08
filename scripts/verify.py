@@ -109,6 +109,7 @@ def verify_evidence() -> None:
     """재현 실행 결과가 evidence 디렉터리에 텍스트로 보존됐는지 확인한다."""
     expected_files = [
         EVIDENCE_DIR / "query_results.txt",
+        EVIDENCE_DIR / "sample_row_counts.txt",
         EVIDENCE_DIR / "verification.log",
         EVIDENCE_DIR / "integrity_check.txt",
         DB_PATH,
@@ -122,6 +123,11 @@ def verify_evidence() -> None:
         marker = f"Q{number:02d}"
         if marker not in result_text:
             raise AssertionError(f"실행 결과에 {marker}가 없습니다.")
+
+    row_count_text = (EVIDENCE_DIR / "sample_row_counts.txt").read_text(encoding="utf-8")
+    for table in ["customer", "staff", "menu_category", "menu_item", "cafe_order", "order_item"]:
+        if table not in row_count_text:
+            raise AssertionError(f"샘플 행 수 증거에 {table}가 없습니다.")
 
 
 def main() -> None:

@@ -1,0 +1,8 @@
+table_name | row_count
+--- | ---
+customer | 10
+staff | 10
+menu_category | 10
+menu_item | 12
+cafe_order | 12
+order_item | 22

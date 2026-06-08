@@ -96,6 +96,19 @@ def _format_rows(cursor: sqlite3.Cursor) -> str:
     return "\n".join(output)
 
 
+def _write_sample_row_counts(connection: sqlite3.Connection) -> None:
+    """각 테이블의 샘플 데이터 행 수 확인 결과를 evidence에 저장한다."""
+    tables = ["customer", "staff", "menu_category", "menu_item", "cafe_order", "order_item"]
+    lines = [
+        "table_name | row_count",
+        "--- | ---",
+    ]
+    for table in tables:
+        count = connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        lines.append(f"{table} | {count}")
+    (EVIDENCE_DIR / "sample_row_counts.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def _execute_query_blocks(connection: sqlite3.Connection) -> str:
     """핵심 쿼리 15개를 실행하고 결과 텍스트를 반환한다."""
     blocks = _query_blocks(_read_sql(SQL_DIR / "queries.sql"))
@@ -153,6 +166,7 @@ def main() -> None:
     with _open_database() as connection:
         connection.executescript(_read_sql(SQL_DIR / "schema.sql"))
         connection.executescript(_read_sql(SQL_DIR / "seed.sql"))
+        _write_sample_row_counts(connection)
         query_results = _execute_query_blocks(connection)
         (EVIDENCE_DIR / "query_results.txt").write_text(query_results, encoding="utf-8")
         _write_integrity_check(connection)
