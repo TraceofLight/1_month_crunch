@@ -55,6 +55,12 @@
 
 `routers/`는 HTTP 요청, 폼 수신, 템플릿 렌더링, 리다이렉트를 담당한다. `services/`는 입력 정규화와 필수값 검증 같은 비즈니스 규칙을 담당한다. `repositories/`는 SQLAlchemy `Session`으로 DB 조회와 변경을 수행한다. `models/`는 SQLite 테이블과 연결되는 ORM 모델을 정의한다. `schemas/`는 라우터가 ORM 객체에 직접 의존하지 않도록 폼 입력 DTO와 템플릿 출력 DTO를 제공한다.
 
+라우터와 서비스의 분리 기준은 FastAPI와 HTTP를 알아야 하는 코드인지 여부다. `Request`, `Form()`, `TemplateResponse`, `RedirectResponse`, `status.HTTP_303_SEE_OTHER`, `request.url_for()`처럼 웹 프레임워크와 화면 전환에 직접 묶인 처리는 라우터에 둔다. 이 로직은 같은 메모 저장 규칙을 쓰더라도 SSR 화면인지 REST API인지에 따라 달라질 수 있기 때문이다. 반대로 제목과 내용의 앞뒤 공백 제거, 빈 제목과 빈 내용 거부, 분류가 비어 있을 때 `일반`으로 저장, 수정/삭제 대상 존재 여부 판단은 HTTP 응답 형식과 무관한 메모 업무 규칙이므로 서비스에 둔다.
+
+모든 로직을 라우터에 넣으면 화면 렌더링 코드, 입력 검증, DB 접근, 예외 판단이 한 함수에 섞인다. 그러면 같은 검증을 등록과 수정에서 중복 작성하기 쉽고, 검색 또는 API 응답을 추가할 때 기존 HTML 라우터를 건드려야 한다. 테스트도 어려워진다. 서비스는 FastAPI 객체 없이 호출할 수 있어 입력 규칙을 독립적으로 확인할 수 있고, 저장소는 SQLAlchemy 세션만 주입하면 DB 동작을 좁게 검증할 수 있다. 이 구조는 기능이 작을 때는 파일 수가 늘어나는 비용이 있지만, CRUD 흐름이 수정되거나 출력 방식이 바뀔 때 변경 범위를 줄인다.
+
+`Memo` 모델의 필드는 단일 도메인 CRUD를 설명하기에 필요한 값만 남겼다. `id`는 상세, 수정, 삭제 URL에서 특정 메모를 식별하는 기본키다. `title`은 목록에서 빠르게 구분할 수 있는 짧은 제목이고, `content`는 상세 화면에 표시되는 본문이다. `category`는 관계형 테이블을 만들지 않고도 간단한 분류를 경험할 수 있는 문자열 필드다. `created_at`은 최신순 목록 정렬과 최초 등록 시각 표시를 위해 필요하고, `updated_at`은 수정 이후 값이 바뀌었는지 상세 화면에서 확인하기 위해 둔다. 필드를 이 범위로 제한하면 모델 간 관계나 인증 없이도 등록, 조회, 수정, 삭제의 핵심 흐름을 모두 확인할 수 있다.
+
 ## 실행 방법
 
 Python 3.10 이상에서 실행할 수 있다. 의존성은 `requirements.txt`에 고정되어 있다.
@@ -141,6 +147,10 @@ return RedirectResponse(request.url_for("list_memos"), status_code=status.HTTP_3
 
 `app/models/memo.py`의 `Memo` 클래스는 `memos` 테이블에 매핑된다. `id`는 기본키이고, `title`, `content`, `category`, `created_at`, `updated_at` 컬럼이 있다. 저장소는 ORM 객체를 직접 다루며, 라우터는 `MemoView` DTO만 템플릿에 전달한다.
 
+저장소 메서드는 ORM 호출이 어떤 SQL 작업으로 이어지는지 확인하기 좋은 위치다. `MemoRepository.create()`에서 `Session.add(memo)`는 새 `Memo` 객체를 세션에 등록해 다음 flush 시 `INSERT` 대상이 되게 한다. `Session.commit()`은 트랜잭션을 커밋하면서 대기 중인 변경을 DB에 반영하므로 실제 `INSERT`가 실행된다. `Session.refresh(memo)`는 DB가 채운 기본키와 기본값을 다시 읽어 ORM 객체에 반영한다. 목록 조회의 `select(Memo)`와 `self.db.execute(statement).scalars()`는 `SELECT`에 대응하고, `self.db.get(Memo, memo_id)`는 기본키 조건으로 단건을 조회하는 `SELECT`에 대응한다. 수정은 이미 조회한 ORM 객체의 속성을 바꾼 뒤 `commit()`할 때 `UPDATE`로 반영된다. 삭제는 `Session.delete(memo)`로 삭제 대상을 표시하고 `commit()`할 때 `DELETE`로 반영된다.
+
+현재 코드는 SQLAlchemy 2.x 스타일의 `select()`를 사용한다. 이전 SQLAlchemy 예제에서 자주 보이는 `Session.query(Memo)`와 목적은 같지만, 이 프로젝트에서는 `select(Memo)`를 기준으로 목록과 검색 조건을 만든다. 검색어가 있을 때 저장소는 `Memo.title.like(pattern)` 또는 `Memo.content.like(pattern)` 조건을 붙이고, SQLAlchemy가 값을 바인딩하므로 사용자가 입력한 검색어를 SQL 문자열에 직접 이어 붙이지 않는다.
+
 SQLite 저장 여부는 두 방식으로 확인할 수 있다.
 
 ```bash
@@ -174,6 +184,14 @@ python scripts/run.py --host 0.0.0.0 --port 8001
 DB를 초기 상태로 되돌리고 싶으면 서버를 종료한 뒤 `database.db`를 삭제하고 다시 실행한다. 앱 시작 시 테이블은 자동 생성된다.
 
 템플릿 경로 오류가 나면 `templates/` 디렉터리가 프로젝트 루트에 있는지 확인한다. 정적 CSS가 보이지 않으면 `static/styles.css`와 `app/main.py`의 `/static` 마운트가 함께 있어야 한다.
+
+## 확장과 변경 지점
+
+SQLite에서 PostgreSQL 같은 다른 DB로 바꾸면 핵심 변경 지점은 `app/database.py`다. `DATABASE_URL`을 PostgreSQL 접속 문자열로 바꾸고, `create_engine()`의 SQLite 전용 옵션인 `connect_args={"check_same_thread": False}`를 제거해야 한다. 실제 운영 DB를 사용한다면 접속 정보는 코드에 고정하지 않고 환경 변수로 주입하는 방식이 적절하다. PostgreSQL 드라이버 패키지도 필요하지만, 현재 과제의 의존성 제한 때문에 이 구현에는 추가하지 않았다. SQLAlchemy `Session`, 모델, 저장소 메서드의 기본 구조는 유지되므로 라우터, 템플릿, 서비스의 대부분은 바뀌지 않는다. 다만 DB별 문자열 검색의 대소문자 처리, 날짜 함수, 마이그레이션 방식은 달라질 수 있어 저장소 쿼리와 DB 초기화 절차는 다시 확인해야 한다.
+
+모델 간 연관관계를 추가한다면 `models/`에 새 ORM 모델을 만들고, 기존 `Memo`에는 외래키 컬럼과 `relationship()`을 추가한다. 예를 들어 카테고리를 별도 테이블로 분리한다면 `Category` 모델, `Memo.category_id`, `Memo.category` 관계가 필요하다. 그 다음 `repositories/`에는 조인 조회나 관련 행 저장 메서드를 추가하고, `services/`에는 관계 대상 존재 여부 확인과 삭제 정책 같은 규칙을 둔다. `schemas/`는 화면에 넘길 DTO를 확장하고, `templates/`와 라우터 폼은 선택 목록이나 관련 데이터 표시를 받도록 바뀐다. 관계가 생겨도 라우터가 직접 조인을 작성하지 않고, 서비스와 저장소를 거쳐 필요한 DTO만 받는 원칙은 유지한다.
+
+SSR CRUD를 REST API와 별도 프론트엔드 구조로 전환하면 가장 많이 바뀌는 곳은 라우터와 템플릿이다. 라우터는 `TemplateResponse`와 `RedirectResponse` 대신 JSON 응답과 적절한 HTTP 상태 코드를 반환하고, 등록/수정 입력은 HTML `Form()` 대신 JSON 요청 본문으로 받을 수 있다. `templates/`와 서버 정적 화면은 React, Vue, 순수 JavaScript 같은 프론트엔드 앱으로 대체된다. 반면 메모 업무 규칙을 가진 서비스, DB 접근을 맡은 저장소, ORM 모델, 세션 의존성 구조는 대부분 유지할 수 있다. PRG 패턴은 서버 SSR에서 필요한 중복 제출 방지 방식이므로, API 구조에서는 프론트엔드가 POST 성공 후 목록 또는 상세 화면으로 이동하고 재요청을 제어하는 방식으로 바뀐다.
 
 ## 보안과 범위
 
