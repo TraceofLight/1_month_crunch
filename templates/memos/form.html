@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{% if mode == "edit" %}메모 수정{% else %}새 메모 작성{% endif %}{% endblock %}
+
+{% block content %}
+  <h1>{% if mode == "edit" %}메모 수정{% else %}새 메모 작성{% endif %}</h1>
+
+  {% if errors %}
+    <div class="errors">
+      <ul>
+        {% for error in errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post" action="{% if mode == 'edit' %}{{ url_for('update_memo', memo_id=memo.id) }}{% else %}{{ url_for('create_memo') }}{% endif %}">
+    <div class="field">
+      <label for="title">제목</label>
+      <input id="title" name="title" type="text" value="{{ form.title }}">
+    </div>
+    <div class="field">
+      <label for="category">분류</label>
+      <input id="category" name="category" type="text" value="{{ form.category }}" placeholder="예: 학습">
+    </div>
+    <div class="field">
+      <label for="content">내용</label>
+      <textarea id="content" name="content">{{ form.content }}</textarea>
+    </div>
+    <div class="actions">
+      <button type="submit">저장</button>
+      <a class="button secondary" href="{{ url_for('list_memos') }}">취소</a>
+    </div>
+  </form>
+{% endblock %}

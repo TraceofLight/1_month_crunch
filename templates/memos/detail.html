@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ memo.title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ memo.title }}</h1>
+  <table class="detail-table">
+    <tbody>
+      <tr>
+        <th>번호</th>
+        <td>{{ memo.id }}</td>
+      </tr>
+      <tr>
+        <th>제목</th>
+        <td>{{ memo.title }}</td>
+      </tr>
+      <tr>
+        <th>분류</th>
+        <td>{{ memo.category }}</td>
+      </tr>
+      <tr>
+        <th>내용</th>
+        <td>{{ memo.content }}</td>
+      </tr>
+      <tr>
+        <th>작성일시</th>
+        <td>{{ memo.created_at_text }}</td>
+      </tr>
+      <tr>
+        <th>수정일시</th>
+        <td>{{ memo.updated_at_text }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="actions">
+    <a class="button" href="{{ url_for('edit_memo', memo_id=memo.id) }}">수정</a>
+    <form method="post" action="{{ url_for('delete_memo', memo_id=memo.id) }}">
+      <button class="danger" type="submit">삭제</button>
+    </form>
+    <a class="button secondary" href="{{ url_for('list_memos') }}">목록으로</a>
+  </div>
+{% endblock %}

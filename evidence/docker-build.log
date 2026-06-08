@@ -1,0 +1,48 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 599B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:24.04
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 98B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 12.57kB done
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54
+#5 resolve docker.io/library/ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54 0.0s done
+#5 DONE 0.0s
+
+#6 [4/6] COPY requirements.txt .
+#6 CACHED
+
+#7 [3/6] RUN apt-get update     && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [2/6] WORKDIR /app
+#8 CACHED
+
+#9 [5/6] RUN python3 -m venv /opt/venv     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip==24.3.1     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [6/6] COPY . .
+#10 DONE 0.0s
+
+#11 exporting to image
+#11 exporting layers 0.1s done
+#11 exporting manifest sha256:362ccd79bdf1921f311498ed549c985630732e1ec937e53a288686d772554df4 0.0s done
+#11 exporting config sha256:880eb471ac89aac17eb696292032611d77e882a2c66b1d0c5d7b342578413818 0.0s done
+#11 exporting attestation manifest sha256:a7b6d7c7d5710eed388c382479f4d569ad95bc9faa47d88bd7b79ae30609165c
+#11 exporting attestation manifest sha256:a7b6d7c7d5710eed388c382479f4d569ad95bc9faa47d88bd7b79ae30609165c 0.0s done
+#11 exporting manifest list sha256:fa66d3834ec58465fd1405be32175ab0e81548271a1f73b2179131b48ec8d3ff 0.0s done
+#11 naming to docker.io/library/codyssey-cli-test-fastapi-crud:latest done
+#11 unpacking to docker.io/library/codyssey-cli-test-fastapi-crud:latest 0.0s done
+#11 DONE 0.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/t4tzdq7izjev0upyqgcx2nozs

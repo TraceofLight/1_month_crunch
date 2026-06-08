@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}홈 - 메모 관리{% endblock %}
+
+{% block content %}
+  <section class="panel">
+    <h1>메모 관리</h1>
+    <p>브라우저에서 메모를 등록하고 목록, 상세, 수정, 삭제 흐름을 확인하는 FastAPI SSR CRUD 애플리케이션입니다.</p>
+    <p>입력한 데이터는 SQLite 데이터베이스에 저장되며 라우터, 서비스, 저장소 계층을 거쳐 화면에 다시 표시됩니다.</p>
+    <div class="actions">
+      <a class="button" href="{{ url_for('list_memos') }}">메모 목록</a>
+      <a class="button secondary" href="{{ url_for('new_memo') }}">새 메모 작성</a>
+    </div>
+  </section>
+{% endblock %}
