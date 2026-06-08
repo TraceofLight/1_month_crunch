@@ -1,0 +1,4 @@
+파이프라인 실행 완료
+DB 파일: evidence/cafe_orders.db
+검증 결과:
+검증 통과: SQLite 스키마, 샘플 데이터, 쿼리, evidence 산출물이 요구사항을 만족합니다.

@@ -1,0 +1,5 @@
+없는 customer_id를 참조하는 주문 입력을 시도했다.
+실행 SQL:
+INSERT INTO cafe_order (order_id, customer_id, staff_id, ordered_at, order_type, status)
+VALUES (999, 999, 1, '2026-05-15 09:00:00', 'takeout', 'paid');
+결과: FK 제약조건으로 차단됨 (FOREIGN KEY constraint failed)
