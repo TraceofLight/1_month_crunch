@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="TraceofLight의 순수 HTML, CSS, JavaScript 기반 반응형 포트폴리오"
+    />
+    <title>TraceofLight Portfolio</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <nav class="navbar" aria-label="주요 메뉴">
+        <a class="logo" href="#hero" aria-label="맨 위로 이동">TraceofLight</a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label="메뉴 열기"
+          aria-controls="primary-menu"
+          aria-expanded="false"
+          data-menu-toggle
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav-links" id="primary-menu" data-nav-menu>
+          <li><a href="#about">소개</a></li>
+          <li><a href="#skills">기술</a></li>
+          <li><a href="#projects">프로젝트</a></li>
+          <li><a href="#contact">연락</a></li>
+        </ul>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="다크 모드 전환">
+          <span data-theme-label>Dark</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section-observe" id="hero" aria-labelledby="hero-title">
+        <div class="section-inner hero-layout">
+          <div class="hero-copy">
+            <p class="eyebrow">Frontend Portfolio</p>
+            <h1 id="hero-title">안녕하세요, <span data-typing-text></span></h1>
+            <p>
+              순수 HTML, CSS, JavaScript로 이벤트와 상태, DOM 렌더링 흐름을 직접 구현한
+              포트폴리오입니다.
+            </p>
+            <div class="hero-actions" aria-label="주요 이동">
+              <a class="button primary" href="#projects">프로젝트 보기</a>
+              <a class="button secondary" href="#contact">문의하기</a>
+            </div>
+          </div>
+          <figure class="hero-visual">
+            <img
+              src="images/profile.svg"
+              alt="노트북 앞에서 웹 페이지를 설계하는 개발자 일러스트"
+              width="520"
+              height="420"
+            />
+            <figcaption>DOM, 이벤트, API 상태를 한 화면에서 연결합니다.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="about section-observe" id="about" aria-labelledby="about-title">
+        <div class="section-inner split-layout">
+          <div>
+            <p class="eyebrow">About</p>
+            <h2 id="about-title">문제를 작게 나누고 검증 가능한 화면으로 만듭니다</h2>
+          </div>
+          <article class="about-card">
+            <h3>작업 방식</h3>
+            <p>
+              시맨틱 마크업으로 구조를 먼저 잡고, CSS Grid와 Flexbox로 레이아웃 목적에 맞게
+              배치합니다. JavaScript는 상태 객체를 중심으로 이벤트와 렌더링 함수를 분리해
+              흐름이 보이도록 작성했습니다.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="skills section-observe" id="skills" aria-labelledby="skills-title">
+        <div class="section-inner">
+          <p class="eyebrow">Skills</p>
+          <h2 id="skills-title">기술 스택</h2>
+          <ul class="skill-list" aria-label="기술 스택 목록">
+            <li>HTML5 Semantic Tags</li>
+            <li>CSS Variables</li>
+            <li>Flexbox</li>
+            <li>CSS Grid</li>
+            <li>JavaScript ES6+</li>
+            <li>Fetch API</li>
+            <li>LocalStorage</li>
+            <li>Intersection Observer</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="projects section-observe" id="projects" aria-labelledby="projects-title">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Projects</p>
+              <h2 id="projects-title">GitHub 프로젝트</h2>
+            </div>
+            <button class="button secondary compact" type="button" data-retry-projects>
+              다시 시도
+            </button>
+          </div>
+          <div class="filter-bar" aria-label="프로젝트 언어 필터" data-filter-bar></div>
+          <div class="project-status" role="status" aria-live="polite" data-project-status>
+            <span class="spinner" aria-hidden="true"></span>
+            <span>로딩 중...</span>
+          </div>
+          <div class="project-grid" data-project-grid></div>
+        </div>
+      </section>
+
+      <section class="contact section-observe" id="contact" aria-labelledby="contact-title">
+        <div class="section-inner contact-layout">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2 id="contact-title">문의하기</h2>
+            <p>
+              폼은 브라우저 기본 제출을 막고, 입력 상태를 검사한 뒤 성공 또는 오류 메시지를
+              화면에 렌더링합니다.
+            </p>
+          </div>
+          <form class="contact-form" novalidate data-contact-form>
+            <div class="field-group">
+              <label for="name">이름</label>
+              <input id="name" name="name" type="text" autocomplete="name" data-field="name" />
+              <p class="field-error" id="name-error" data-error-for="name"></p>
+            </div>
+            <div class="field-group">
+              <label for="email">이메일</label>
+              <input id="email" name="email" type="email" autocomplete="email" data-field="email" />
+              <p class="field-error" id="email-error" data-error-for="email"></p>
+            </div>
+            <div class="field-group">
+              <label for="message">메시지</label>
+              <textarea id="message" name="message" rows="5" data-field="message"></textarea>
+              <p class="field-error" id="message-error" data-error-for="message"></p>
+            </div>
+            <button class="button primary" type="submit">보내기</button>
+            <p class="form-result" role="status" aria-live="polite" data-form-result></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <button class="scroll-top" type="button" aria-label="맨 위로 이동" data-scroll-top>↑</button>
+
+    <footer class="site-footer">
+      <div class="section-inner footer-layout">
+        <p>&copy; 2026 TraceofLight</p>
+        <ul aria-label="소셜 링크">
+          <li><a href="https://github.com/TraceofLight">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
