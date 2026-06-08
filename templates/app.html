@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>작업 화면</h1>
+  {% if flash %}
+    <div class="message">{{ flash }}</div>
+  {% endif %}
+
+  <section class="panel">
+    <h2>프로젝트 생성</h2>
+    <form method="post" action="/app/projects">
+      <label>
+        프로젝트 이름
+        <input name="name" required>
+      </label>
+      <label>
+        설명
+        <textarea name="description" rows="2"></textarea>
+      </label>
+      <button type="submit">프로젝트 생성</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>작업 생성</h2>
+    <form method="post" action="/app/tasks">
+      <label>
+        프로젝트
+        <select name="project_id" required>
+          {% for project in projects %}
+            <option value="{{ project.id }}">{{ project.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        작업 제목
+        <input name="title" required>
+      </label>
+      <button type="submit">작업 생성</button>
+    </form>
+  </section>
+
+  {% for project in projects %}
+    <section class="panel">
+      <h2>{{ project.name }}</h2>
+      <p>{{ project.description }}</p>
+      <p>소유자: {{ project.owner.display_name }}</p>
+      {% if project.tasks %}
+        {% for task in project.tasks %}
+          <div class="task">
+            <div>
+              <div>{{ task.title }}</div>
+              <div class="status {% if task.status == 'done' %}done{% endif %}">{{ status_label(task.status) }}</div>
+            </div>
+            {% if task.status != "done" %}
+              <form class="inline-form" method="post" action="/app/tasks/{{ task.id }}/complete">
+                <button type="submit">완료 처리</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>아직 작업이 없습니다.</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>프로젝트 작업 관리</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f6f7f9;
+        color: #1f2933;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        background: #203040;
+        color: white;
+      }
+      header a, header button {
+        color: white;
+      }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 28px 20px;
+      }
+      a {
+        color: #1f5d8c;
+      }
+      button, .button {
+        border: 0;
+        border-radius: 6px;
+        padding: 9px 13px;
+        background: #276749;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+      }
+      input, textarea, select {
+        box-sizing: border-box;
+        width: 100%;
+        border: 1px solid #cad0d8;
+        border-radius: 6px;
+        padding: 9px;
+        font-size: 14px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+      }
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      .panel {
+        background: white;
+        border: 1px solid #dfe3e8;
+        border-radius: 8px;
+        padding: 18px;
+        margin-bottom: 18px;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .inline-form {
+        display: inline;
+      }
+      .inline-form button {
+        background: #4a5568;
+      }
+      .message {
+        border-left: 4px solid #2f855a;
+        background: #edf8f1;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+      }
+      .error {
+        border-left: 4px solid #c53030;
+        background: #fff5f5;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+      }
+      .task {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-top: 1px solid #edf0f2;
+      }
+      .status {
+        min-width: 68px;
+        text-align: center;
+        border-radius: 999px;
+        padding: 5px 9px;
+        background: #e2e8f0;
+      }
+      .done {
+        background: #c6f6d5;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div><a href="/">프로젝트 작업 관리</a></div>
+      <nav class="nav">
+        {% if user %}
+          <span>{{ user.display_name }}님 환영합니다</span>
+          <a href="/app">작업 화면</a>
+          <form class="inline-form" method="post" action="/logout">
+            <button type="submit">로그아웃</button>
+          </form>
+        {% else %}
+          <a class="button" href="/login">로그인</a>
+        {% endif %}
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
