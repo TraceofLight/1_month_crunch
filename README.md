@@ -6,7 +6,7 @@ GitHub 저장소 URL: https://github.com/TraceofLight/ai-assignment
 
 배포 URL: https://traceoflight.github.io/ai-assignment/
 
-2026-06-08 검증 시점에 배포 URL은 HTTP 200을 반환했지만 현재 산출물의 식별자인 `TraceofLight Portfolio` 또는 `Frontend Portfolio`를 포함하지 않았다. 확인 결과는 `evidence/pages-check.txt`에 저장했다. 현재 저장소에는 `.github/workflows/pages.yml`이 포함되어 있으며, 브랜치가 푸시되면 GitHub Pages로 정적 파일을 배포하도록 구성했다.
+2026-06-08 검증 시점에 배포 URL은 HTTP 200을 반환했고 현재 산출물의 식별자인 `TraceofLight Portfolio` 또는 `Frontend Portfolio`를 포함했다. 확인 결과는 `evidence/pages-check.txt`에 저장했다. 현재 저장소에는 `.github/workflows/pages.yml`이 포함되어 있으며, 브랜치가 푸시되면 GitHub Pages로 정적 파일을 배포하도록 구성했다.
 
 ## 스크린샷
 
@@ -48,7 +48,7 @@ GitHub 저장소 URL: https://github.com/TraceofLight/ai-assignment
 └── Dockerfile
 ```
 
-`index.html`은 메인 페이지, `css/style.css`는 전체 스타일과 반응형 레이아웃, `js/main.js`는 이벤트와 상태 렌더링, `images/profile.svg`는 프로필 시각 자료를 담당한다. `scripts/run.py`는 구조 검사, GitHub API 호출, 스크린샷 캡처, evidence 저장을 한 번에 실행하는 단일 검증 진입점이다.
+`index.html`은 메인 페이지, `css/style.css`는 전체 스타일과 반응형 레이아웃, `js/main.js`는 이벤트와 상태 렌더링, `images/profile.svg`는 프로필 시각 자료를 담당한다. 파일을 분리한 이유는 관심사를 나누기 위해서다. HTML은 문서 구조와 의미, CSS는 시각 표현과 반응형 규칙, JavaScript는 이벤트 처리와 상태 변경을 맡으면 한 파일을 고칠 때 다른 역할의 코드까지 함께 읽지 않아도 된다. 브라우저도 HTML을 먼저 파싱하고 외부 CSS와 `defer` JavaScript를 별도로 가져오므로, 구조와 표현과 동작의 책임을 파일 단위로 나누는 방식이 웹의 실행 흐름과도 맞다. `scripts/run.py`는 구조 검사, GitHub API 호출, 스크린샷 캡처, evidence 저장을 한 번에 실행하는 단일 검증 진입점이다.
 
 ## 실행 방법
 
@@ -98,13 +98,13 @@ docker run --rm -v ${PWD}:/app -w /app portfolio-site
 
 CSS 변수는 색상, 폰트, 간격, 그림자, 반지름을 한곳에서 관리하기 위해 `:root`에 정의했다. 다크 모드는 같은 토큰 이름을 `[data-theme="dark"]`에서 다시 정의해 JavaScript가 `data-theme` 값만 바꾸면 전체 화면 색상이 바뀌도록 설계했다.
 
-Flexbox는 한 축의 정렬에 적합하므로 내비게이션처럼 로고, 메뉴, 버튼을 가로로 배치하는 영역에 사용했다. Grid는 행과 열을 동시에 다루기 좋으므로 Projects 카드 목록에 사용했다. 카드 목록은 `repeat(auto-fit, minmax(240px, 1fr))`로 작성해 화면 너비에 따라 열 수가 자동으로 바뀐다.
+Flexbox와 Grid의 차이는 축의 수다. Flexbox는 기본적으로 한 방향의 흐름을 정렬하는 도구라서 로고, 메뉴, 다크 모드 버튼처럼 같은 줄에서 좌우 배치와 간격 조절이 중요한 내비게이션에 맞다. Grid는 행과 열을 동시에 설계하는 도구라서 Projects 카드처럼 카드 수와 화면 너비에 따라 여러 열이 생기고 다음 줄로 자연스럽게 넘어가야 하는 목록에 맞다. 내비게이션을 Grid로 만들 수도 있지만 한 줄 정렬만 필요한 곳에서는 규칙이 불필요하게 커진다. 반대로 프로젝트 목록을 Flexbox만으로 만들면 각 행의 열 너비를 균일하게 유지하는 제어가 Grid보다 번거롭다. 카드 목록은 `repeat(auto-fit, minmax(240px, 1fr))`로 작성해 화면 너비에 따라 열 수가 자동으로 바뀐다.
 
-모바일 퍼스트로 기본 스타일을 작성했고, 768px 이상에서 태블릿 레이아웃, 1024px 이상에서 데스크톱 내비게이션으로 확장했다. 버튼과 카드에는 `transition`, `hover`, `box-shadow`를 적용해 클릭 가능한 요소와 정보 카드가 시각적으로 구분되도록 했다.
+모바일 퍼스트를 선택한 이유는 제약이 큰 화면을 기본값으로 삼기 위해서다. 작은 화면에서는 내비게이션이 접혀야 하고, 텍스트와 카드가 한 열로 쌓여야 하며, 터치 영역도 충분히 커야 한다. 이 조건을 기본 스타일로 먼저 만족시키면 넓은 화면에서는 768px 이상에서 2열 레이아웃을 추가하고 1024px 이상에서 데스크톱 내비게이션을 펼치는 식으로 확장만 하면 된다. 데스크톱 스타일을 먼저 작성한 뒤 모바일에서 덜어내는 방식보다 중복 override가 적고, 실제 사용자가 모바일에서 처음 접속해도 핵심 콘텐츠가 먼저 안정적으로 보인다. 버튼과 카드에는 `transition`, `hover`, `box-shadow`를 적용해 클릭 가능한 요소와 정보 카드가 시각적으로 구분되도록 했다.
 
 ## JavaScript 흐름
 
-DOM 선택은 `querySelector`와 `querySelectorAll`을 사용한다. 선택한 요소에는 HTML의 `onclick` 속성을 쓰지 않고 `addEventListener`로 `click`, `submit`, `scroll`, `input` 이벤트를 연결했다. 이벤트 핸들러는 상태 객체를 바꾸고, 렌더링 함수가 `textContent`, `innerHTML`, `classList.add`, `classList.remove`, `classList.toggle`로 화면을 갱신한다.
+DOM 선택은 `querySelector`와 `querySelectorAll`을 사용한다. 선택한 요소에는 HTML의 `onclick` 속성을 쓰지 않고 `addEventListener`로 `click`, `submit`, `scroll`, `input` 이벤트를 연결했다. `onclick`은 동작을 HTML 속성에 직접 섞는다. 그러면 마크업을 읽는 사람이 화면 구조와 실행 로직을 동시에 해석해야 하고, 같은 요소에 같은 이벤트의 여러 처리를 붙이기도 어렵다. `addEventListener`는 JavaScript 파일 안에서 이벤트 연결을 관리하므로 HTML은 구조에 집중하고 JavaScript는 동작에 집중한다. 또한 한 요소에 여러 리스너를 붙일 수 있고, `querySelectorAll`로 고른 여러 앵커에 `forEach`로 같은 스크롤 동작을 반복 연결할 수 있어 메뉴 링크와 CTA 링크를 일관되게 처리하기 쉽다. 이벤트 핸들러는 상태 객체를 바꾸고, 렌더링 함수가 `textContent`, `innerHTML`, `classList.add`, `classList.remove`, `classList.toggle`로 화면을 갱신한다.
 
 화살표 함수는 짧은 이벤트 핸들러와 렌더링 헬퍼를 간결하게 표현하기 위해 사용했다. 구조분해 할당은 GitHub 저장소 객체에서 `name`, `description`, `html_url`, `language`, `stargazers_count`, `updated_at` 같은 필드를 꺼낼 때 사용했다. `map`은 저장소 배열을 프로젝트 카드 HTML로 변환하고, `filter`는 fork 저장소 제외와 언어 필터에 사용하며, `forEach`는 여러 링크와 폼 입력에 이벤트를 연결할 때 사용한다.
 
@@ -116,9 +116,13 @@ DOM 선택은 `querySelector`와 `querySelectorAll`을 사용한다. 선택한 �
 
 폼 흐름은 `input` 이벤트마다 현재 `FormData`를 검사해 `state.formErrors`를 갱신하고, `renderFormErrors`가 각 입력 필드 근처의 오류 문구와 `aria-invalid`를 갱신한다. 제출 이벤트에서는 `event.preventDefault()`로 브라우저 기본 제출을 막고, 오류가 없을 때만 성공 메시지를 표시한다.
 
+단순 변수 여러 개로 흩어지면 어떤 값이 현재 화면을 결정하는지 추적하기 어렵다. 예를 들어 `theme`, `projects`, `projectStatus`, `activeLanguage`, `formErrors`가 서로 다른 위치의 개별 변수로 존재하면 API 재시도나 필터 클릭처럼 여러 값이 함께 바뀌는 순간에 일부 값만 갱신되는 실수가 생기기 쉽다. 이 사이트는 `state` 객체를 화면의 현재 상태를 담는 단일 기준으로 두고, 이벤트 핸들러가 `state`를 바꾼 뒤 렌더링 함수를 호출한다. 이 구조는 React의 상태 변경 후 렌더링 흐름과 같은 사고방식을 순수 JavaScript에서 직접 확인하게 해 준다.
+
 ## API 처리와 예외
 
 GitHub API 엔드포인트는 `https://api.github.com/users/TraceofLight/repos`다. 인증 없이 호출하므로 시간당 60회 제한을 받는다. 짧은 시간에 반복 새로고침하면 403 응답이 발생할 수 있고, 이 경우 Projects 섹션은 “GitHub API 호출 한도에 도달했습니다.” 또는 “프로젝트를 불러올 수 없습니다.” 메시지와 재시도 버튼을 표시한다.
+
+`try/catch` 흐름은 네 단계로 나뉜다. 먼저 `loadProjects`가 `state.projectStatus`를 `loading`으로 바꾸고 `renderProjects`를 호출해 스피너와 “로딩 중...” 문구를 보여준다. 다음으로 `try` 블록에서 `await fetch(API_URL)`로 응답을 기다린다. 응답의 `ok`가 거짓이면 403일 때 레이트 리밋 메시지를 담은 `Error`를 만들고, 그 외 실패는 일반 오류로 `catch`에 넘긴다. 응답이 성공하면 `await response.json()`으로 저장소 배열을 읽고, `filter`로 fork를 제외한 뒤 별 개수와 이름 기준으로 정렬해서 `state.projects`에 저장하고 `state.projectStatus`를 `success`로 바꾼다. 네트워크 오류, 403, 404처럼 실패가 발생하면 `catch`에서 프로젝트 배열을 비우고 `state.projectStatus`를 `error`로 바꾸며 `state.projectError`에 표시할 문구를 넣는다. 마지막에는 성공과 실패 모두 공통으로 `renderProjects`를 호출해 현재 상태에 맞는 카드, 빈 상태, 오류 메시지, 재시도 버튼을 화면에 반영한다.
 
 동적 HTML은 GitHub API에서 받은 텍스트를 `escapeHtml`로 이스케이프한 뒤 `innerHTML`에 넣는다. 저장소 설명이 없을 때는 “저장소 설명이 아직 없습니다.”를 표시한다. fork 저장소는 개인 프로젝트 목록의 노이즈를 줄이기 위해 제외했다.
 

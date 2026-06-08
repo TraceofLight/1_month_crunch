@@ -91,6 +91,25 @@ def verify_static_requirements() -> list[str]:
     return failures
 
 
+def verify_readme_requirements() -> list[str]:
+    """Check that README explains the design rationale requested by the assignment."""
+    failures: list[str] = []
+    readme = read_source("README.md")
+    required_explanations = {
+        "separated file rationale": "파일을 분리한 이유는 관심사를 나누기 위해서다",
+        "event listener rationale": "`onclick`은 동작을 HTML 속성에 직접 섞는다",
+        "try catch flow": "`try/catch` 흐름은 네 단계",
+        "layout comparison": "Flexbox와 Grid의 차이는 축의 수",
+        "state object rationale": "단순 변수 여러 개로 흩어지면",
+        "mobile first rationale": "모바일 퍼스트를 선택한 이유는 제약이 큰 화면을 기본값으로 삼기 위해서다",
+    }
+
+    for label, phrase in required_explanations.items():
+        require(phrase in readme, f"README missing explanation: {label}", failures)
+
+    return failures
+
+
 def capture_github_api() -> tuple[bool, str]:
     """Call the GitHub API and persist the raw response or error evidence."""
     request = urllib.request.Request(GITHUB_API, headers={"User-Agent": "ai-assignment-verifier"})
@@ -184,6 +203,7 @@ def main() -> int:
     """Execute verification, write logs, and return a process exit code."""
     EVIDENCE_DIR.mkdir(exist_ok=True)
     failures = verify_static_requirements()
+    failures.extend(verify_readme_requirements())
     api_ok, api_message = capture_github_api()
     pages_message = capture_pages_status()
     screenshot_results = [

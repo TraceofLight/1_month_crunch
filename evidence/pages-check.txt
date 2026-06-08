@@ -1,3 +1,3 @@
 GitHub Pages 외부 배포 확인
 Pages API: HTTP 404
-Pages URL: HTTP 200, 현재 페이지 식별자 포함=False
+Pages URL: HTTP 200, 현재 페이지 식별자 포함=True
