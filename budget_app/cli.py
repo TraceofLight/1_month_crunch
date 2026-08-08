@@ -493,6 +493,9 @@ def main(argv: list[str] | None = None) -> int:
     _setup_logging(data_dir)
     try:
         return int(args.handler(args))
+    except KeyboardInterrupt:
+        print("[안내] 작업이 취소되었습니다.", file=sys.stderr)
+        return 130
     except BudgetAppError as exc:  # 핸들러가 못 잡은 경우의 안전망
         print(f"[오류] {exc.message}", file=sys.stderr)
         if exc.hint:

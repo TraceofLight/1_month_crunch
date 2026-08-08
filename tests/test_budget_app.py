@@ -264,6 +264,17 @@ class CliTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("총 지출: 7,000원", out.getvalue())
 
+    def test_keyboard_interrupt_returns_cancel_code_without_traceback(self) -> None:
+        err = io.StringIO()
+        with (
+            mock.patch("builtins.input", side_effect=KeyboardInterrupt),
+            redirect_stderr(err),
+            redirect_stdout(io.StringIO()),
+        ):
+            code = cli.main(["add", "--data-dir", self.data_dir])
+        self.assertEqual(code, 130)
+        self.assertIn("작업이 취소되었습니다", err.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
