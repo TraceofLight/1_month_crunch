@@ -57,11 +57,8 @@ def _prompt_until(prompt: str, validator: Callable[[str], object]) -> object:
 
 
 def _input_optional(prompt: str) -> str:
-    """선택 입력. EOF 면 빈 문자열로 처리한다."""
-    try:
-        return input(prompt)
-    except EOFError:
-        return ""
+    """선택 입력을 받는다."""
+    return input(prompt)
 
 
 def _category_validator(service: BudgetService) -> Callable[[str], str]:
@@ -486,16 +483,20 @@ def _teardown_logging() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     """진입점. 정상 0, 오류 시 0이 아닌 종료 코드를 반환한다."""
-    _enable_utf8_io()
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    data_dir = Path(getattr(args, "data_dir", "data"))
-    _setup_logging(data_dir)
     try:
+        _enable_utf8_io()
+        parser = build_parser()
+        args = parser.parse_args(argv)
+        data_dir = Path(getattr(args, "data_dir", "data"))
+        _setup_logging(data_dir)
         return int(args.handler(args))
     except KeyboardInterrupt:
         print("[안내] 작업이 취소되었습니다.", file=sys.stderr)
         return 130
+    except EOFError:
+        print("[오류] 입력이 중단되었습니다.", file=sys.stderr)
+        print("[힌트] 필수 항목을 모두 입력하세요.", file=sys.stderr)
+        return 1
     except BudgetAppError as exc:  # 핸들러가 못 잡은 경우의 안전망
         print(f"[오류] {exc.message}", file=sys.stderr)
         if exc.hint:

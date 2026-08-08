@@ -275,6 +275,29 @@ class CliTest(unittest.TestCase):
         self.assertEqual(code, 130)
         self.assertIn("작업이 취소되었습니다", err.getvalue())
 
+    def test_keyboard_interrupt_during_parser_setup_returns_cancel_code(self) -> None:
+        err = io.StringIO()
+        with (
+            mock.patch("budget_app.cli.build_parser", side_effect=KeyboardInterrupt),
+            redirect_stderr(err),
+        ):
+            code = cli.main([])
+        self.assertEqual(code, 130)
+        self.assertIn("작업이 취소되었습니다", err.getvalue())
+
+    def test_eof_during_optional_input_cancels_without_saving_transaction(self) -> None:
+        err = io.StringIO()
+        answers = ["2024-06-01", "expense", "food", "7000", EOFError, ""]
+        with (
+            mock.patch("builtins.input", side_effect=answers),
+            redirect_stderr(err),
+            redirect_stdout(io.StringIO()),
+        ):
+            code = cli.main(["add", "--data-dir", self.data_dir])
+        self.assertEqual(code, 1)
+        self.assertIn("입력이 중단되었습니다", err.getvalue())
+        self.assertEqual(BudgetService(Path(self.data_dir)).list_transactions(limit=10), [])
+
 
 if __name__ == "__main__":
     unittest.main()
