@@ -9,14 +9,15 @@ def main() -> None:
     while True:
         try:
             line = input("mini-redis> ")
-        except EOFError:
+            lowered = line.strip().lower()
+            if lowered == "exit" or lowered == "quit":
+                break
+            if line.strip() == "":
+                continue
+
+            print(store.execute(line))
+        except (EOFError, KeyboardInterrupt):
             print()
             break
-
-        lowered = line.strip().lower()
-        if lowered == "exit" or lowered == "quit":
-            break
-        if line.strip() == "":
-            continue
-
-        print(store.execute(line))
+        except Exception as error:
+            print(f"(error) ERR internal error: {error}")

@@ -242,7 +242,7 @@ docker run --rm --name codyssey-cli-test-mini-redis-test -v "$PWD:/app" -w /app 
 
 ### REPL이 종료되지 않을 때
 
-프롬프트에 `exit` 또는 `quit`을 입력한다. 표준 입력이 닫힌 경우에는 `EOFError`를 처리하고 종료한다.
+프롬프트에 `exit` 또는 `quit`을 입력한다. 표준 입력이 닫힌 경우(`EOFError`)와 `Ctrl+C` 입력(`KeyboardInterrupt`)도 traceback 없이 종료한다. 입력 또는 명령 실행 중 일반 예외가 발생하면 `(error) ERR internal error: ...`를 출력하고 다음 입력을 기다린다.
 
 ### `SET`이 OOM을 반환할 때
 
