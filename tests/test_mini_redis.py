@@ -3,6 +3,7 @@
 import time
 
 from mini_redis.core import MiniRedis
+from mini_redis.pubsub import PubSubBroker
 
 
 def test_string_commands_and_redis_style_outputs():
@@ -88,3 +89,31 @@ def test_error_handling_and_keys_format():
     assert store.execute("KEYS") == "(empty array)"
     assert store.execute("SET user:2 Bob") == "OK"
     assert store.execute("KEYS") == '1. "user:2"'
+
+
+def test_pubsub_broker_delivers_to_each_subscriber_once_and_consumes_messages():
+    """A broker buffers each published message once per channel subscriber."""
+    broker = PubSubBroker()
+
+    assert broker.subscribe("news", "repl") is True
+    assert broker.subscribe("news", "repl") is False
+    assert broker.subscribe("news", "audit") is True
+    assert broker.subscription_count("repl") == 1
+    assert broker.subscribe("alerts", "repl") is True
+    assert broker.subscription_count("repl") == 2
+    assert broker.publish("news", "released") == 2
+    assert broker.drain_messages("news", "repl") == ["released"]
+    assert broker.drain_messages("news", "repl") == []
+    assert broker.drain_messages("news", "audit") == ["released"]
+
+
+def test_pubsub_commands_follow_redis_names_without_changing_key_value_state():
+    """CLI exposes Redis Pub/Sub names and keeps Pub/Sub outside key storage."""
+    store = MiniRedis()
+
+    assert store.execute("SUBSCRIBE news") == (
+        '1. "subscribe"\n2. "news"\n3. (integer) 1'
+    )
+    assert store.execute('PUBLISH other "released now"') == "(integer) 0"
+    assert store.execute("DBSIZE") == "(integer) 0"
+    assert store.execute("MESSAGES news") == "(error) ERR unknown command 'MESSAGES'"

@@ -6,6 +6,7 @@ import time
 from mini_redis.datastructures.doubly_linked_list import DoublyLinkedList
 from mini_redis.datastructures.hash_map import HashMap
 from mini_redis.datastructures.min_heap import MinHeap
+from mini_redis.pubsub import PubSubBroker
 
 
 OOM_ERROR = "(error) OOM command not allowed when used_memory > 'maxmemory'"
@@ -40,6 +41,7 @@ class MiniRedis:
         self._lru_nodes = HashMap()
         self._ttl = HashMap()
         self._ttl_heap = MinHeap()
+        self._pubsub = PubSubBroker()
         self.used_memory = 0
         self.maxmemory = 0
         self.evicted_keys = 0
@@ -76,6 +78,10 @@ class MiniRedis:
             return self._cmd_expire(args)
         if command == "TTL":
             return self._cmd_ttl(args)
+        if command == "SUBSCRIBE":
+            return self._cmd_subscribe(args)
+        if command == "PUBLISH":
+            return self._cmd_publish(args)
 
         return f"(error) ERR unknown command '{command}'"
 
@@ -224,6 +230,21 @@ class MiniRedis:
         if remaining < 0:
             remaining = 0
         return f"(integer) {remaining}"
+
+    def _cmd_subscribe(self, args) -> str:
+        """SUBSCRIBE channel 명령으로 현재 REPL을 채널에 등록한다."""
+        if len(args) != 1:
+            return self._wrong_args("SUBSCRIBE")
+        self._pubsub.subscribe(args[0], "repl")
+        count = self._pubsub.subscription_count("repl")
+        return f'1. "subscribe"\n2. "{args[0]}"\n3. (integer) {count}'
+
+    def _cmd_publish(self, args) -> str:
+        """PUBLISH channel message 명령을 처리한다."""
+        if len(args) != 2:
+            return self._wrong_args("PUBLISH")
+        delivered = self._pubsub.publish(args[0], args[1])
+        return f"(integer) {delivered}"
 
     def _touch_lru(self, key: str) -> None:
         """키를 LRU 리스트의 가장 최근 위치로 이동한다."""

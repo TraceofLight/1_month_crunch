@@ -10,12 +10,14 @@
 
 | 경로 | 역할 |
 | --- | --- |
-| `mini_redis/core.py` | 명령 실행기, 메모리 계산, LRU 제거, TTL 처리 |
+| `mini_redis/core.py` | 명령 실행기, 메모리 계산, LRU 제거, TTL 처리, Pub/Sub 연결 |
 | `mini_redis/cli.py` | `mini-redis>` REPL |
+| `mini_redis/pubsub.py` | 채널 구독과 구독자별 메시지 버퍼 |
 | `mini_redis/datastructures/doubly_linked_list.py` | 이중 연결 리스트 |
 | `mini_redis/datastructures/hash_map.py` | 체이닝 해시맵 |
 | `mini_redis/datastructures/min_heap.py` | 최소 힙 |
 | `mini_redis/datastructures/dynamic_array.py` | 2배 확장 동적 배열 |
+| `mini_redis/datastructures/binary_search_tree.py` | 삽입·탐색·삭제·중위 순회 BST |
 | `scripts/run.py` | CLI 실행 진입점 |
 | `scripts/demo.py` | 요구사항 시나리오 비대화형 데모 |
 | `tests/` | 기능, 자료구조, 제약 조건, 실행 스크립트 테스트 |
@@ -79,6 +81,8 @@ REPL은 `mini-redis>` 프롬프트를 출력하고 사용자 입력을 반복해
 | `INFO memory` | `used_memory`, `maxmemory`, `evicted_keys` 출력 |
 | `EXPIRE key seconds` | 키 만료 시간을 초 단위로 설정 |
 | `TTL key` | 남은 만료 시간을 Redis 규칙에 맞춰 반환 |
+| `SUBSCRIBE channel` | 현재 REPL을 채널에 구독 |
+| `PUBLISH channel message` | 채널 구독자 버퍼에 메시지 전달 후 수신자 수 반환 |
 
 ## 자료구조
 
@@ -113,6 +117,16 @@ TTL에는 `(expire_at, key)` 튜플을 넣는다. Python 튜플 비교는 첫 �
 ### 동적 배열
 
 보너스 범위인 동적 배열도 구현했다. `DynamicArray`는 `append`, `get`, `set`, `remove`, `pop`, `capacity`를 제공한다. 공간이 가득 차면 내부 고정 배열을 2배로 늘린다. 최소 힙의 내부 저장소에 이 배열을 적용했다.
+
+### 이진 탐색 트리(BST)
+
+보너스 범위인 `BinarySearchTree`는 문자열 키 기준으로 `insert`, `get`, `remove`, `inorder_items`를 제공한다. 삭제 대상이 자식 둘을 가질 때는 오른쪽 서브트리의 최소 노드(중위 후속자)로 값을 교체한 뒤 후속자를 제거한다. `inorder_items`는 키 오름차순의 `(key, value)` 목록을 반환한다.
+
+### Pub/Sub
+
+보너스 Pub/Sub는 네트워크 통신 없이 하나의 REPL 프로세스 안에서 동작한다. `PubSubBroker`는 채널과 구독자를 직접 구현한 `HashMap`으로 관리하고, 각 구독자 버퍼는 `DoublyLinkedList`를 FIFO 큐로 재사용한다.
+
+`SUBSCRIBE news`는 현재 REPL 구독자를 `news` 채널에 등록하고 `subscribe`, 채널 이름, 현재 구독 수로 된 확인 배열을 반환한다. 같은 채널을 다시 구독해도 중복 등록하지 않는다. `PUBLISH news "released"`는 해당 채널의 모든 구독자 버퍼에 메시지를 적재하고 수신자 수를 반환한다. 네트워크 통신이 과제 범위 밖이므로 Redis의 비동기 소켓 전달은 구현하지 않으며, 메시지 버퍼는 브로커 단위 테스트에서 FIFO 전달을 검증한다. 이 기능은 키-값 데이터, LRU, TTL, `used_memory` 계산과 분리되어 있다.
 
 ## 메모리 관리와 제거 정책
 

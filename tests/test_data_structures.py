@@ -1,5 +1,6 @@
 """Direct data structure tests for Mini Redis."""
 
+from mini_redis.datastructures.binary_search_tree import BinarySearchTree
 from mini_redis.datastructures.doubly_linked_list import DoublyLinkedList
 from mini_redis.datastructures.hash_map import HashMap
 from mini_redis.datastructures.min_heap import MinHeap
@@ -47,3 +48,32 @@ def test_min_heap_orders_expiration_tuples():
     assert heap.pop() == (20.0, "middle")
     assert heap.pop() == (30.0, "late")
     assert heap.pop() is None
+
+
+def test_binary_search_tree_inserts_searches_deletes_and_sorts_inorder():
+    """BST maintains search and inorder traversal through every delete shape."""
+    tree = BinarySearchTree()
+
+    tree.insert("d", 4)
+    tree.insert("b", 2)
+    tree.insert("f", 6)
+    tree.insert("a", 1)
+    tree.insert("c", 3)
+    tree.insert("e", 5)
+
+    assert tree.get("c") == 3
+    assert tree.get("missing") is None
+    assert tree.inorder_items() == [
+        ("a", 1),
+        ("b", 2),
+        ("c", 3),
+        ("d", 4),
+        ("e", 5),
+        ("f", 6),
+    ]
+
+    assert tree.remove("a") == 1
+    assert tree.remove("b") == 2
+    assert tree.remove("d") == 4
+    assert tree.remove("missing") is None
+    assert tree.inorder_items() == [("c", 3), ("e", 5), ("f", 6)]
