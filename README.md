@@ -17,7 +17,9 @@
 | `mini_redis/datastructures/hash_map.py` | 체이닝 해시맵 |
 | `mini_redis/datastructures/min_heap.py` | 최소 힙 |
 | `mini_redis/datastructures/dynamic_array.py` | 2배 확장 동적 배열 |
+| `mini_redis/datastructures/binary_tree.py` | 전위·중위·후위·레벨 순회 이진 트리 |
 | `mini_redis/datastructures/binary_search_tree.py` | 삽입·탐색·삭제·중위 순회 BST |
+| `STACK_QUEUE_DEQUE.md` | 스택·큐·덱 개념과 Pub/Sub 버퍼 활용 문서 |
 | `scripts/run.py` | CLI 실행 진입점 |
 | `scripts/demo.py` | 요구사항 시나리오 비대화형 데모 |
 | `tests/` | 기능, 자료구조, 제약 조건, 실행 스크립트 테스트 |
@@ -117,6 +119,12 @@ TTL에는 `(expire_at, key)` 튜플을 넣는다. Python 튜플 비교는 첫 �
 ### 동적 배열
 
 보너스 범위인 동적 배열도 구현했다. `DynamicArray`는 `append`, `get`, `set`, `remove`, `pop`, `capacity`를 제공한다. 공간이 가득 차면 내부 고정 배열을 2배로 늘린다. 최소 힙의 내부 저장소에 이 배열을 적용했다.
+
+### 이진 트리와 순회
+
+보너스 범위인 `BinaryTree`는 노드를 명시적으로 왼쪽·오른쪽 자식에 연결한다. `preorder`, `inorder`, `postorder`, `level_order`는 각각 전위, 중위, 후위, 레벨 순회 결과를 반환한다. 레벨 순회는 `DoublyLinkedList`를 FIFO 큐로 사용한다.
+
+최소 힙은 완전 이진 트리를 `DynamicArray`의 인덱스로 표현한 구조다. 인덱스 `i`의 왼쪽 자식은 `2i + 1`, 오른쪽 자식은 `2i + 2`, 부모는 `(i - 1) // 2`로 계산한다. `BinaryTree`는 노드 참조로 일반 이진 트리를 표현하고, `MinHeap`은 완전 이진 트리라는 제약을 이용해 포인터 없이 배열로 표현한다.
 
 ### 이진 탐색 트리(BST)
 
