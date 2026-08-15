@@ -2,6 +2,7 @@
 
 import inspect
 
+import main as mini_git_module
 import scripts.run as run_script
 from main import MiniGit, parse_command
 from scripts.run import run_demo
@@ -58,6 +59,32 @@ def test_path_uses_undirected_shortest_path_with_lexicographic_tie_break():
     right = repo.create_commit("right")
 
     assert repo.execute(f"path {left} {right}") == [f"Path: {left} -> {root} -> {right}"]
+
+
+def test_path_uses_predecessors_for_lexicographic_shortest_path(monkeypatch):
+    repo = MiniGit(clock=DeterministicClock())
+    repo.initialize("Alice")
+    root = repo.create_commit("root")
+    repo.create_branch("feature")
+    repo.switch_branch("feature")
+    feature = repo.create_commit("feature work")
+    repo.switch_branch("main")
+    main = repo.create_commit("main work")
+    repo.execute("merge feature")
+
+    def fail_if_path_is_serialized(path):
+        raise AssertionError(f"serialized path: {path}")
+
+    monkeypatch.setattr(
+        mini_git_module,
+        "path_string",
+        fail_if_path_is_serialized,
+        raising=False,
+    )
+
+    assert repo.execute(f"path {feature} {main}") == [
+        f"Path: {feature} -> {root} -> {main}",
+    ]
 
 
 def test_ancestors_log_sort_and_errors_are_deterministic():

@@ -249,47 +249,37 @@ class MiniGit:
         return result
 
     def shortest_path(self, start: str, goal: str) -> List[str]:
-        """BFS로 모든 최단 후보를 찾고 문자열 기준 사전순 최소 경로를 고른다."""
+        """BFS로 사전순 최소 최단 경로를 찾는다."""
 
         if start == goal:
             return [start]
         adjacency = self._undirected_adjacency()
-        queue = deque([[start]])
-        best_depth = None
-        best_path: List[str] = []
-        seen_depth = {start: 0}
+        queue = deque([start])
+        previous: Dict[str, Optional[str]] = {start: None}
         while queue:
-            path = queue.popleft()
-            current = path[-1]
-            depth = len(path) - 1
-            if best_depth is not None and depth > best_depth:
-                continue
+            current = queue.popleft()
             if current == goal:
-                if best_depth is None or path_string(path) < path_string(best_path):
-                    best_depth = depth
-                    best_path = path
-                continue
+                path: List[str] = []
+                while current is not None:
+                    path.append(current)
+                    current = previous[current]
+                path.reverse()
+                return path
             for neighbor in adjacency.get(current, []):
-                next_depth = depth + 1
-                if best_depth is not None and next_depth > best_depth:
+                if neighbor in previous:
                     continue
-                if neighbor in path:
-                    continue
-                previous_depth = seen_depth.get(neighbor)
-                if previous_depth is not None and previous_depth < next_depth:
-                    continue
-                seen_depth[neighbor] = next_depth
-                queue.append(path + [neighbor])
-        return best_path
+                previous[neighbor] = current
+                queue.append(neighbor)
+        return []
 
     def ancestors(self, commit_hash: str) -> List[Commit]:
-        """스택 기반 DFS로 모든 조상을 중복 없이 수집한다."""
+        """큐 기반 BFS로 모든 조상을 중복 없이 수집한다."""
 
         visited = set()
         result: List[Commit] = []
-        stack = copy_list(self.commits[commit_hash].parents)
-        while stack:
-            parent_hash = stack.pop(0)
+        queue = deque(self.commits[commit_hash].parents)
+        while queue:
+            parent_hash = queue.popleft()
             if parent_hash in visited:
                 continue
             visited.add(parent_hash)
@@ -297,7 +287,7 @@ class MiniGit:
             result.append(parent)
             for grand_parent in parent.parents:
                 if grand_parent not in visited:
-                    stack.append(grand_parent)
+                    queue.append(grand_parent)
         return result
 
     def _visit_parent_first(self, commit_hash: str, visited: set, result: List[Commit]) -> None:
@@ -506,12 +496,6 @@ def copy_list(items: Sequence) -> List:
     for item in items:
         copied.append(item)
     return copied
-
-
-def path_string(path: Sequence[str]) -> str:
-    """경로 후보의 사전순 비교용 문자열을 만든다."""
-
-    return "->".join(path)
 
 
 def diff_files(left_path: str, right_path: str) -> List[str]:
